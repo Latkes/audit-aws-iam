@@ -756,7 +756,7 @@ coreo_uni_util_variables "iam-planwide" do
                 {'COMPOSITE::coreo_uni_util_variables.iam-planwide.composite_name' => 'PLAN::stack_name'},
                 {'COMPOSITE::coreo_uni_util_variables.iam-planwide.plan_name' => 'PLAN::name'},
                 {'COMPOSITE::coreo_uni_util_variables.iam-planwide.results' => 'unset'},
-                {'COMPOSITE::coreo_uni_util_variables.iam-planwide.number_violations' => 'unset'}
+                {'COMPOSITE::coreo_uni_util_variables.iam-planwide.number_violations' => '0'}
             ])
 end
 
