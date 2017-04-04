@@ -30,45 +30,6 @@ iam-active-key-no-rotation:
   "IAM Key": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/users/+__OBJECT__.violations.__RULE__.result_info.0.object.user_name+?section=security_credentials"
   "User Name": "+__OBJECT__.violations.__RULE__.result_info.0.object.user_name+"
   "Key Create Date": "+__OBJECT__.violations.__RULE__.result_info.0.object.create_date+"
-iam-missing-password-policy:
-  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
-iam-passwordreuseprevention:
-  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
-iam-expirepasswords:
-  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
-iam-no-mfa:
-  "User Name": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/users/__OBJECT__?section=security_credentials"
-  "Group ARN": "+__OBJECT__.violator_info.arn+"
-iam-root-no-mfa:
-  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
-iam-root-active-key:
-  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
-iam-root-active-password:
-  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
-iam-user-attached-policies:
-  "User Policies": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/users/__OBJECT__?section=permissions"
-iam-password-policy-uppercase:
-  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
-iam-password-policy-lowercase:
-  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
-iam-password-policy-symbol:
-  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
-iam-password-policy-number:
-  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
-iam-password-policy-min-length:
-  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
-iam-root-access-key-1:
-  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
-iam-root-access-key-2:
-  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
-iam-active-root-user:
-  "Console Password Enabled?": "+__OBJECT__.violator_info.password_enabled+"
-  "Console Password last used": "+__OBJECT__.violator_info.password_last_used+"
-  "Access Key 1 Active?": "+__OBJECT__.violator_info.access_key_1_active+"
-  "Access Key 1 Last Used": "+__OBJECT__.violator_info.access_key_1_last_used_date+"
-  "Access Key 2 Active?": "+__OBJECT__.violator_info.access_key_2_active+"
-  "Access Key 2 Last Used": "+__OBJECT__.violator_info.access_key_2_last_used_date+"
-iam-root-key-access:
-  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
+
 
   
