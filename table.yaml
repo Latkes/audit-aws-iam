@@ -76,3 +76,11 @@ iam-multiple-keys:
   "AWS OBJECT ID": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=us-east-1#/users/+__OBJECT__.violations.__RULE__.region+?section=security_credentials"
 iam-support-role:
   "AWS OBJECT ID": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/policies/arn:aws:iam::aws:policy/__OBJECT__"
+iam-cloudbleed-passwords-not-rotated:
+  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
+iam-mfa-password-holders:
+  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
+iam-unused-access:
+  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"   
+iam-initialization-access-key:
+  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
