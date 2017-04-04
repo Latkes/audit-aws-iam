@@ -68,3 +68,7 @@ iam-active-root-user:
   "Access Key 1 Last Used": "+__OBJECT__.violator_info.access_key_1_last_used_date+"
   "Access Key 2 Active?": "+__OBJECT__.violator_info.access_key_2_active+"
   "Access Key 2 Last Used": "+__OBJECT__.violator_info.access_key_2_last_used_date+"
+iam-root-key-access:
+  "Password Policy": "__OBJECT__~https://us-east-1.console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/credential_report"
+iam-user-password-not-used:
+  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
