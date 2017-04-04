@@ -76,5 +76,3 @@ iam-multiple-keys:
   "AWS OBJECT ID": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=us-east-1#/users/+__OBJECT__.violations.__RULE__.region+?section=security_credentials"
 iam-support-role:
   "AWS OBJECT ID": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/policies/arn:aws:iam::aws:policy/__OBJECT__"
-iam-user-password-not-used:
-  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
