@@ -100,6 +100,22 @@ coreo_aws_rule "iam-multiple-keys" do
   raise_when [/true/i, /true/i]
 end
 
+coreo_aws_rule "iam-root-multiple-keys" do
+  action :define
+  service :iam
+  # link "http://kb.cloudcoreo.com/mydoc_iam-unusediamgroup.html"
+  display_name "IAM Root user with multiple keys"
+  description "There is are multiple access keys for root user"
+  category "Access"
+  suggested_action "Remove at least one set of access keys"
+  level "Warning"
+  id_map "object.content.user"
+  objectives ["credential_report", "credential_report", "credential_report"]
+  audit_objects ["object.content.user", "object.content.access_key_1_active", "object.content.access_key_2_active"]
+  operators ["==", "=~", "=~" ]
+  raise_when ["<root_account>", /true/i, /true/i]
+end
+
 coreo_aws_rule "iam-inactive-key-no-rotation" do
   action :define
   service :iam
