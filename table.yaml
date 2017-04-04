@@ -30,6 +30,14 @@ iam-active-key-no-rotation:
   "IAM Key": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/users/+__OBJECT__.violations.__RULE__.result_info.0.object.user_name+?section=security_credentials"
   "User Name": "+__OBJECT__.violations.__RULE__.result_info.0.object.user_name+"
   "Key Create Date": "+__OBJECT__.violations.__RULE__.result_info.0.object.create_date+"
-
+iam-missing-password-policy:
+  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
+iam-passwordreuseprevention:
+  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
+iam-expirepasswords:
+  "Password Policy": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/account_settings"
+iam-no-mfa:
+  "User Name": "__OBJECT__~https://console.aws.amazon.com/iam/home?region=+__OBJECT__.violations.__RULE__.region+#/users/__OBJECT__?section=security_credentials"
+  "Group ARN": "+__OBJECT__.violator_info.arn+"
 
   
