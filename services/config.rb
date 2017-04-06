@@ -702,7 +702,7 @@ end
 coreo_aws_rule "manual-appropriate-sns-subscribers" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=130"
+  link "http://kb.cloudcoreo.com/mydoc_manual-appropriate-sns-subscribers.html"
   display_name "SNS Appropriate Subscribers"
   description "Unintended SNS subscribers may pose a security risk"
   category "Security"
