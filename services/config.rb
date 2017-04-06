@@ -722,7 +722,7 @@ end
 coreo_aws_rule "manual-least-access-routing-tables" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=141"
+  link "http://kb.cloudcoreo.com/mydoc_manual-least-access-routing-tables.html"
   display_name "Least Access Routing Tables"
   description "Being highly selective in peering routing tables minimizes impact of potential breach"
   category "Security"
