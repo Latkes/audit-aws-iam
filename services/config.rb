@@ -168,7 +168,7 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   objectives ["account_password_policy"]
   id_map "static.password_policy"
   audit_objects ["object.password_policy.password_reuse_prevention"]
-  operators [">"]
+  operators ["=="]
   raise_when [0]
 end
 
