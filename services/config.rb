@@ -161,15 +161,13 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   description "The current password policy doesn't prevent users from reusing thier old passwords."
   category "Access"
   suggested_action "Configure a strong password policy for your users to ensure that passwords expire, aren't reused, have a certain length, require certain characters, and more."
-  meta_cis_id "1.10"
-  meta_cis_scored "true"
-  meta_cis_level "1"
   level "Critical"
   objectives ["account_password_policy"]
+  audit_objects ["object.password_policy"]
+  formulas ["include?(password_reuse_prevention)"]
+  operators ["!="]
+  raise_when [true]
   id_map "static.password_policy"
-  audit_objects ["object.password_policy.password_reuse_prevention"]
-  operators [">"]
-  raise_when [0]
 end
 
 coreo_aws_rule "iam-expirepasswords" do
