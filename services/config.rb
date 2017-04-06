@@ -169,7 +169,7 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   id_map "static.password_policy"
   audit_objects ["object.password_policy.password_reuse_prevention"]
   operators ["=="]
-  raise_when [0]
+  raise_when [nil]
 end
 
 coreo_aws_rule "iam-expirepasswords" do
