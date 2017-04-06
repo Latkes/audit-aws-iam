@@ -167,6 +167,7 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   formulas ["include?(password_reuse_prevention)"]
   operators ["!="]
   raise_when [true]
+  id_map "static.password_policy"
 end
 
 coreo_aws_rule "iam-expirepasswords" do
