@@ -261,7 +261,7 @@ end
 coreo_aws_rule "iam-password-policy-uppercase" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-missing-password-policy.html"
+  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-uppercase.html"
   display_name "Password policy doesn't require an uppercase letter"
   description "The password policy must require an uppercase letter to meet CIS standards"
   category "Access"
@@ -280,7 +280,7 @@ end
 coreo_aws_rule "iam-password-policy-lowercase" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-missing-password-policy.html"
+  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-lowercase.html"
   display_name "Password policy doesn't require an lowercase letter"
   description "The password policy must require an lowercase letter to meet CIS standards"
   category "Access"
@@ -299,7 +299,7 @@ end
 coreo_aws_rule "iam-password-policy-symbol" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-missing-password-policy.html"
+  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-symbol.html"
   display_name "Password policy doesn't require a symbol"
   description "The password policy must require a symbol to meet CIS standards"
   category "Access"
@@ -318,7 +318,7 @@ end
 coreo_aws_rule "iam-password-policy-number" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-missing-password-policy.html"
+  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-number.html"
   display_name "Password policy doesn't require a number"
   description "The password policy must require a number to meet CIS standards"
   category "Access"
@@ -337,7 +337,7 @@ end
 coreo_aws_rule "iam-password-policy-min-length" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-missing-password-policy.html"
+  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-min-length.html"
   display_name "Password policy doesn't require a minimum length of 14 characters"
   description "The password policy must require a minimum length of 14 characters to meet CIS standards"
   category "Access"
@@ -404,6 +404,7 @@ end
 coreo_aws_rule "iam-support-role" do
   action :define
   service :iam
+  link "http://kb.cloudcoreo.com/mydoc_iam-support-role.html"
   display_name "IAM Support Role"
   description "Ensure a support role exists to manage incidents"
   category "Security"
@@ -439,7 +440,8 @@ end
 coreo_aws_rule "iam-unused-access" do
   action :define
   service :user
-  include_violations_in_count false   
+  include_violations_in_count false 
+  link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"  
   display_name "IAM inactive credentials"
   description "This rule checks for credentials that have been unused for 90 days"
   category "Inventory"
@@ -455,10 +457,10 @@ coreo_aws_rule "iam-unused-access" do
   id_map "static.no_op"
 end
 
-
 coreo_aws_rule "iam-no-hardware-mfa-root" do
   action :define
   service :iam
+  link "http://kb.cloudcoreo.com/mydoc_iam-no-hardware-mfa-root.html"
   display_name "IAM has no root MFA hardware devices"
   description "Triggers if there is no hardware MFA Device for root"
   category "Security"
@@ -478,6 +480,7 @@ coreo_aws_rule "iam-active-root-user" do
   action :define
   service :iam
   include_violations_in_count false
+  link "http://kb.cloudcoreo.com/mydoc_iam-active-root-user.html"
   display_name "IAM Root User Activity"
   description "This rule performs an audit on root user activity"
   category "Inventory"
@@ -497,6 +500,7 @@ coreo_aws_rule "iam-mfa-password-holders" do
   action :define
   service :iam
   include_violations_in_count false
+  link "http://kb.cloudcoreo.com/mydoc_iam-mfa-password-holders.html"
   display_name "MFA for IAM Password Holders"
   description "This rule checks that all IAM users with a password have MFA enabled"
   category "Security"
@@ -515,7 +519,7 @@ end
 coreo_aws_rule "manual-ensure-security-questions" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=40"
+  link "http://kb.cloudcoreo.com/mydoc_manual-ensure-security-questions.html"
   display_name "Ensure Account Security Questions"
   description "Security Questions improve account security"
   category "Security"
@@ -535,7 +539,7 @@ end
 coreo_aws_rule "manual-detailed-billing" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=44"
+  link "http://kb.cloudcoreo.com/mydoc_manual-detailed-billing.html"
   display_name "Enable Detailed Billing"
   description "Detailed billing can help to bring attention to anomalous use of AWS resources"
   category "Security"
@@ -555,6 +559,7 @@ end
 coreo_aws_rule "iam-root-key-access" do
   action :define
   service :user
+  link "http://kb.cloudcoreo.com/mydoc_iam-root-key-access.html"
   display_name "IAM Root Access Key"
   description "This rule checks for root access keys. Root account should not have access keys enabled"
   category "Security"
@@ -573,13 +578,15 @@ end
 coreo_aws_rule "iam-root-no-mfa" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_iam-root-no-mfa.html"
+  link "http://kb.cloudcoreo.com/mydoc_iam-root-no-mfa-cis.html"
   display_name "Multi-Factor Authentication not enabled for root account"
   description "Root cloud user does not have Multi-Factor Authentication enabled on their cloud account"
   category "Security"
   suggested_action "Enable Multi-Factor Authentication for the root cloud user."
   level "Warning"
   meta_cis_id "1.13"
+  meta_cis_scored "true"
+  meta_cis_level "1"
   objectives [""]
   audit_objects [""]
   operators [""]
@@ -590,7 +597,7 @@ end
 coreo_aws_rule "manual-strategic-iam-roles" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=47"
+  link "http://kb.cloudcoreo.com/mydoc_manual-strategic-iam-roles.html"
   display_name "Ensure Strategic IAM Roles"
   description "Use IAM Master and Manager Roles to optimise security"
   category "Security"
@@ -610,6 +617,7 @@ end
 coreo_aws_rule "iam-initialization-access-key" do
   action :define
   service :user
+  link "http://kb.cloudcoreo.com/mydoc_iam-initialization-access-key.html"
   display_name "IAM Initialization Access"
   description "This rule checks for access keys that were activated during initialization"
   category "Inventory"
@@ -617,6 +625,7 @@ coreo_aws_rule "iam-initialization-access-key" do
   level "Warning"
   meta_cis_id "1.23"
   meta_cis_scored "false"
+  meta_cis_level "1"
   objectives [""]
   audit_objects [""]
   operators [""]
@@ -627,7 +636,7 @@ end
 coreo_aws_rule "manual-contact-details" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=59"
+  link "http://kb.cloudcoreo.com/mydoc_manual-contact-details.html"
   display_name "Maintain Contact Details"
   description "Contact details associated with the AWS account may be used by AWS staff to contact the account owner"
   category "Security"
@@ -647,7 +656,7 @@ end
 coreo_aws_rule "manual-security-contact" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=61"
+  link "http://kb.cloudcoreo.com/mydoc_manual-security-contact.html"
   display_name "Security Contact Details"
   description "Contact details may be provided to the AWS account for your security team, allowing AWS staff to contact them when required"
   category "Security"
@@ -667,7 +676,7 @@ end
 coreo_aws_rule "manual-resource-instance-access" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=62"
+  link "http://kb.cloudcoreo.com/mydoc_manual-resource-instance-access.html"
   display_name "IAM Instance Roles"
   description "Proper usage of IAM roles reduces the risk of active, unrotated keys"
   category "Security"
@@ -687,7 +696,7 @@ end
 coreo_aws_rule "manual-full-privilege-user" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=69"
+  link "http://kb.cloudcoreo.com/mydoc_manual-full-privilege-user.html"
   display_name "IAM Full Privileges"
   description "IAM users should not be granted full privileges"
   category "Security"
@@ -707,7 +716,7 @@ end
 coreo_aws_rule "manual-appropriate-sns-subscribers" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=130"
+  link "http://kb.cloudcoreo.com/mydoc_manual-appropriate-sns-subscribers.html"
   display_name "SNS Appropriate Subscribers"
   description "Unintended SNS subscribers may pose a security risk"
   category "Security"
@@ -727,7 +736,7 @@ end
 coreo_aws_rule "manual-least-access-routing-tables" do
   action :define
   service :user
-  link "https://benchmarks.cisecurity.org/tools2/amazon/CIS_Amazon_Web_Services_Foundations_Benchmark_v1.1.0.pdf#page=141"
+  link "http://kb.cloudcoreo.com/mydoc_manual-least-access-routing-tables.html"
   display_name "Least Access Routing Tables"
   description "Being highly selective in peering routing tables minimizes impact of potential breach"
   category "Security"
@@ -754,9 +763,6 @@ coreo_aws_rule "iam-internal" do
   category "Internal"
   suggested_action "Ignore"
   level "Internal"
-  meta_cis_id "1.23"
-  meta_cis_scored "false"
-  meta_cis_level "1"
   id_map "object.content.user"
   objectives ["credential_report"]
   audit_objects ["object.content.user"]
