@@ -35,14 +35,17 @@ This repo is designed to work with CloudCoreo. It will monitor IAM against best 
 ## Optional variables with default
 
 ### `AUDIT_AWS_IAM_ALERT_LIST`:
-  * description: Which alerts would you like to check for? Default is all IAM alerts. Choices are iam-unusediamgroup,iam-multiple-keys,iam-inactive-key-no-rotation,iam-active-key-no-rotation,iam-passwordreuseprevention,iam-missing-password-policy,iam-expirepasswords,iam-no-mfa,iam-root-no-mfa,iam-root-active-password,iam-user-attached-policies,iam-password-policy-uppercase,iam-password-policy-lowercase,iam-password-policy-symbol,iam-password-policy-number,iam-password-policy-min-length,iam-root-access-key-1,iam-root-access-key-2,iam-inventory-users,iam-inventory-roles,iam-inventory-groups,iam-inventory-policies
-  * default: iam-unusediamgroup, iam-multiple-keys, iam-inactive-key-no-rotation, iam-active-key-no-rotation, iam-passwordreuseprevention, iam-missing-password-policy, iam-expirepasswords, iam-no-mfa, iam-root-no-mfa, iam-root-active-password, iam-user-attached-policies, iam-password-policy-uppercase, iam-password-policy-lowercase, iam-password-policy-symbol, iam-password-policy-number, iam-password-policy-min-length, iam-root-access-key-1, iam-root-access-key-2, iam-support-role, iam-user-password-not-used, iam-cloudbleed-passwords-not-rotated
+  * description: Which alerts would you like to check for? Default is all IAM alerts. Choices are iam-inventory-users, iam-inventory-roles, iam-inventory-policies, iam-inventory-groups, iam-unusediamgroup, iam-multiple-keys, iam-inactive-key-no-rotation, iam-active-key-no-rotation, iam-passwordreuseprevention, iam-missing-password-policy, iam-expirepasswords, iam-no-mfa, iam-root-active-password, iam-user-attached-policies, iam-password-policy-uppercase, iam-password-policy-lowercase, iam-password-policy-symbol, iam-password-policy-number, iam-password-policy-min-length, iam-root-access-key-1, iam-root-access-key-2, iam-active-root-user, iam-mfa-password-holders, iam-support-role, iam-user-password-not-used, iam-cloudbleed-passwords-not-rotated, iam-unused-access, iam-root-key-access, iam-root-no-mfa, iam-initialization-access-key, iam-no-hardware-mfa-root
+  * default: iam-inventory-users, iam-inventory-roles, iam-inventory-policies, iam-inventory-groups, iam-unusediamgroup, iam-multiple-keys, iam-inactive-key-no-rotation, iam-active-key-no-rotation, iam-passwordreuseprevention, iam-missing-password-policy, iam-expirepasswords, iam-no-mfa, iam-root-active-password, iam-user-attached-policies, iam-password-policy-uppercase, iam-password-policy-lowercase, iam-password-policy-symbol, iam-password-policy-number, iam-password-policy-min-length, iam-root-access-key-1, iam-root-access-key-2, iam-active-root-user, iam-mfa-password-holders, iam-support-role, iam-user-password-not-used, iam-cloudbleed-passwords-not-rotated, iam-unused-access, iam-root-key-access, iam-root-no-mfa, iam-initialization-access-key, iam-no-hardware-mfa-root
 
 
 ## Optional variables with no default
 
 ### `AUDIT_AWS_IAM_ALERT_RECIPIENT`:
   * description: Enter the email address(es) that will receive notifications. If more than one, separate each with a comma.
+
+### `AUDIT_AWS_IAM_ACCOUNT_NUMBER`:
+  * description: The AWS account number. Required for a full CIS audit. This can be found by the root user at https://console.aws.amazon.com/billing/home?#/account
 
 ## Tags
 1. Audit

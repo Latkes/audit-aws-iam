@@ -70,6 +70,28 @@ iam-support-role:
 iam-user-password-not-used:
   - put-your-object-id-here-1: ""
   - put-your-object-id-here-2: "2017-01-10T00:00Z"
+iam-no-hardware-mfa-root:
+  - put-your-object-id-here-1: ""
+  - put-your-object-id-here-2: "2017-01-10T00:00Z"
+iam-active-root-user:
+  - put-your-object-id-here-1: ""
+  - put-your-object-id-here-2: "2017-01-10T00:00Z"
+iam-mfa-password-holders:
+  - put-your-object-id-here-1: ""
+  - put-your-object-id-here-2: "2017-01-10T00:00Z"
+iam-cloudbleed-passwords-not-rotated:
+  - put-your-object-id-here-1: ""
+  - put-your-object-id-here-2: "2017-01-10T00:00Z"
+iam-unused-access:
+  - put-your-object-id-here-1: ""
+  - put-your-object-id-here-2: "2017-01-10T00:00Z"
+iam-root-key-access:
+  - put-your-object-id-here-1: ""
+  - put-your-object-id-here-2: "2017-01-10T00:00Z"
+iam-initialization-access-key:
+  - put-your-object-id-here-1: ""
+  - put-your-object-id-here-2: "2017-01-10T00:00Z"
+
 
 # Suppression times (optional) use ISO date formats according to this template:
 #
