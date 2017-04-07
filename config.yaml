@@ -60,4 +60,4 @@ variables:
     description: "The AWS account number. Required for a full CIS audit. This can be found by the root user at https://console.aws.amazon.com/billing/home?#/account"
     required: false
     type: string
-    default: 
+    default:
