@@ -1,7 +1,7 @@
 coreo_aws_rule "iam-inventory-users" do
   action :define
   service :iam
-  # link "http://kb.cloudcoreo.com/mydoc_elb-inventory.html"
+  link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
   include_violations_in_count false
   display_name "IAM User Inventory"
   description "This rule performs an inventory on all IAM Users in the target AWS account."
@@ -18,7 +18,7 @@ end
 coreo_aws_rule "iam-inventory-roles" do
   action :define
   service :iam
-  # link "http://kb.cloudcoreo.com/mydoc_elb-inventory.html"
+  link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
   include_violations_in_count false
   display_name "IAM Role Inventory"
   description "This rule performs an inventory on all IAM Roles in the target AWS account."
@@ -35,7 +35,7 @@ end
 coreo_aws_rule "iam-inventory-policies" do
   action :define
   service :iam
-  # link "http://kb.cloudcoreo.com/mydoc_elb-inventory.html"
+  link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
   include_violations_in_count false
   display_name "IAM Policy Inventory"
   description "This rule performs an inventory on all IAM Policies in the target AWS account."
@@ -52,7 +52,7 @@ end
 coreo_aws_rule "iam-inventory-groups" do
   action :define
   service :iam
-  # link "http://kb.cloudcoreo.com/mydoc_elb-inventory.html"
+  link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
   include_violations_in_count false
   display_name "IAM Group Inventory"
   description "This rule performs an inventory on all IAM User Groups in the target AWS account."
