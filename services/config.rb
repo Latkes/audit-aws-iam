@@ -488,7 +488,7 @@ coreo_aws_rule "iam-active-root-user" do
   description "This rule performs an audit on root user activity"
   category "Inventory"
   suggested_action "Root user should not be active, when possible. Additionally, ensure that CIS rule 3.3 is passing for this rule to pass"
-  level "Informational"
+  level "Low"
   meta_cis_id "1.1"
   meta_cis_scored "true"
   meta_cis_level "1"
