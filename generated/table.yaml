@@ -1,0 +1,168 @@
+iam-inventory-users:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-inventory-roles:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-inventory-policies:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-inventory-groups:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-unusediamgroup:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-multiple-keys:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-root-multiple-keys:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-inactive-key-no-rotation:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-active-key-no-rotation:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-missing-password-policy:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-passwordreuseprevention:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-expirepasswords:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-no-mfa:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-root-active-password:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-user-attached-policies:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-password-policy-uppercase:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-password-policy-lowercase:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-password-policy-symbol:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-password-policy-number:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-password-policy-min-length:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-root-access-key-1:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-root-access-key-2:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-cloudbleed-passwords-not-rotated:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-support-role:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-user-password-not-used:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-unused-access:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-no-hardware-mfa-root:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-active-root-user:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-mfa-password-holders:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-ensure-security-questions:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-detailed-billing:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-root-key-access:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-root-no-mfa:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-strategic-iam-roles:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-initialization-access-key:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-contact-details:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-security-contact:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-resource-instance-access:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-full-privilege-user:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-appropriate-sns-subscribers:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-least-access-routing-tables:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-internal:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
