@@ -1,3 +1,3 @@
-audit IAM
+iam audit
 ============================
-This stack will monitor IAM and alert on things CloudCoreo developers think are violations of best practices
+This composite monitors iam and reports best practice violations, standards body policy violations, and inventory

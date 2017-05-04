@@ -1,10 +1,10 @@
-audit IAM
+iam audit
 ============================
-This stack will monitor IAM and alert on things CloudCoreo developers think are violations of best practices
+This composite monitors iam and reports best practice violations, standards body policy violations, and inventory
 
 
 ## Description
-This repo is designed to work with CloudCoreo. It will monitor IAM against best practices for you and send a report to the email address designated by the config.yaml AUDIT&#95;AWS&#95;IAM&#95;ALERT&#95;RECIPIENT value
+This composite monitors iam against best practices and optionally emails a report to per the AUDIT&#95;AWS&#95;IAM&#95;ALERT&#95;RECIPIENT plan variable.
 
 
 ## Hierarchy
@@ -50,12 +50,12 @@ This repo is designed to work with CloudCoreo. It will monitor IAM against best 
 ## Tags
 1. Audit
 1. Best Practices
-1. Alert
-1. IAM
+1. Inventory
+1. iam
+
 
 ## Categories
 1. AWS Services Audit
-
 
 
 ## Diagram
