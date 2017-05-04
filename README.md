@@ -54,7 +54,7 @@ This repo is designed to work with CloudCoreo. It will monitor IAM against best 
 1. IAM
 
 ## Categories
-1. Audit
+1. AWS Services Audit
 
 
 
