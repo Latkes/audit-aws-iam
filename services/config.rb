@@ -984,7 +984,7 @@ const OWNER_TAG = "NOT_A_TAG";
 const ALLOW_EMPTY = "${AUDIT_AWS_IAM_ALLOW_EMPTY}";
 const SEND_ON = "${AUDIT_AWS_IAM_SEND_ON}";
 
-const alertListJSON = "[${AUDIT_AWS_IAM_ALERT_LIST}]";
+const alertListJSON = [${AUDIT_AWS_IAM_ALERT_LIST}];
 const alertListArray = alertListJSON.replace(/'/g, '"');
 const ruleInputs = {};
 
