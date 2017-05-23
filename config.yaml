@@ -3,10 +3,6 @@ variables:
     required: false
     type: array
     default:
-      - iam-inventory-users # not_violation 
-      - iam-inventory-roles # not_violation 
-      - iam-inventory-policies # not_violation 
-      - iam-inventory-groups # not_violation 
       - iam-unusediamgroup # 
       - iam-multiple-keys # 
       - iam-root-multiple-keys # 
