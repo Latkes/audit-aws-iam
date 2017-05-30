@@ -125,6 +125,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   category "Access"
   suggested_action "If you regularly use the AWS access keys, we recommend that you also regularly rotate or delete them."
   level "High"
+  meta_nist_171_id "3.5.9"
   id_map "modifier.user_name"
   objectives ["users", "access_keys", "access_keys"]
   audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
@@ -162,6 +163,7 @@ coreo_aws_rule "iam-missing-password-policy" do
   category "Access"
   suggested_action "Configure a strong password policy for your users to ensure that passwords expire, aren't reused, have a certain length, require certain characters, and more."
   level "High"
+  meta_nist_171_id "3.5.7"
   objectives ["account_password_policy"]
   audit_objects ["object"]
   operators ["=="]
@@ -180,6 +182,7 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   meta_cis_id "1.10"
   meta_cis_scored "true"
   meta_cis_level "1"
+  meta_nist_171_id "3.5.8"
   level "High"
   objectives ["account_password_policy"]
   audit_objects ["object.password_policy"]
@@ -217,6 +220,7 @@ coreo_aws_rule "iam-no-mfa" do
   category "Security"
   suggested_action "Enable Multi-Factor Authentication for every cloud user."
   level "High"
+  meta_nist_171_id "3.5.1"
   id_map "object.content.user"
   objectives ["credential_report", "credential_report"]
   audit_objects ["object.content.password_enabled", "object.content.mfa_active"]
@@ -251,6 +255,7 @@ coreo_aws_rule "iam-user-attached-policies" do
   meta_cis_id "1.16"
   meta_cis_scored "true"
   meta_cis_level "1"
+  meta_nist_171_id "3.1.1"
   level "Low"
   id_map "modifiers.user_name"
   objectives ["users", "user_policies"]
@@ -272,6 +277,7 @@ coreo_aws_rule "iam-password-policy-uppercase" do
   meta_cis_id "1.05"
   meta_cis_scored "true"
   meta_cis_level "1"
+  meta_nist_171_id "3.5.7"
   level "Medium"
   objectives ["account_password_policy"]
   id_map "static.password_policy"
@@ -292,6 +298,7 @@ coreo_aws_rule "iam-password-policy-lowercase" do
   meta_cis_scored "true"
   meta_cis_level "1"
   level "Medium"
+  meta_nist_171_id "3.5.7"
   objectives ["account_password_policy"]
   id_map "static.password_policy"
   audit_objects ["object.password_policy.require_lowercase_characters"]
@@ -311,6 +318,7 @@ coreo_aws_rule "iam-password-policy-symbol" do
   meta_cis_scored "true"
   meta_cis_level "1"
   level "Medium"
+  meta_nist_171_id "3.5.7"
   objectives ["account_password_policy"]
   id_map "static.password_policy"
   audit_objects ["object.password_policy.require_symbols"]
@@ -330,6 +338,7 @@ coreo_aws_rule "iam-password-policy-number" do
   meta_cis_scored "true"
   meta_cis_level "1"
   level "Medium"
+  meta_nist_171_id "3.5.7"
   objectives ["account_password_policy"]
   id_map "static.password_policy"
   audit_objects ["object.password_policy.require_numbers"]
@@ -349,6 +358,7 @@ coreo_aws_rule "iam-password-policy-min-length" do
   meta_cis_scored "true"
   meta_cis_level "1"
   level "Medium"
+  meta_nist_171_id "3.5.7"
   objectives ["account_password_policy"]
   id_map "static.password_policy"
   audit_objects ["object.password_policy.minimum_password_length"]
@@ -450,6 +460,7 @@ coreo_aws_rule "iam-unused-access" do
   category "Inventory"
   suggested_action "User credentials that have not been used in 90 days should be removed or deactivated"
   level "Low"
+  meta_nist_171_id "3.1.1"
   meta_cis_id "1.3"
   meta_cis_scored "true"
   meta_cis_level "1"
@@ -512,6 +523,7 @@ coreo_aws_rule "iam-mfa-password-holders" do
   meta_cis_id "1.2"
   meta_cis_scored "true"
   meta_cis_level "1"
+  meta_nist_171_id "3.5.3"
   objectives ["credential_report","credential_report"]
   audit_objects ["object.content.password_enabled", "object.content.mfa_active"]
   operators ["==", "=="]
@@ -709,6 +721,7 @@ coreo_aws_rule "manual-full-privilege-user" do
   meta_cis_id "1.24"
   meta_cis_scored "true"
   meta_cis_level "1"
+  meta_nist_171_id "3.1.2, 3.4.5"
   objectives [""]
   audit_objects [""]
   operators [""]
