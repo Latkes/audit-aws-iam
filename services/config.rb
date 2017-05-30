@@ -109,6 +109,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
   category "Access"
   suggested_action "Remove at least one set of access keys"
   level "Warning"
+  meta_nist_171_id "3.1.5"
   id_map "object.content.user"
   objectives ["credential_report", "credential_report", "credential_report"]
   audit_objects ["object.content.user", "object.content.access_key_1_active", "object.content.access_key_2_active"]
@@ -237,6 +238,7 @@ coreo_aws_rule "iam-root-active-password" do
   category "Security"
   suggested_action "Re-set your root account password, don't log in to your root account, and secure root account password in a safe place."
   level "High"
+  meta_nist_171_id "3.1.6"
   id_map "object.content.user"
   objectives ["credential_report", "credential_report"]
   audit_objects ["object.content.user", "object.content.password_last_used"]
@@ -375,6 +377,7 @@ coreo_aws_rule "iam-root-access-key-1" do
   category "Security"
   suggested_action "Do not use Root Access Keys. Consider deleting the Root Access keys and using IAM users instead."
   level "Low"
+  meta_nist_171_id "3.1.6"
   id_map "object.content.user"
   objectives ["credential_report", "credential_report"]
   audit_objects ["object.content.user", "object.content.access_key_1_active"]
@@ -391,6 +394,7 @@ coreo_aws_rule "iam-root-access-key-2" do
   category "Security"
   suggested_action "Do not use Root Access Keys. Consider deleting the Root Access keys and using IAM users instead."
   level "Low"
+  meta_nist_171_id "3.1.6"
   id_map "object.content.user"
   objectives ["credential_report", "credential_report"]
   audit_objects ["object.content.user", "object.content.access_key_2_active"]
@@ -426,6 +430,7 @@ coreo_aws_rule "iam-support-role" do
   meta_cis_scored "true"
   meta_cis_level "1"
   level "Low"
+  meta_nist_171_id "3.4.6"
   objectives ["", "policies"]
   audit_objects ["object.policies.policy_name", "object.policies.attachment_count"]
   operators ["==", ">"]
@@ -482,6 +487,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
   meta_cis_id "1.14"
   meta_cis_scored "true"
   meta_cis_level "2"
+  meta_nist_171_id "3.5.3"
   level "High"
   objectives ["virtual_mfa_devices"]
   audit_objects ["object.virtual_mfa_devices.serial_number"]
@@ -503,6 +509,7 @@ coreo_aws_rule "iam-active-root-user" do
   meta_cis_id "1.1"
   meta_cis_scored "true"
   meta_cis_level "1"
+  meta_nist_171_id "3.1.6"
   id_map "object.content.user"
   objectives ["credential_report"]
   audit_objects ["object.content.user"]
@@ -583,6 +590,7 @@ coreo_aws_rule "iam-root-key-access" do
   meta_cis_id "1.12"
   meta_cis_scored "true"
   meta_cis_level "1"
+  meta_nist_171_id "3.1.6"
   objectives [""]
   audit_objects [""]
   operators [""]
@@ -602,6 +610,7 @@ coreo_aws_rule "iam-root-no-mfa" do
   meta_cis_id "1.13"
   meta_cis_scored "true"
   meta_cis_level "1"
+  meta_nist_171_id "3.5.3"
   objectives [""]
   audit_objects [""]
   operators [""]
@@ -641,6 +650,7 @@ coreo_aws_rule "iam-initialization-access-key" do
   meta_cis_id "1.23"
   meta_cis_scored "false"
   meta_cis_level "1"
+  meta_nist_171_id "3.5.9"
   objectives [""]
   audit_objects [""]
   operators [""]
