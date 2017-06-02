@@ -558,6 +558,26 @@ coreo_aws_rule "manual-ensure-security-questions" do
   id_map "static.no_op"
 end
 
+coreo_aws_rule "manual-obscure-auth-info" do
+  action :define
+  service :user
+  link ""
+  display_name "Ensure Authorization Information is Obscured"
+  description "Obscuring authorization information during authorization process improves security"
+  category "Security"
+  suggested_action "Make password characters be obscured by, for example, the * symbol during sign-in process"
+  level "Manual"
+  meta_always_show_card "true"
+  meta_nist_171_id "3.5.11"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [""]
+  id_map "static.no_op"
+end
+
+
+
 coreo_aws_rule "manual-detailed-billing" do
   action :define
   service :user
