@@ -538,6 +538,60 @@ coreo_aws_rule "iam-mfa-password-holders" do
   id_map "object.content.user"
 end
 
+coreo_aws_rule "manual-maintenance-records" do
+  action :define
+  service :user
+  link ""
+  display_name "Ensure System Components Maintained to Best Practices"
+  description "Ensure that all system components are repaired and those repairs documented and reviewed in line with organization/vendor/manufacturer specifications"
+  category "Security"
+  suggested_action "Put policies in place to make sure systematic best practices are in place for system component repairs and recording/reviewing of those repairs"
+  level "Manual"
+  meta_always_show_card "true"
+  meta_nist_171_id "3.7.1, 3.7.2, 3.7.3"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [""]
+  id_map "static.no_op"
+end
+
+coreo_aws_rule "manual-approved-monitored-maintenance" do
+  action :define
+  service :user
+  link ""
+  display_name "Ensure that all maintenance activies are approved and monitored"
+  description "All maintenance activities should be both approved and monitored whether or on or off site"
+  category "Security"
+  suggested_action "Implement a policy to ensure that all maintenance efforts are systematically both approved and monitored, on and off site"
+  level "Manual"
+  meta_always_show_card "true"
+  meta_nist_171_id "3.7.1, 3.7.2, 3.7.3"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [""]
+  id_map "static.no_op"
+end
+
+coreo_aws_rule "manual-component-removal-approval" do
+  action :define
+  service :user
+  link "http://kb.cloudcoreo.com/mydoc_manual-ensure-security-questions.html"
+  display_name "Ensure Explicit Approval pre Component Removal"
+  description "Ensure that the removal of any system or component from premsis for maintenance requires the explicit approval of a specified person/department"
+  category "Security"
+  suggested_action "Implement a policy to ensure that the removal of any system or component from premsis for maintenance requires the explicit approval of a specified person/department"
+  level "Manual"
+  meta_always_show_card "true"
+  meta_nist_171_id "3.7.1, 3.7.2, 3.7.3"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [""]
+  id_map "static.no_op"
+end
+
 coreo_aws_rule "manual-ensure-security-questions" do
   action :define
   service :user
