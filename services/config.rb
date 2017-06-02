@@ -556,6 +556,24 @@ coreo_aws_rule "manual-maintenance-records" do
   id_map "static.no_op"
 end
 
+coreo_aws_rule "manual-approved-monitored-maintenance" do
+  action :define
+  service :user
+  link ""
+  display_name "Ensure that all maintenance activies are approved and monitored"
+  description "All maintenance activities should be both approved and monitored whether or on or off site"
+  category "Security"
+  suggested_action "Implement a policy to ensure that all maintenance efforts are systematically both approved and monitored, on and off site"
+  level "Manual"
+  meta_always_show_card "true"
+  meta_nist_171_id "3.7.1, 3.7.2, 3.7.3"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [""]
+  id_map "static.no_op"
+end
+
 coreo_aws_rule "manual-ensure-security-questions" do
   action :define
   service :user
