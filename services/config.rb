@@ -538,6 +538,24 @@ coreo_aws_rule "iam-mfa-password-holders" do
   id_map "object.content.user"
 end
 
+coreo_aws_rule "manual-maintenance-records" do
+  action :define
+  service :user
+  link ""
+  display_name "Ensure System Components Maintained to Best Practices"
+  description "Ensure that all system components are repaired and those repairs documented and reviewed in line with organization/vendor/manufacturer specifications"
+  category "Security"
+  suggested_action "Put policies in place to make sure systematic best practices are in place for system component repairs and recording/reviewing of those repairs"
+  level "Manual"
+  meta_always_show_card "true"
+  meta_nist_171_id "3.7.1, 3.7.2, 3.7.3"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [""]
+  id_map "static.no_op"
+end
+
 coreo_aws_rule "manual-ensure-security-questions" do
   action :define
   service :user
