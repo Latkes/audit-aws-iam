@@ -538,6 +538,24 @@ coreo_aws_rule "iam-mfa-password-holders" do
   id_map "object.content.user"
 end
 
+coreo_aws_rule "manual-component-removal-approval" do
+  action :define
+  service :user
+  link "http://kb.cloudcoreo.com/mydoc_manual-ensure-security-questions.html"
+  display_name "Ensure Explicit Approval pre Component Removal"
+  description "Ensure that the removal of any system or component from premsis for maintenance requires the explicit approval of a specified person/department"
+  category "Security"
+  suggested_action "Implement a policy to ensure that the removal of any system or component from premsis for maintenance requires the explicit approval of a specified person/department"
+  level "Manual"
+  meta_always_show_card "true"
+  meta_nist_171_id "3.7.1, 3.7.2, 3.7.3"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [""]
+  id_map "static.no_op"
+end
+
 coreo_aws_rule "manual-ensure-security-questions" do
   action :define
   service :user
