@@ -32,7 +32,11 @@ variables:
             - iam-no-hardware-mfa-root # cis_id:1.14 
             - iam-active-root-user # not_violation cis_id:1.1 
             - iam-mfa-password-holders # not_violation cis_id:1.2 
+            - manual-maintenance-records # 
+            - manual-approved-monitored-maintenance # 
+            - manual-component-removal-approval # 
             - manual-ensure-security-questions # cis_id:1.15 
+            - manual-obscure-auth-info # 
             - manual-detailed-billing # cis_id:1.17 
             - iam-root-key-access # cis_id:1.12 
             - iam-root-no-mfa # cis_id:1.13 
@@ -45,4 +49,4 @@ variables:
             - manual-appropriate-sns-subscribers # cis_id:3.15 
             - manual-least-access-routing-tables # cis_id:4.5 
 #             - iam-internal # 
-        description: "Which rules would you like to run? Possible values are iam-inventory-users iam-inventory-roles iam-inventory-policies iam-inventory-groups iam-unusediamgroup iam-multiple-keys iam-root-multiple-keys iam-inactive-key-no-rotation iam-active-key-no-rotation iam-missing-password-policy iam-passwordreuseprevention iam-expirepasswords iam-no-mfa iam-root-active-password iam-user-attached-policies iam-password-policy-uppercase iam-password-policy-lowercase iam-password-policy-symbol iam-password-policy-number iam-password-policy-min-length iam-root-access-key-1 iam-root-access-key-2 iam-cloudbleed-passwords-not-rotated iam-support-role iam-user-password-not-used iam-unused-access iam-no-hardware-mfa-root iam-active-root-user iam-mfa-password-holders manual-ensure-security-questions manual-detailed-billing iam-root-key-access iam-root-no-mfa manual-strategic-iam-roles iam-initialization-access-key manual-contact-details manual-security-contact manual-resource-instance-access manual-full-privilege-user manual-appropriate-sns-subscribers manual-least-access-routing-tables"
+        description: "Which rules would you like to run? Possible values are iam-inventory-users iam-inventory-roles iam-inventory-policies iam-inventory-groups iam-unusediamgroup iam-multiple-keys iam-root-multiple-keys iam-inactive-key-no-rotation iam-active-key-no-rotation iam-missing-password-policy iam-passwordreuseprevention iam-expirepasswords iam-no-mfa iam-root-active-password iam-user-attached-policies iam-password-policy-uppercase iam-password-policy-lowercase iam-password-policy-symbol iam-password-policy-number iam-password-policy-min-length iam-root-access-key-1 iam-root-access-key-2 iam-cloudbleed-passwords-not-rotated iam-support-role iam-user-password-not-used iam-unused-access iam-no-hardware-mfa-root iam-active-root-user iam-mfa-password-holders manual-maintenance-records manual-approved-monitored-maintenance manual-component-removal-approval manual-ensure-security-questions manual-obscure-auth-info manual-detailed-billing iam-root-key-access iam-root-no-mfa manual-strategic-iam-roles iam-initialization-access-key manual-contact-details manual-security-contact manual-resource-instance-access manual-full-privilege-user manual-appropriate-sns-subscribers manual-least-access-routing-tables"

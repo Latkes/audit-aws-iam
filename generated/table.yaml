@@ -114,7 +114,23 @@ iam-mfa-password-holders:
   "AWS Cloud Object Name": "__OBJECT__"
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
   "AWS Tags": "__TAGS__"
+manual-maintenance-records:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-approved-monitored-maintenance:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-component-removal-approval:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
 manual-ensure-security-questions:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+manual-obscure-auth-info:
   "AWS Cloud Object Name": "__OBJECT__"
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
   "AWS Tags": "__TAGS__"
