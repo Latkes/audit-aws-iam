@@ -368,40 +368,6 @@ coreo_aws_rule "iam-password-policy-min-length" do
   raise_when [14]
 end
 
-coreo_aws_rule "iam-root-access-key-1" do
-  action :define
-  service :iam
-  link ""
-  display_name "Root Access Key Exists - Key #1"
-  description "Root Access Key #1 exists. Ideally, the root account should not have any active keys."
-  category "Security"
-  suggested_action "Do not use Root Access Keys. Consider deleting the Root Access keys and using IAM users instead."
-  level "Low"
-  meta_nist_171_id "3.1.6"
-  id_map "object.content.user"
-  objectives ["credential_report", "credential_report"]
-  audit_objects ["object.content.user", "object.content.access_key_1_active"]
-  operators ["==", "=="]
-  raise_when ["<root_account>", true]
-end
-
-coreo_aws_rule "iam-root-access-key-2" do
-  action :define
-  service :iam
-  link ""
-  display_name "Root Access Key Exists - Key #2"
-  description "Root Access Key #2 exists. Ideally, the root account should not have any active keys."
-  category "Security"
-  suggested_action "Do not use Root Access Keys. Consider deleting the Root Access keys and using IAM users instead."
-  level "Low"
-  meta_nist_171_id "3.1.6"
-  id_map "object.content.user"
-  objectives ["credential_report", "credential_report"]
-  audit_objects ["object.content.user", "object.content.access_key_2_active"]
-  operators ["==", "=="]
-  raise_when ["<root_account>", true]
-end
-
 coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
   action :define
   service :iam
@@ -805,7 +771,7 @@ coreo_aws_rule "manual-full-privilege-user" do
   meta_cis_id "1.24"
   meta_cis_scored "true"
   meta_cis_level "1"
-  meta_nist_171_id "3.1.2, 3.4.5"
+  meta_nist_171_id "3.1.2, 3.4.5, 3.4.6"
   objectives [""]
   audit_objects [""]
   operators [""]
@@ -975,7 +941,7 @@ function setValueForNewJSONInput(json_input) {
             if (!json_input['violations']['us-east-1']["<root_account>"]['violations']) {
                 json_input['violations']['us-east-1']["<root_account>"]['violations'] = {}
             }
-            json_input['violations']['us-east-1']["<root_account>"]['violations']['iam-root-access_key'] = Object.assign(ruleMeta[ROOT_ACCESS_RULE]);
+            json_input['violations']['us-east-1']["<root_account>"]['violations']['iam-root-key-access'] = Object.assign(ruleMeta[ROOT_ACCESS_RULE]);
         }
     }
 
