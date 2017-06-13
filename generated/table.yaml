@@ -78,14 +78,6 @@ iam-password-policy-min-length:
   "AWS Cloud Object Name": "__OBJECT__"
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
   "AWS Tags": "__TAGS__"
-iam-root-access-key-1:
-  "AWS Cloud Object Name": "__OBJECT__"
-  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
-  "AWS Tags": "__TAGS__"
-iam-root-access-key-2:
-  "AWS Cloud Object Name": "__OBJECT__"
-  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
-  "AWS Tags": "__TAGS__"
 iam-cloudbleed-passwords-not-rotated:
   "AWS Cloud Object Name": "__OBJECT__"
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
