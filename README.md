@@ -47,6 +47,9 @@ This composite monitors iam against best practices and reports violations and in
 ### `AUDIT_AWS_IAM_ACCOUNT_NUMBER`:
   * description: The AWS account number. Required for a full CIS audit. This can be found by the root user at https://console.aws.amazon.com/billing/home?#/account
 
+### `FILTERED_OBJECTS`:
+  * description: JSON object of string or regex of aws objects to include or exclude and tag in audit
+
 ## Tags
 1. Audit
 1. Best Practices
