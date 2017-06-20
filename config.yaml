@@ -19,8 +19,6 @@ variables:
       - iam-password-policy-symbol # cis_id:1.07 
       - iam-password-policy-number # cis_id:1.08 
       - iam-password-policy-min-length # cis_id:1.9 
-      - iam-root-access-key-1 # 
-      - iam-root-access-key-2 # 
       - iam-cloudbleed-passwords-not-rotated # 
       - iam-support-role # cis_id:1.22 
       - iam-user-password-not-used # not_violation 
