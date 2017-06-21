@@ -884,6 +884,7 @@ coreo_uni_util_jsrunner "cis-iam" do
        ruleMetaJSON[rule].forEach(input => {
            if (ruleInputsToKeep.includes(input.name))
                flattenedRule[input.name] = input.value;
+               if input.name = "service" then flattenedRule[input.name] = input.value;
        })
        ruleMeta[rule] = flattenedRule;
    })
