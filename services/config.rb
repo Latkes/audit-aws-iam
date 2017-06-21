@@ -930,7 +930,7 @@ function setValueForNewJSONInput(json_input) {
     }
 
     //if cis 1.12 wanted, the below will run
-    if  (alertListArray.indexOf('iam-root-key-access') > -1 && users["<root_account>"]) {
+    if  (alertListArray.indexOf('iam-root-key-access') > -1 && users && users["<root_account>"]) {
         const keyOneEnabled = users["<root_account>"]['violator_info']['access_key_1_active'] == "true"
         const keyTwoEnabled = users["<root_account>"]['violator_info']['access_key_2_active'] == "true"
 
@@ -947,7 +947,7 @@ function setValueForNewJSONInput(json_input) {
     }
 
     //if cis 1.13 wanted, the below will run
-    if  (alertListArray.indexOf('iam-root-no-mfa') > -1 && users["<root_account>"]) {
+    if  (alertListArray.indexOf('iam-root-no-mfa') > -1 && users && users["<root_account>"]) {
         if (users["<root_account>"]['violator_info']['mfa_active'] == "false"){
 
             if (!json_input['violations']['us-east-1']["<root_account>"]) {
