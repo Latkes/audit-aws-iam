@@ -177,7 +177,7 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   service :iam
   link "http://kb.cloudcoreo.com/mydoc_iam-passwordreuseprevention.html"
   display_name "Users can reuse old passwords"
-  description "The current password policy doesn't prevent users from reusing thier old passwords."
+  description "The current password policy doesn't prevent users from reusing their old passwords."
   category "Access"
   suggested_action "Configure a strong password policy for your users to ensure that passwords expire, aren't reused, have a certain length, require certain characters, and more."
   meta_cis_id "1.10"
