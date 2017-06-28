@@ -18,10 +18,10 @@ variables:
             - iam-no-mfa # 
             - iam-root-active-password # 
             - iam-user-attached-policies # cis_id:1.16 
-            - iam-password-policy-uppercase # cis_id:1.05 
-            - iam-password-policy-lowercase # cis_id:1.06 
-            - iam-password-policy-symbol # cis_id:1.07 
-            - iam-password-policy-number # cis_id:1.08 
+            - iam-password-policy-uppercase # cis_id:1.5 
+            - iam-password-policy-lowercase # cis_id:1.6 
+            - iam-password-policy-symbol # cis_id:1.7 
+            - iam-password-policy-number # cis_id:1.8 
             - iam-password-policy-min-length # cis_id:1.9 
             - iam-cloudbleed-passwords-not-rotated # 
             - iam-support-role # cis_id:1.22 
