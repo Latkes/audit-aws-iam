@@ -885,6 +885,7 @@ coreo_uni_util_jsrunner "cis-iam" do
            if (ruleInputsToKeep.includes(input.name))
                flattenedRule[input.name] = input.value;
        })
+       flattenedRule["service"] = "iam";
        ruleMeta[rule] = flattenedRule;
    })
 
