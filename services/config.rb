@@ -698,6 +698,26 @@ coreo_aws_rule "iam-initialization-access-key" do
   id_map "static.no_op"
 end
 
+coreo_aws_rule "iam-omnipotent-policy" do
+  action :define
+  service :iam
+  link ""
+  display_name "Full Privilege Policy"
+  description "IAM policies should be written to have the minimum necessary permissions. Full permissions are considered to be suboptimal for security"
+  category "Access"
+  suggested_action "Write IAM policies as to give the minimal necessary permissions"
+  level "Critical"
+  meta_cis_id "1.24"
+  meta_cis_scored "true"
+  meta_cis_level "1"
+  objectives ["policies", "policy_version"]
+  audit_objects ["", "object.policy_version.document"]
+  call_modifiers [{}, {:policy_arn => "object.policies.arn", :version_id => "object.policies.default_version_id"}]
+  operators ["", "=~"]
+  raise_when ["", //]
+  id_map "static.policies124"
+end
+
 coreo_aws_rule "manual-contact-details" do
   action :define
   service :user
@@ -819,21 +839,6 @@ coreo_aws_rule "manual-least-access-routing-tables" do
   id_map "static.no_op"
 end
 
-coreo_aws_rule "iam-test-2" do
-  action :define
-  service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-missing-password-policy.html"
-  display_name "Password policy doesn't exist"
-  description "There currently isn't a password policy to require a certain password length, password expiration, prevent password reuse, and more."
-  category "Access"
-  suggested_action "Configure a strong password policy for your users to ensure that passwords expire, aren't reused, have a certain length, require certain characters, and more."
-  level "Critical"
-  objectives ["policies", "policy_version"]
-  audit_objects ["", "object.policy_version.document"]
-  call_modifiers [{}, {:policy_arn => "object.policies.arn", :version_id => "object.policies.default_version_id"}]
-  operators ["", "=~"]
-  raise_when ["", /3AModifyInstanceAttribute/]
-end
 
 # end of user-visible content. Remaining resources are system-defined
 

@@ -21,6 +21,7 @@ variables:
       - iam-password-policy-min-length # cis_id:1.9 
       - iam-cloudbleed-passwords-not-rotated # 
       - iam-support-role # cis_id:1.22 
+      - iam-omnipotent-policy # cis_id 1.24
       - iam-user-password-not-used # not_violation 
       - iam-unused-access # not_violation cis_id:1.3 
       - iam-no-hardware-mfa-root # cis_id:1.14 
