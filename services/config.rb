@@ -715,7 +715,7 @@ coreo_aws_rule "iam-omnipotent-policy" do
   call_modifiers [{}, {:policy_arn => "object.policies.arn", :version_id => "object.policies.default_version_id"}]
   operators ["", "=~"]
   raise_when ["", //]
-  id_map "static.policies124"
+  id_map "modifiers.policies.arn"
 end
 
 coreo_aws_rule "manual-contact-details" do
