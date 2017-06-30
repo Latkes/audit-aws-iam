@@ -1043,7 +1043,7 @@ function setValueForNewJSONInput(json_input) {
         for (var policy in policies) {
             var policyName = policies[policy]
             var document = json_input['violations']['us-east-1'][policyName]['violations']['iam-policy-internal']['result_info'][0]['object']['document']
-            var decodedDocument = decodeURIComponent(document).replace(/\++/g, ' ');
+            var decodedDocument = decodeURIComponent(document).replace(/\\++/g, ' ');
             var jsonDocument = JSON.parse(decodedDocument);
 
             if (!(typeof jsonDocument['Statement'][0] == "undefined")) {
