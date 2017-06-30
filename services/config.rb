@@ -923,9 +923,10 @@ let alertListArray = alertListToJSON.replace(/'/g, '"');
 const viols = json_input['violations']['us-east-1'];
 const users = []
 const policies = []
+const polRegex = new RegExp(':policy\/')
 
 for (var item in viols) {
-    if ((/:policy\//).test(item)) {
+    if (polRegex.test(item)) {
         policies.push(item)
     } else {
         users.push(item)
