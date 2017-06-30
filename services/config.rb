@@ -955,28 +955,29 @@ function setValueForNewJSONInput(json_input) {
     //if cis 1.3 wanted, the below will run
     if  (alertListArray.indexOf('iam-unused-access') > -1) {
         for (var user in users) {
-          if (users[user].hasOwnProperty('violator_info')) {
-            var keyOneDate = new Date(users[user]['violator_info']['access_key_1_last_used_date']);
-            var keyTwoDate = new Date(users[user]['violator_info']['access_key_2_last_used_date']);
-            var passwordUsedDate = new Date(users[user]['violator_info']['password_last_used']);
+          var userName = users[user]
+          if (json_input['violations']['us-east-1'][userName].hasOwnProperty('violator_info')) {
+            var keyOneDate = new Date(json_input['violations']['us-east-1'][userName]['violator_info']['access_key_1_last_used_date']);
+            var keyTwoDate = new Date(json_input['violations']['us-east-1'][userName]['violator_info']['access_key_2_last_used_date']);
+            var passwordUsedDate = new Date(json_input['violations']['us-east-1'][userName]['violator_info']['password_last_used']);
             const ninetyDaysAgo = (new Date()) - 1000 * 60 * 60 * 24 * 90
 
             const keyOneUnused = keyOneDate < ninetyDaysAgo
-            const keyOneEnabled = users[user]['violator_info']['access_key_1_active'] == "true"
+            const keyOneEnabled = json_input['violations']['us-east-1'][userName]['violator_info']['access_key_1_active'] == "true"
             const keyTwoUnused = keyTwoDate < ninetyDaysAgo
-            const keyTwoEnabled = users[user]['violator_info']['access_key_2_active'] == "true"
+            const keyTwoEnabled = json_input['violations']['us-east-1'][userName]['violator_info']['access_key_2_active'] == "true"
             const passwordUnused = passwordUsedDate < ninetyDaysAgo
-            const passwordEnabled = users[user]['violator_info']['password_enabled'] == "true"
+            const passwordEnabled = json_input['violations']['us-east-1'][userName]['violator_info']['password_enabled'] == "true"
 
             if ((keyOneUnused && keyOneEnabled) || (keyTwoEnabled && keyTwoUnused) || (passwordEnabled && passwordUnused)) {
 
-                if (!json_input['violations']['us-east-1'][user]) {
-                    json_input['violations']['us-east-1'][user] = {}
+                if (!json_input['violations']['us-east-1'][userName]) {
+                    json_input['violations']['us-east-1'][userName] = {}
                 }
-                if (!json_input['violations']['us-east-1'][user]['violations']) {
-                    json_input['violations']['us-east-1'][user]['violations'] = {}
+                if (!json_input['violations']['us-east-1'][userName]['violations']) {
+                    json_input['violations']['us-east-1'][userName]['violations'] = {}
                 }
-                json_input['violations']['us-east-1'][user]['violations']['iam-unused-access'] = Object.assign(ruleMeta[UNUSED_ACCESS_RULE]);
+                json_input['violations']['us-east-1'][userName]['violations']['iam-unused-access'] = Object.assign(ruleMeta[UNUSED_ACCESS_RULE]);
             }
           }
         }
@@ -1017,21 +1018,22 @@ function setValueForNewJSONInput(json_input) {
     //if cis 1.23 wanted, the below will run
     if  (alertListArray.indexOf('iam-initialization-access-key') > -1) {
         for (var user in users) {
-          if (users[user].hasOwnProperty('violator_info')) {
-            var keyOneDate = users[user]['violator_info']['access_key_1_last_used_date'] == "N/A";
-            var keyTwoDate = users[user]['violator_info']['access_key_2_last_used_date'] == "N/A";
-            var keyOneEnabled = users[user]['violator_info']['access_key_1_active'] == "true";
-            var keyTwoEnabled = users[user]['violator_info']['access_key_2_active'] == "true";
+          var userName = users[user]
+          if (json_input['violations']['us-east-1'][userName].hasOwnProperty('violator_info')) {
+            var keyOneDate = json_input['violations']['us-east-1'][userName]['violator_info']['access_key_1_last_used_date'] == "N/A";
+            var keyTwoDate = json_input['violations']['us-east-1'][userName]['violator_info']['access_key_2_last_used_date'] == "N/A";
+            var keyOneEnabled = json_input['violations']['us-east-1'][userName]['violator_info']['access_key_1_active'] == "true";
+            var keyTwoEnabled = json_input['violations']['us-east-1'][userName]['violator_info']['access_key_2_active'] == "true";
 
             if ((keyOneDate && keyOneEnabled) || (keyTwoDate && keyTwoEnabled)) {
 
-                if (!json_input['violations']['us-east-1'][user]) {
-                    json_input['violations']['us-east-1'][user] = {}
+                if (!json_input['violations']['us-east-1'][userName]) {
+                    json_input['violations']['us-east-1'][userName] = {}
                 }
-                if (!json_input['violations']['us-east-1'][user]['violations']) {
-                    json_input['violations']['us-east-1'][user]['violations'] = {}
+                if (!json_input['violations']['us-east-1'][userName]['violations']) {
+                    json_input['violations']['us-east-1'][userName]['violations'] = {}
                 }
-                json_input['violations']['us-east-1'][user]['violations']['iam-initialization-access-key'] = Object.assign(ruleMeta[INIT_ACCESS_RULE]);
+                json_input['violations']['us-east-1'][userName]['violations']['iam-initialization-access-key'] = Object.assign(ruleMeta[INIT_ACCESS_RULE]);
             }
           }
         }
