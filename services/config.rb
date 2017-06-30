@@ -710,6 +710,7 @@ coreo_aws_rule "iam-omnipotent-policy" do
   meta_cis_id "1.24"
   meta_cis_scored "true"
   meta_cis_level "1"
+  meta_nist_171_id "3.1.2, 3.4.5, 3.4.6"
   objectives [""]
   audit_objects [""]
   operators [""]
@@ -774,27 +775,6 @@ coreo_aws_rule "manual-resource-instance-access" do
   audit_objects [""]
   operators [""]
   raise_when [""]
-  id_map "static.no_op"
-end
-
-coreo_aws_rule "manual-full-privilege-user" do
-  action :define
-  service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-full-privilege-user.html"
-  display_name "IAM Full Privileges"
-  description "IAM users should not be granted full privileges"
-  category "Security"
-  suggested_action "Ensure no IAM user has full '*' privileges"
-  level "Manual"
-  meta_always_show_card "true"
-  meta_cis_id "1.24"
-  meta_cis_scored "true"
-  meta_cis_level "1"
-  meta_nist_171_id "3.1.2, 3.4.5, 3.4.6"
-  objectives [""]
-  audit_objects [""]
-  operators [""]
-  raise_when [true]
   id_map "static.no_op"
 end
 
