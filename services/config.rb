@@ -896,7 +896,8 @@ coreo_uni_util_jsrunner "cis-iam" do
        'iam-unused-access': COMPOSITE::coreo_aws_rule.iam-unused-access.inputs,
        'iam-root-key-access': COMPOSITE::coreo_aws_rule.iam-root-key-access.inputs,
        'iam-root-no-mfa': COMPOSITE::coreo_aws_rule.iam-root-no-mfa.inputs,
-       'iam-initialization-access-key': COMPOSITE::coreo_aws_rule.iam-initialization-access-key.inputs
+       'iam-initialization-access-key': COMPOSITE::coreo_aws_rule.iam-initialization-access-key.inputs,
+       'iam-omnipotent-policy': COMPOSITE::coreo_aws_rule.iam-omnipotent-policy.inputs
    };
    const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count'];
    const ruleMeta = {};
@@ -915,15 +916,17 @@ coreo_uni_util_jsrunner "cis-iam" do
    const ROOT_ACCESS_RULE = 'iam-root-key-access'
    const ROOT_MFA_RULE = 'iam-root-no-mfa'
    const INIT_ACCESS_RULE = 'iam-initialization-access-key'
+   const OMNIPOTENT_POLICY_RULE = 'iam-omnipotent-policy'
 
 let alertListToJSON = "${AUDIT_AWS_IAM_ALERT_LIST}";
 let alertListArray = alertListToJSON.replace(/'/g, '"');
 const viols = json_input['violations']['us-east-1'];
 const users = []
 const policies = []
+const polRegex = /:policy\//
 
 for (var item in viols) {
-    if (/:policy\//.test(item)) {
+    if (polRegex.test(item)) {
         policies.push(item)
     } else {
         users.push(item)
