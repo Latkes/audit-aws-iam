@@ -700,7 +700,7 @@ end
 
 coreo_aws_rule "iam-omnipotent-policy" do
   action :define
-  service :iam
+  service :user
   link ""
   display_name "Full Privilege Policy"
   description "IAM policies should be written to have the minimum necessary permissions. Full permissions are considered to be suboptimal for security"
@@ -710,12 +710,11 @@ coreo_aws_rule "iam-omnipotent-policy" do
   meta_cis_id "1.24"
   meta_cis_scored "true"
   meta_cis_level "1"
-  objectives ["policies", "policy_version"]
-  audit_objects ["", "object.policy_version.document"]
-  call_modifiers [{}, {:policy_arn => "object.policies.arn", :version_id => "object.policies.default_version_id"}]
-  operators ["", "=~"]
-  raise_when ["", //]
-  id_map "modifiers.policy_arn"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [true]
+  id_map "static.no_op"
 end
 
 coreo_aws_rule "manual-contact-details" do
@@ -861,8 +860,8 @@ coreo_aws_rule "iam-policy-internal" do
   action :define
   service :iam
   link ""
-  display_name "Full Privilege Policy"
-  description "IAM policies should be written to have the minimum necessary permissions. Full permissions are considered to be suboptimal for security"
+  display_name "Policy inventory internal"
+  description "Internal rule that checks all policies"
   category "Internal"
   suggested_action "Ignore"
   level "Internal"
