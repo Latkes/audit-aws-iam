@@ -857,6 +857,23 @@ coreo_aws_rule "iam-internal" do
   raise_when [//]
 end
 
+coreo_aws_rule "iam-policy-internal" do
+  action :define
+  service :iam
+  link ""
+  display_name "Full Privilege Policy"
+  description "IAM policies should be written to have the minimum necessary permissions. Full permissions are considered to be suboptimal for security"
+  category "Internal"
+  suggested_action "Ignore"
+  level "Internal"
+  objectives ["policies", "policy_version"]
+  audit_objects ["", "object.policy_version.document"]
+  call_modifiers [{}, {:policy_arn => "object.policies.arn", :version_id => "object.policies.default_version_id"}]
+  operators ["", "=~"]
+  raise_when ["", //]
+  id_map "modifiers.policy_arn"
+end
+
 coreo_uni_util_variables "iam-planwide" do
   action :set
   variables([
@@ -870,7 +887,7 @@ end
 coreo_aws_rule_runner "advise-iam" do
   service :iam
   action :run
-  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal")
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal")
   id_map ["modifiers.user_name", "static.password_policy"]
   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
 end
@@ -921,19 +938,20 @@ coreo_uni_util_jsrunner "cis-iam" do
 let alertListToJSON = "${AUDIT_AWS_IAM_ALERT_LIST}";
 let alertListArray = alertListToJSON.replace(/'/g, '"');
 const viols = json_input['violations']['us-east-1'];
-const users = []
-const policies = []
-const polRegex = new RegExp(':policy\/')
-
-for (var item in viols) {
-    if (polRegex.test(item)) {
-        policies.push(item)
-    } else {
-        users.push(item)
-    }
-}
 
 function setValueForNewJSONInput(json_input) {
+
+  const users = []
+  var policies = []
+  const polRegex = new RegExp(':policy/')
+
+  for (var item in viols) {
+      if (polRegex.test(item)) {
+          policies.push(item)
+      } else {
+          users.push(item)
+      }
+  }
 
     //if cis 1.3 wanted, the below will run
     if  (alertListArray.indexOf('iam-unused-access') > -1) {
@@ -1020,16 +1038,64 @@ function setValueForNewJSONInput(json_input) {
         }
     }
 
+    //if cis 1.24 wanted, the below will run
+    if (alertListArray.indexOf('iam-omnipotent-policy') > -1) {
+        for (var policy in policies) {
+            var policyName = policies[policy]
+            var document = json_input['violations']['us-east-1'][policyName]['violations']['iam-policy-internal']['result_info'][0]['object']['document']
+            var decodedDocument = decodeURIComponent(document).replace(/\++/g, ' ');
+            var jsonDocument = JSON.parse(decodedDocument);
+
+            if (!(typeof jsonDocument['Statement'][0] == "undefined")) {
+                var action = jsonDocument["Statement"][0]['Action'];
+            }
+
+            if (!(typeof jsonDocument['Statement'][0] == "undefined")) {
+                var resource = jsonDocument["Statement"][0]['Resource'];
+            }
+
+            if (!(typeof jsonDocument['Statement'][0] == "undefined")) {
+                var allowEffect = (jsonDocument["Statement"][0]['Effect'] == "Allow");
+            }
+
+            if (typeof action == "string") {
+                var allAction = action == "*";
+            } else if (!(typeof action == "undefined")){
+                var allAction = action.indexOf('*') > -1;
+            }
+            var allResource = resource.indexOf('*') > -1;
+
+            if (allowEffect && allAction && allResource) {
+                json_input['violations']['us-east-1'][policyName]['violations']['iam-omnipotent-policy'] = Object.assign(ruleMeta[OMNIPOTENT_POLICY_RULE]);
+            }
+        }
+    }
+
     //Strip internal violations
     for (var user in users) {
-        var internal = users[user]['violations'].hasOwnProperty('iam-internal');
-        var single_violation = (Object.keys(users[user]['violations']).length === 1);
+        var userName = users[user]
+        var internal = json_input['violations']['us-east-1'][userName]['violations'].hasOwnProperty('iam-internal');
+        var single_violation = (Object.keys(json_input['violations']['us-east-1'][userName]['violations']).length === 1);
 
         if (internal && single_violation) {
-            delete json_input['violations']['us-east-1'][user];
+            delete json_input['violations']['us-east-1'][userName];
         }
         else if (internal && !single_violation){
-            delete json_input['violations']['us-east-1'][user]['violations']['iam-internal'];
+            delete json_input['violations']['us-east-1'][userName]['violations']['iam-internal'];
+        }
+    }
+
+    //Strip internal violations
+    for (var policy in policies) {
+        var policyName = policies[policy]
+        var internal = json_input['violations']['us-east-1'][policyName]['violations'].hasOwnProperty('iam-policy-internal');
+        var single_violation = (Object.keys(json_input['violations']['us-east-1'][policyName]['violations']).length === 1);
+
+        if (internal && single_violation) {
+            delete json_input['violations']['us-east-1'][policyName];
+        }
+        else if (internal && !single_violation){
+            delete json_input['violations']['us-east-1'][policyName]['violations']['iam-policy-internal'];
         }
     }
 }
