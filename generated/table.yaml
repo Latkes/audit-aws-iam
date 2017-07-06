@@ -146,6 +146,10 @@ iam-initialization-access-key:
   "AWS Cloud Object Name": "__OBJECT__"
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
   "AWS Tags": "__TAGS__"
+iam-omnipotent-policy:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
 manual-contact-details:
   "AWS Cloud Object Name": "__OBJECT__"
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
@@ -158,10 +162,6 @@ manual-resource-instance-access:
   "AWS Cloud Object Name": "__OBJECT__"
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
   "AWS Tags": "__TAGS__"
-manual-full-privilege-user:
-  "AWS Cloud Object Name": "__OBJECT__"
-  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
-  "AWS Tags": "__TAGS__"
 manual-appropriate-sns-subscribers:
   "AWS Cloud Object Name": "__OBJECT__"
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
@@ -171,6 +171,10 @@ manual-least-access-routing-tables:
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
   "AWS Tags": "__TAGS__"
 iam-internal:
+  "AWS Cloud Object Name": "__OBJECT__"
+  "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
+  "AWS Tags": "__TAGS__"
+iam-policy-internal:
   "AWS Cloud Object Name": "__OBJECT__"
   "AWS Region": "+__OBJECT__.violations.__RULE__.region+"
   "AWS Tags": "__TAGS__"
