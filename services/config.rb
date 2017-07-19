@@ -13,7 +13,7 @@ coreo_aws_rule "iam-inventory-users" do
   operators ["=~"]
   raise_when [//]
   id_map "object.users.user_name"
-end 
+end
 
 coreo_aws_rule "iam-inventory-roles" do
   action :define
@@ -424,8 +424,8 @@ end
 coreo_aws_rule "iam-unused-access" do
   action :define
   service :user
-  include_violations_in_count false 
-  link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"  
+  include_violations_in_count false
+  link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
   display_name "IAM inactive credentials"
   description "This rule checks for credentials that have been unused for 90 days"
   category "Security"
@@ -898,7 +898,7 @@ coreo_uni_util_jsrunner "cis-iam" do
    };
    const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count'];
    const ruleMeta = {};
- 
+
    Object.keys(ruleMetaJSON).forEach(rule => {
        const flattenedRule = {};
        ruleMetaJSON[rule].forEach(input => {
@@ -1110,7 +1110,7 @@ coreo_uni_util_jsrunner "tags-to-notifiers-array-iam" do
   packages([
                {
                    :name => "cloudcoreo-jsrunner-commons",
-                   :version => "1.10.7-beta51"
+                   :version => "1.10.7-beta53"
                },
                {
                    :name => "js-yaml",
@@ -1121,7 +1121,7 @@ coreo_uni_util_jsrunner "tags-to-notifiers-array-iam" do
                 "cloudAccountName": "PLAN::cloud_account_name",
                 "violations": COMPOSITE::coreo_aws_rule_runner.advise-iam.report}'
   function <<-EOH
-  
+
 const compositeName = json_input.compositeName;
 const planName = json_input.planName;
 const cloudAccount = json_input.cloudAccountName;
