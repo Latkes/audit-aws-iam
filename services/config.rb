@@ -866,6 +866,7 @@ end
 coreo_aws_rule_runner "advise-iam" do
   service :iam
   action :run
+  regions ["PLAN::region"]
   rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal")
   id_map ["modifiers.user_name", "static.password_policy"]
   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
