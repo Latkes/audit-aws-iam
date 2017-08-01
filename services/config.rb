@@ -131,8 +131,8 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   objectives ["users", "access_keys", "access_keys"]
   audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
   call_modifiers [{}, {:user_name => "users.user_name"}, {:user_name => "users.user_name"}]
-  operators ["", "==", "<"]
-  raise_when ["", "Inactive", "90.days.ago"]
+  operators ["", "=~", "<"]
+  raise_when ["", /inactive/i, "90.days.ago"]
 end
 
 coreo_aws_rule "iam-active-key-no-rotation" do
@@ -151,8 +151,8 @@ coreo_aws_rule "iam-active-key-no-rotation" do
   objectives ["users", "access_keys", "access_keys"]
   audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
   call_modifiers [{}, {:user_name => "users.user_name"}, {:user_name => "users.user_name"}]
-  operators ["", "==", "<"]
-  raise_when ["", "Active", "90.days.ago"]
+  operators ["", "=~", "<"]
+  raise_when ["", /active/i, "90.days.ago"]
 end
 
 coreo_aws_rule "iam-missing-password-policy" do
