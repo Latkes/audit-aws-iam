@@ -76,7 +76,7 @@ coreo_aws_rule "iam-unusediamgroup" do
   suggested_action "Ensure that groups defined within IAM have active users in them. If the groups don't have active users or are not being used, delete the unused IAM group."
   level "Low"
   objectives ["groups", "group"]
-  call_modifiers [{}, {:group_name => "groups.group_name"}]
+  call_modifiers [{}, {:group_name => "objective[0].groups.group_name"}]
   formulas ["", "count"]
   audit_objects ["", "users"]
   operators ["", "=="]
@@ -125,12 +125,12 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   description "User has inactive keys that have not been rotated in the last 90 days."
   category "Access"
   suggested_action "If you regularly use the AWS access keys, we recommend that you also regularly rotate or delete them."
-  level "High"
+  level "Medium"
   meta_nist_171_id "3.5.9"
-  id_map "modifier.user_name"
+  id_map "modifiers.user_name"
   objectives ["users", "access_keys", "access_keys"]
   audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
-  call_modifiers [{}, {:user_name => "users.user_name"}, {:user_name => "users.user_name"}]
+  call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Inactive", "90.days.ago"]
 end
@@ -150,7 +150,7 @@ coreo_aws_rule "iam-active-key-no-rotation" do
   id_map "modifiers.user_name"
   objectives ["users", "access_keys", "access_keys"]
   audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
-  call_modifiers [{}, {:user_name => "users.user_name"}, {:user_name => "users.user_name"}]
+  call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Active", "90.days.ago"]
 end
@@ -262,7 +262,7 @@ coreo_aws_rule "iam-user-attached-policies" do
   id_map "modifiers.user_name"
   objectives ["users", "user_policies"]
   formulas ["", "count"]
-  call_modifiers [{}, {:user_name => "users.user_name"}]
+  call_modifiers [{}, {:user_name => "objective[0].users.user_name"}]
   audit_objects ["", "object.policy_names"]
   operators ["", ">"]
   raise_when ["", 0]
@@ -847,7 +847,7 @@ coreo_aws_rule "iam-policy-internal" do
   level "Internal"
   objectives ["policies", "policy_version"]
   audit_objects ["", "object.policy_version.document"]
-  call_modifiers [{}, {:policy_arn => "object.policies.arn", :version_id => "object.policies.default_version_id"}]
+  call_modifiers [{}, {:policy_arn => "objective[0].policies.arn", :version_id => "objective[0].policies.default_version_id"}]
   operators ["", "=~"]
   raise_when ["", //]
   id_map "modifiers.policy_arn"
