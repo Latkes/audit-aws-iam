@@ -125,7 +125,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   description "User has inactive keys that have not been rotated in the last 90 days."
   category "Access"
   suggested_action "If you regularly use the AWS access keys, we recommend that you also regularly rotate or delete them."
-  level "High"
+  level "Medium"
   meta_nist_171_id "3.5.9"
   id_map "modifiers.user_name"
   objectives ["users", "access_keys", "access_keys"]
