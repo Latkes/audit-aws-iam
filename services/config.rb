@@ -150,7 +150,7 @@ coreo_aws_rule "iam-active-key-no-rotation" do
   id_map "modifiers.user_name"
   objectives ["users", "access_keys", "access_keys"]
   audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
-  call_modifiers [{}, {:user_name => "users.user_name"}, {:user_name => "users.user_name"}]
+  call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "=~", "<"]
   raise_when ["", /active/i, "90.days.ago"]
 end
