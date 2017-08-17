@@ -78,7 +78,7 @@ coreo_aws_rule "iam-unusediamgroup" do
   objectives ["groups", "group"]
   call_modifiers [{}, {:group_name => "objective[0].groups.group_name"}]
   formulas ["", "count"]
-  audit_objects ["", "users"]
+  audit_objects ["", "object.users"]
   operators ["", "=="]
   raise_when ["", 0]
   id_map "object.group.group_name"
@@ -129,7 +129,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   meta_nist_171_id "3.5.9"
   id_map "modifiers.user_name"
   objectives ["users", "access_keys", "access_keys"]
-  audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
+  audit_objects ["", "object.access_key_metadata.status", "object.access_key_metadata.create_date"]
   call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Inactive", "90.days.ago"]
@@ -149,7 +149,7 @@ coreo_aws_rule "iam-active-key-no-rotation" do
   meta_cis_level "1"
   id_map "modifiers.user_name"
   objectives ["users", "access_keys", "access_keys"]
-  audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
+  audit_objects ["", "object.access_key_metadata.status", "object.access_key_metadata.create_date"]
   call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Active", "90.days.ago"]
@@ -1110,7 +1110,7 @@ coreo_uni_util_jsrunner "tags-to-notifiers-array-iam" do
   packages([
                {
                    :name => "cloudcoreo-jsrunner-commons",
-                   :version => "1.10.7-beta63"
+                   :version => "1.10.7-beta64"
                },
                {
                    :name => "js-yaml",
@@ -1284,5 +1284,47 @@ COMPOSITE::coreo_uni_util_jsrunner.iam-tags-rollup.return
   payload_type 'text'
   endpoint ({
       :to => '${AUDIT_AWS_IAM_ALERT_RECIPIENT}', :subject => 'PLAN::stack_name New Rollup Report for PLAN::name plan from CloudCoreo'
+  })
+end
+
+coreo_aws_s3_policy "cloudcoreo-audit-aws-iam-policy" do
+  action((("${S3_BUCKET_NAME}".length > 0) ) ? :create : :nothing)
+  policy_document <<-EOF
+{
+"Version": "2012-10-17",
+"Statement": [
+{
+"Sid": "",
+"Effect": "Allow",
+"Principal":
+{ "AWS": "*" }
+,
+"Action": "s3:*",
+"Resource": [
+"arn:aws:s3:::${S3_BUCKET_NAME}/*",
+"arn:aws:s3:::${S3_BUCKET_NAME}"
+]
+}
+]
+}
+  EOF
+end
+
+coreo_aws_s3_bucket "cloudcoreo-audit-aws-iam" do
+  action :create
+  bucket_policies ["cloudcoreo-audit-aws-iam-policy"]
+  region "us-east-1"
+end
+
+coreo_uni_util_notify "cloudcoreo-audit-aws-iam-s3" do
+  action((("${S3_BUCKET_NAME}".length > 0) ) ? :notify : :nothing)
+  type 's3'
+  allow_empty true
+  payload 'COMPOSITE::coreo_uni_util_jsrunner.tags-to-notifiers-array-iam.report'
+  endpoint ({
+      object_name: 'aws-iam-json',
+      bucket_name: '${S3_BUCKET_NAME}',
+      folder: 'iam/PLAN::name',
+      properties: {}
   })
 end
