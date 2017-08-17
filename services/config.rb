@@ -78,7 +78,7 @@ coreo_aws_rule "iam-unusediamgroup" do
   objectives ["groups", "group"]
   call_modifiers [{}, {:group_name => "objective[0].groups.group_name"}]
   formulas ["", "count"]
-  audit_objects ["", "users"]
+  audit_objects ["", "object.users"]
   operators ["", "=="]
   raise_when ["", 0]
   id_map "object.group.group_name"
@@ -129,7 +129,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   meta_nist_171_id "3.5.9"
   id_map "modifiers.user_name"
   objectives ["users", "access_keys", "access_keys"]
-  audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
+  audit_objects ["", "object.access_key_metadata.status", "object.access_key_metadata.create_date"]
   call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Inactive", "90.days.ago"]
@@ -149,7 +149,7 @@ coreo_aws_rule "iam-active-key-no-rotation" do
   meta_cis_level "1"
   id_map "modifiers.user_name"
   objectives ["users", "access_keys", "access_keys"]
-  audit_objects ["", "access_key_metadata.status", "access_key_metadata.create_date"]
+  audit_objects ["", "object.access_key_metadata.status", "object.access_key_metadata.create_date"]
   call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Active", "90.days.ago"]
