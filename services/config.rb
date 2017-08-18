@@ -1309,7 +1309,7 @@ coreo_aws_s3_policy "cloudcoreo-audit-aws-iam-policy" do
   EOF
 end
 
-coreo_aws_s3_bucket "cloudcoreo-audit-aws-iam" do
+coreo_aws_s3_bucket "${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}" do
   action((("${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}".length > 0) ) ? :create : :nothing)
   bucket_policies ["cloudcoreo-audit-aws-iam-policy"]
   region "us-east-1"
