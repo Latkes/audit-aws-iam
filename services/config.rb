@@ -257,7 +257,6 @@ coreo_aws_rule "iam-user-attached-policies" do
   meta_cis_id "1.16"
   meta_cis_scored "true"
   meta_cis_level "1"
-  meta_nist_171_id "3.1.1"
   level "Low"
   id_map "modifiers.user_name"
   objectives ["users", "user_policies"]
