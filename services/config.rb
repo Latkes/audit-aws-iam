@@ -901,7 +901,7 @@ coreo_aws_rule_runner "advise-iam" do
   service :iam
   action :run
   regions ["PLAN::region"]
-  rules COMPOSITE::coreo_uni_util_variables.iam-runner-rules.rules
+  rules(eval('COMPOSITE::coreo_uni_util_variables.iam-runner-rules.rules'))
   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
 end
 
