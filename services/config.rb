@@ -902,7 +902,7 @@ coreo_uni_util_variables "iam-update-planwide-1" do
 end
 
 
-coreo_uni_util_jsrunner "cis-iam" do
+coreo_uni_util_jsrunner "cis-iam-admin" do
   action :run
   data_type "json"
   provide_composite_access true
