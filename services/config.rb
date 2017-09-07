@@ -903,11 +903,12 @@ end
 
 
 coreo_uni_util_jsrunner "cis-iam-admin" do
-  action :run
+  action (${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin') ? :run : :nothing)
   data_type "json"
   provide_composite_access true
   json_input '{ "composite name":"PLAN::stack_name",
-                "violations":COMPOSITE::coreo_aws_rule_runner.advise-iam.report}'
+                "violations":COMPOSITE::coreo_aws_rule_runner.advise-iam.report,
+                "numberViolation: COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations }'
   packages([
                {
                    :name => "aws-sdk",
@@ -918,11 +919,8 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                }
            ])
   function <<-RUBY
-  const ruleMetaJSON = {
-       'iam-user-is-admin': COMPOSITE::coreo_aws_rule.iam-user-is-admin.inputs
-   };
-
     const violations = json_input.violations;
+    const numberViolations = json_input.numberViolations;
 
     const iamUsersArray = [];
     for (var region in violations) {
@@ -960,7 +958,29 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                 }
 
             }
-            return callback(fullAdmin);
+            for (var i = 0; i < fullAdmin.length; i++ ){
+                var user = fullAdmin[i];
+                var userName = user.user;
+                if (json_input['violations']['${PLAN::region}'][userName].hasOwnProperty('violator_info')) {
+
+                    if (!json_input['violations']['${PLAN::region}'][userName]) {
+                        json_input['violations']['${PLAN::region}'][userName] = {}
+                    }
+                    if (!json_input['violations']['${PLAN::region}'][userName]['violations']) {
+                        json_input['violations']['${PLAN::region}'][userName]['violations'] = {}
+                    }
+                    json_input['violations']['${PLAN::region}'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[ADMIN_RULE]);
+                    numberViolations += 1;
+                }
+            }
+            const violations = json_input['violations'];
+            const report = JSON.stringify(violations)
+
+            coreoExport('JSONReport', JSON.stringify(json_input));
+            coreoExport('numberViolations', numberViolations);
+            coreoExport('report', report);
+            
+            return callback(violations);
         });
 }
 
@@ -969,6 +989,24 @@ const AWS = require('aws-sdk');
 const Promise = require('bluebird');
 const iam = Promise.promisifyAll(new AWS.IAM({maxRetries: 1000, apiVersion: '2010-05-08', retryDelayOptions: {base: 1000}}));
 const IAM_ADMIN_POLICY_SPECIFIER = ${AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS};
+const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count', 'meta_nist_171_id'];
+const ADMIN_RULE = 'iam-user-is-admin';
+const ruleMetaJSON = {
+     'iam-user-is-admin': COMPOSITE::coreo_aws_rule.iam-user-is-admin.inputs
+ };
+
+const ruleMeta = {};
+
+Object.keys(ruleMetaJSON).forEach(rule => {
+    const flattenedRule = {};
+    ruleMetaJSON[rule].forEach(input => {
+        if (ruleInputsToKeep.includes(input.name))
+            flattenedRule[input.name] = input.value;
+    })
+    flattenedRule["service"] = "iam";
+    ruleMeta[rule] = flattenedRule;
+});
+
 
 function checkIsFullAdmin(user) {
 
@@ -990,6 +1028,17 @@ function checkIsFullAdmin(user) {
 
 RUBY
 end
+
+coreo_uni_util_variables "iam-update-user-is-admin" do
+  action (${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin') ? :run : :nothing)
+  variables([
+                {'COMPOSITE::coreo_uni_util_variables.iam-planwide.results' => 'COMPOSITE::coreo_uni_util_jsrunner.cis-iam-admin.JSONReport'},
+                {'COMPOSITE::coreo_aws_rule_runner.advise-iam.report' => 'COMPOSITE::coreo_uni_util_jsrunner.cis-iam-admin.report'},
+                {'GLOBAL::number_violations' => 'COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations'},
+
+            ])
+end
+
 
 coreo_uni_util_jsrunner "cis-iam" do
   action :run
