@@ -917,7 +917,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
            ])
   function <<-RUBY
     const violations = json_input.violations;
-    const numberViolations = json_input.numberViolations;
+    var numberViolations = json_input.numberViolations;
 
     const iamUsersArray = [];
     for (var region in violations) {
