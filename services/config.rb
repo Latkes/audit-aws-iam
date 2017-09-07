@@ -441,6 +441,27 @@ coreo_aws_rule "iam-unused-access" do
   id_map "static.no_op"
 end
 
+coreo_aws_rule "iam-user-is-admin" do
+  action :define
+  service :user
+  include_violations_in_count false
+  link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
+  display_name "IAM inactive credentials"
+  description "This rule checks for credentials that have been unused for 90 days"
+  category "Security"
+  suggested_action "User credentials that have not been used in 90 days should be removed or deactivated"
+  level "Low"
+  meta_nist_171_id "3.1.1"
+  meta_cis_id "1.3"
+  meta_cis_scored "true"
+  meta_cis_level "1"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [true]
+  id_map "static.no_op"
+end
+
 coreo_aws_rule "iam-no-hardware-mfa-root" do
   action :define
   service :iam
@@ -879,6 +900,23 @@ coreo_uni_util_variables "iam-update-planwide-1" do
             ])
 end
 
+
+coreo_uni_util_jsrunner "cis-iam" do
+  action :run
+  data_type "json"
+  provide_composite_access true
+  json_input '{ "composite name":"PLAN::stack_name",
+                "violations":COMPOSITE::coreo_aws_rule_runner.advise-iam.report}'
+  function <<-RUBY
+
+  const ruleMetaJSON = {
+       'iam-user-is-admin': COMPOSITE::coreo_aws_rule.iam-user-is-admin.inputs
+   };
+
+  const IAM_ADMIN_POLICY_SPECIFIER = ${AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS};
+RUBY
+end
+
 coreo_uni_util_jsrunner "cis-iam" do
   action :run
   data_type "json"
@@ -894,7 +932,7 @@ coreo_uni_util_jsrunner "cis-iam" do
        'iam-initialization-access-key': COMPOSITE::coreo_aws_rule.iam-initialization-access-key.inputs,
        'iam-omnipotent-policy': COMPOSITE::coreo_aws_rule.iam-omnipotent-policy.inputs
    };
-   const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count'];
+   const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count', 'meta_nist_171_id'];
    const ruleMeta = {};
 
    Object.keys(ruleMetaJSON).forEach(rule => {
