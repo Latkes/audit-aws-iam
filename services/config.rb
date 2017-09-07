@@ -888,7 +888,7 @@ coreo_aws_rule_runner "advise-iam" do
   action :run
   regions ["PLAN::region"]
   rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal")
-  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").push("iam-inventory-users", "iam-inventory-roles", "iam-inventory-policies", "iam-inventory-groups")} if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin')
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").push("iam-inventory-users", "iam-inventory-roles", "iam-inventory-policies", "iam-inventory-groups") if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin')
   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
 end
 
