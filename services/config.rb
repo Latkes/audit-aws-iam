@@ -929,9 +929,9 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
     for (var region in violations) {
         for (var violator in violations[region]) {
             violations[region][violator];
-            if (violations[region][violator]['violator_info']['user']) {
+            if (violations[region][violator]['violator_info']['user_name']) {
                 // if (iamUsersArray.length < 40) {
-                if(violations[region][violator]['violator_info']['user'] === '<root_account>') { continue;}
+                if(violations[region][violator]['violator_info']['user_name'] === '<root_account>') { continue;}
                     iamUsersArray.push(violations[region][violator]['violator_info']);
                 // }
             }
