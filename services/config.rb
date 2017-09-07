@@ -1030,7 +1030,7 @@ RUBY
 end
 
 coreo_uni_util_variables "iam-update-user-is-admin" do
-  action (${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin') ? :run : :nothing)
+  action (${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin') ? :set : :nothing)
   variables([
                 {'COMPOSITE::coreo_uni_util_variables.iam-planwide.results' => 'COMPOSITE::coreo_uni_util_jsrunner.cis-iam-admin.JSONReport'},
                 {'COMPOSITE::coreo_aws_rule_runner.advise-iam.report' => 'COMPOSITE::coreo_uni_util_jsrunner.cis-iam-admin.report'},
