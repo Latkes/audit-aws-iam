@@ -446,15 +446,12 @@ coreo_aws_rule "iam-user-is-admin" do
   service :user
   include_violations_in_count false
   link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
-  display_name "IAM inactive credentials"
-  description "This rule checks for credentials that have been unused for 90 days"
+  display_name "IAM user has prvledges that allow administrator access"
+  description "This rule checks for any users that have administrator level access, no matter how the access is/was granted."
   category "Security"
-  suggested_action "User credentials that have not been used in 90 days should be removed or deactivated"
-  level "Low"
+  suggested_action "User access should be granted only to those who need it."
+  level "Medium"
   meta_nist_171_id "3.1.1"
-  meta_cis_id "1.3"
-  meta_cis_scored "true"
-  meta_cis_level "1"
   objectives [""]
   audit_objects [""]
   operators [""]
