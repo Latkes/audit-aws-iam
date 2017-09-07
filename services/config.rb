@@ -883,11 +883,25 @@ coreo_uni_util_variables "iam-planwide" do
             ])
 end
 
+coreo_uni_util_variables "iam-runner-rules" do
+  action :set
+  variables([
+                {'COMPOSITE::coreo_uni_util_variables.iam-runner-rules.rules' => ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal")}
+            ])
+end
+
+coreo_uni_util_variables "iam-runner-rules-admin" do
+  action((${AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS}.include?('iam-user-is-admin') ? :set : :nothing))
+  variables([
+                {'COMPOSITE::coreo_uni_util_variables.iam-runner-rules.rules' => ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-inventory-users", "iam-inventory-roles", "iam-inventory-policies", "iam-inventory-groups")}
+            ])
+end
+
 coreo_aws_rule_runner "advise-iam" do
   service :iam
   action :run
   regions ["PLAN::region"]
-  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal")
+  rules COMPOSITE::coreo_uni_util_variables.iam-runner-rules.rules
   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
 end
 
