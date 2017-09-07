@@ -887,8 +887,8 @@ coreo_aws_rule_runner "advise-iam" do
   service :iam
   action :run
   regions ["PLAN::region"]
-  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal")
-  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").push("iam-inventory-users", "iam-inventory-roles", "iam-inventory-policies", "iam-inventory-groups") if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin')
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").uniq!
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").push("iam-inventory-users") if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin').uniq!
   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
 end
 
@@ -908,13 +908,87 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
   provide_composite_access true
   json_input '{ "composite name":"PLAN::stack_name",
                 "violations":COMPOSITE::coreo_aws_rule_runner.advise-iam.report}'
+  packages([
+               {
+                   :name => "aws-sdk",
+                   :version => "^2.110.0"
+               },{
+                   :name => "bluebird",
+                   :version => "3.5.0"
+               }
+           ])
   function <<-RUBY
-
   const ruleMetaJSON = {
        'iam-user-is-admin': COMPOSITE::coreo_aws_rule.iam-user-is-admin.inputs
    };
 
-  const IAM_ADMIN_POLICY_SPECIFIER = ${AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS};
+    const violations = json_input.violations;
+
+    const iamUsersArray = [];
+    
+    for (var region in violations) {
+        for (var violator in violations[region]) {
+            violations[region][violator];
+            if (violations[region][violator]['violator_info']['user']) {
+                // if (iamUsersArray.length < 40) {
+                if(violations[region][violator]['violator_info']['user'] === '<root_account>') { continue;}
+                    iamUsersArray.push(violations[region][violator]['violator_info']);
+                // }
+            }
+        }
+    }
+    const operations = [];
+    iamUsersArray.forEach((user) => operations.push(checkIsFullAdmin(user)));
+    return Promise.all(operations)
+        .then((results) => {
+            for (var i = 0; i < results.length; i++) {
+                var res = results[i];
+                if(res === undefined) {continue; }
+                var user = res.user;
+                var result = res.result;
+                var userIsInViolation = true;
+                var evaluationResults = result['EvaluationResults'];
+                for (var e = 0; e < evaluationResults.length; e++) {
+                    if (evaluationResults[e]['EvalDecision'] !== 'allowed') {
+                        userIsInViolation = false;
+                        break;
+
+                    }
+                }
+
+                if (userIsInViolation) {
+                    fullAdmin.push(user);
+                }
+
+            }
+            return callback(fullAdmin);
+        });
+}
+
+const fullAdmin = [];
+const AWS = require('aws-sdk');
+const Promise = require('bluebird');
+const iam = Promise.promisifyAll(new AWS.IAM({maxRetries: 1000, apiVersion: '2010-05-08', retryDelayOptions: {base: 1000}}));
+const IAM_ADMIN_POLICY_SPECIFIER = ${AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS};
+
+function checkIsFullAdmin(user) {
+
+    var params = {
+        ActionNames: IAM_ADMIN_POLICY_SPECIFIER,
+        PolicySourceArn: user.arn
+    };
+    return iam.simulatePrincipalPolicyAsync(params)
+        .then((result) => {
+            return {user: user, result: result};
+        })
+        .catch((err) => {
+        if(err.code === 'NoSuchEntity'){
+            return Promise.resolve();
+        }
+        return Promise.reject(err);
+    });
+
+
 RUBY
 end
 
