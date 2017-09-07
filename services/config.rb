@@ -925,14 +925,13 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
     const violations = json_input.violations;
 
     const iamUsersArray = [];
-    
     for (var region in violations) {
         for (var violator in violations[region]) {
-            violations[region][violator];
-            if (violations[region][violator]['violator_info']['user_name']) {
+            var violator_info = violations[region][violator]['violator_info'];
+            if (violator_info['user_name'] || violator_info['user']) {
                 // if (iamUsersArray.length < 40) {
-                if(violations[region][violator]['violator_info']['user_name'] === '<root_account>') { continue;}
-                    iamUsersArray.push(violations[region][violator]['violator_info']);
+                if(violator_info['user_name'] === '<root_account>' || violator_info['user'] === '<root_account>') { continue;}
+                iamUsersArray.push(violator_info);
                 // }
             }
         }
