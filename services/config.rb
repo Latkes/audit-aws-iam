@@ -905,7 +905,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
   provide_composite_access true
   json_input '{ "composite name":"PLAN::stack_name",
                 "violations":COMPOSITE::coreo_aws_rule_runner.advise-iam.report,
-                "numberViolation: COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations }'
+                "numberViolation": COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations }'
   packages([
                {
                    :name => "aws-sdk",
