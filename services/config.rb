@@ -958,15 +958,15 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
             for (var i = 0; i < fullAdmin.length; i++ ){
                 var user = fullAdmin[i];
                 var userName = user.user;
-                if (json_input['violations']['${PLAN::region}'][userName].hasOwnProperty('violator_info')) {
+                if (json_input['violations']['PLAN::region'][userName].hasOwnProperty('violator_info')) {
 
-                    if (!json_input['violations']['${PLAN::region}'][userName]) {
-                        json_input['violations']['${PLAN::region}'][userName] = {}
+                    if (!json_input['violations']['PLAN::region'][userName]) {
+                        json_input['violations']['PLAN::region'][userName] = {}
                     }
-                    if (!json_input['violations']['${PLAN::region}'][userName]['violations']) {
-                        json_input['violations']['${PLAN::region}'][userName]['violations'] = {}
+                    if (!json_input['violations']['PLAN::region'][userName]['violations']) {
+                        json_input['violations']['PLAN::region'][userName]['violations'] = {}
                     }
-                    json_input['violations']['${PLAN::region}'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[ADMIN_RULE]);
+                    json_input['violations']['PLAN::region'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[ADMIN_RULE]);
                     numberViolations += 1;
                 }
             }
@@ -1073,7 +1073,7 @@ coreo_uni_util_jsrunner "cis-iam" do
 
 let alertListToJSON = "${AUDIT_AWS_IAM_ALERT_LIST}";
 let alertListArray = alertListToJSON.replace(/'/g, '"');
-const viols = json_input['violations']['${PLAN::region}'];
+const viols = json_input['violations']['PLAN::region'];
 
 function setValueForNewJSONInput(json_input) {
 
@@ -1093,28 +1093,28 @@ function setValueForNewJSONInput(json_input) {
     if  (alertListArray.indexOf('iam-unused-access') > -1) {
         for (var user in users) {
           var userName = users[user]
-          if (json_input['violations']['${PLAN::region}'][userName].hasOwnProperty('violator_info')) {
-            var keyOneDate = new Date(json_input['violations']['${PLAN::region}'][userName]['violator_info']['access_key_1_last_used_date']);
-            var keyTwoDate = new Date(json_input['violations']['${PLAN::region}'][userName]['violator_info']['access_key_2_last_used_date']);
-            var passwordUsedDate = new Date(json_input['violations']['${PLAN::region}'][userName]['violator_info']['password_last_used']);
+          if (json_input['violations']['PLAN::region'][userName].hasOwnProperty('violator_info')) {
+            var keyOneDate = new Date(json_input['violations']['PLAN::region'][userName]['violator_info']['access_key_1_last_used_date']);
+            var keyTwoDate = new Date(json_input['violations']['PLAN::region'][userName]['violator_info']['access_key_2_last_used_date']);
+            var passwordUsedDate = new Date(json_input['violations']['PLAN::region'][userName]['violator_info']['password_last_used']);
             const ninetyDaysAgo = (new Date()) - 1000 * 60 * 60 * 24 * 90
 
             const keyOneUnused = keyOneDate < ninetyDaysAgo
-            const keyOneEnabled = json_input['violations']['${PLAN::region}'][userName]['violator_info']['access_key_1_active'] == "true"
+            const keyOneEnabled = json_input['violations']['PLAN::region'][userName]['violator_info']['access_key_1_active'] == "true"
             const keyTwoUnused = keyTwoDate < ninetyDaysAgo
-            const keyTwoEnabled = json_input['violations']['${PLAN::region}'][userName]['violator_info']['access_key_2_active'] == "true"
+            const keyTwoEnabled = json_input['violations']['PLAN::region'][userName]['violator_info']['access_key_2_active'] == "true"
             const passwordUnused = passwordUsedDate < ninetyDaysAgo
-            const passwordEnabled = json_input['violations']['${PLAN::region}'][userName]['violator_info']['password_enabled'] == "true"
+            const passwordEnabled = json_input['violations']['PLAN::region'][userName]['violator_info']['password_enabled'] == "true"
 
             if ((keyOneUnused && keyOneEnabled) || (keyTwoEnabled && keyTwoUnused) || (passwordEnabled && passwordUnused)) {
 
-                if (!json_input['violations']['${PLAN::region}'][userName]) {
-                    json_input['violations']['${PLAN::region}'][userName] = {}
+                if (!json_input['violations']['PLAN::region'][userName]) {
+                    json_input['violations']['PLAN::region'][userName] = {}
                 }
-                if (!json_input['violations']['${PLAN::region}'][userName]['violations']) {
-                    json_input['violations']['${PLAN::region}'][userName]['violations'] = {}
+                if (!json_input['violations']['PLAN::region'][userName]['violations']) {
+                    json_input['violations']['PLAN::region'][userName]['violations'] = {}
                 }
-                json_input['violations']['${PLAN::region}'][userName]['violations']['iam-unused-access'] = Object.assign(ruleMeta[UNUSED_ACCESS_RULE]);
+                json_input['violations']['PLAN::region'][userName]['violations']['iam-unused-access'] = Object.assign(ruleMeta[UNUSED_ACCESS_RULE]);
             }
           }
         }
@@ -1127,13 +1127,13 @@ function setValueForNewJSONInput(json_input) {
 
         if ((keyOneEnabled || keyTwoEnabled)) {
 
-            if (!json_input['violations']['${PLAN::region}']["<root_account>"]) {
-                json_input['violations']['${PLAN::region}']["<root_account>"] = {}
+            if (!json_input['violations']['PLAN::region']["<root_account>"]) {
+                json_input['violations']['PLAN::region']["<root_account>"] = {}
             }
-            if (!json_input['violations']['${PLAN::region}']["<root_account>"]['violations']) {
-                json_input['violations']['${PLAN::region}']["<root_account>"]['violations'] = {}
+            if (!json_input['violations']['PLAN::region']["<root_account>"]['violations']) {
+                json_input['violations']['PLAN::region']["<root_account>"]['violations'] = {}
             }
-            json_input['violations']['${PLAN::region}']["<root_account>"]['violations']['iam-root-key-access'] = Object.assign(ruleMeta[ROOT_ACCESS_RULE]);
+            json_input['violations']['PLAN::region']["<root_account>"]['violations']['iam-root-key-access'] = Object.assign(ruleMeta[ROOT_ACCESS_RULE]);
         }
     }
 
@@ -1141,13 +1141,13 @@ function setValueForNewJSONInput(json_input) {
     if  (alertListArray.indexOf('iam-root-no-mfa') > -1 && users && users["<root_account>"]) {
         if (users["<root_account>"]['violator_info']['mfa_active'] == "false"){
 
-            if (!json_input['violations']['${PLAN::region}']["<root_account>"]) {
-                json_input['violations']['${PLAN::region}']["<root_account>"] = {}
+            if (!json_input['violations']['PLAN::region']["<root_account>"]) {
+                json_input['violations']['PLAN::region']["<root_account>"] = {}
             }
-            if (!json_input['violations']['${PLAN::region}']["<root_account>"]['violations']) {
-                json_input['violations']['${PLAN::region}']["<root_account>"]['violations'] = {}
+            if (!json_input['violations']['PLAN::region']["<root_account>"]['violations']) {
+                json_input['violations']['PLAN::region']["<root_account>"]['violations'] = {}
             }
-            json_input['violations']['${PLAN::region}']["<root_account>"]['violations']['iam-root-no-mfa'] = Object.assign(ruleMeta[ROOT_MFA_RULE]);
+            json_input['violations']['PLAN::region']["<root_account>"]['violations']['iam-root-no-mfa'] = Object.assign(ruleMeta[ROOT_MFA_RULE]);
         }
     }
 
@@ -1156,21 +1156,21 @@ function setValueForNewJSONInput(json_input) {
     if  (alertListArray.indexOf('iam-initialization-access-key') > -1) {
         for (var user in users) {
           var userName = users[user]
-          if (json_input['violations']['${PLAN::region}'][userName].hasOwnProperty('violator_info')) {
-            var keyOneDate = json_input['violations']['${PLAN::region}'][userName]['violator_info']['access_key_1_last_used_date'] == "N/A";
-            var keyTwoDate = json_input['violations']['${PLAN::region}'][userName]['violator_info']['access_key_2_last_used_date'] == "N/A";
-            var keyOneEnabled = json_input['violations']['${PLAN::region}'][userName]['violator_info']['access_key_1_active'] == "true";
-            var keyTwoEnabled = json_input['violations']['${PLAN::region}'][userName]['violator_info']['access_key_2_active'] == "true";
+          if (json_input['violations']['PLAN::region'][userName].hasOwnProperty('violator_info')) {
+            var keyOneDate = json_input['violations']['PLAN::region'][userName]['violator_info']['access_key_1_last_used_date'] == "N/A";
+            var keyTwoDate = json_input['violations']['PLAN::region'][userName]['violator_info']['access_key_2_last_used_date'] == "N/A";
+            var keyOneEnabled = json_input['violations']['PLAN::region'][userName]['violator_info']['access_key_1_active'] == "true";
+            var keyTwoEnabled = json_input['violations']['PLAN::region'][userName]['violator_info']['access_key_2_active'] == "true";
 
             if ((keyOneDate && keyOneEnabled) || (keyTwoDate && keyTwoEnabled)) {
 
-                if (!json_input['violations']['${PLAN::region}'][userName]) {
-                    json_input['violations']['${PLAN::region}'][userName] = {}
+                if (!json_input['violations']['PLAN::region'][userName]) {
+                    json_input['violations']['PLAN::region'][userName] = {}
                 }
-                if (!json_input['violations']['${PLAN::region}'][userName]['violations']) {
-                    json_input['violations']['${PLAN::region}'][userName]['violations'] = {}
+                if (!json_input['violations']['PLAN::region'][userName]['violations']) {
+                    json_input['violations']['PLAN::region'][userName]['violations'] = {}
                 }
-                json_input['violations']['${PLAN::region}'][userName]['violations']['iam-initialization-access-key'] = Object.assign(ruleMeta[INIT_ACCESS_RULE]);
+                json_input['violations']['PLAN::region'][userName]['violations']['iam-initialization-access-key'] = Object.assign(ruleMeta[INIT_ACCESS_RULE]);
             }
           }
         }
@@ -1180,7 +1180,7 @@ function setValueForNewJSONInput(json_input) {
     if (alertListArray.indexOf('iam-omnipotent-policy') > -1) {
         for (var policy in policies) {
             var policyName = policies[policy]
-            var document = json_input['violations']['${PLAN::region}'][policyName]['violations']['iam-policy-internal']['result_info'][0]['object']['document']
+            var document = json_input['violations']['PLAN::region'][policyName]['violations']['iam-policy-internal']['result_info'][0]['object']['document']
             var decodedDocument = decodeURIComponent(document).replace(/\\++/g, ' ');
             var jsonDocument = JSON.parse(decodedDocument);
 
@@ -1204,7 +1204,7 @@ function setValueForNewJSONInput(json_input) {
             var allResource = resource.indexOf('*') > -1;
 
             if (allowEffect && allAction && allResource) {
-                json_input['violations']['${PLAN::region}'][policyName]['violations']['iam-omnipotent-policy'] = Object.assign(ruleMeta[OMNIPOTENT_POLICY_RULE]);
+                json_input['violations']['PLAN::region'][policyName]['violations']['iam-omnipotent-policy'] = Object.assign(ruleMeta[OMNIPOTENT_POLICY_RULE]);
             }
         }
     }
@@ -1212,28 +1212,28 @@ function setValueForNewJSONInput(json_input) {
     //Strip internal violations
     for (var user in users) {
         var userName = users[user]
-        var internal = json_input['violations']['${PLAN::region}'][userName]['violations'].hasOwnProperty('iam-internal');
-        var single_violation = (Object.keys(json_input['violations']['${PLAN::region}'][userName]['violations']).length === 1);
+        var internal = json_input['violations']['PLAN::region'][userName]['violations'].hasOwnProperty('iam-internal');
+        var single_violation = (Object.keys(json_input['violations']['PLAN::region'][userName]['violations']).length === 1);
 
         if (internal && single_violation) {
-            delete json_input['violations']['${PLAN::region}'][userName];
+            delete json_input['violations']['PLAN::region'][userName];
         }
         else if (internal && !single_violation){
-            delete json_input['violations']['${PLAN::region}'][userName]['violations']['iam-internal'];
+            delete json_input['violations']['PLAN::region'][userName]['violations']['iam-internal'];
         }
     }
 
     //Strip internal violations
     for (var policy in policies) {
         var policyName = policies[policy]
-        var internal = json_input['violations']['${PLAN::region}'][policyName]['violations'].hasOwnProperty('iam-policy-internal');
-        var single_violation = (Object.keys(json_input['violations']['${PLAN::region}'][policyName]['violations']).length === 1);
+        var internal = json_input['violations']['PLAN::region'][policyName]['violations'].hasOwnProperty('iam-policy-internal');
+        var single_violation = (Object.keys(json_input['violations']['PLAN::region'][policyName]['violations']).length === 1);
 
         if (internal && single_violation) {
-            delete json_input['violations']['${PLAN::region}'][policyName];
+            delete json_input['violations']['PLAN::region'][policyName];
         }
         else if (internal && !single_violation){
-            delete json_input['violations']['${PLAN::region}'][policyName]['violations']['iam-policy-internal'];
+            delete json_input['violations']['PLAN::region'][policyName]['violations']['iam-policy-internal'];
         }
     }
 }
