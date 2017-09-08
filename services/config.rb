@@ -221,7 +221,7 @@ coreo_aws_rule "iam-no-mfa" do
   category "Security"
   suggested_action "Enable Multi-Factor Authentication for every cloud user."
   level "High"
-  meta_nist_171_id "3.5.1"
+  meta_nist_171_id "3.5.3"
   id_map "object.content.user"
   objectives ["credential_report", "credential_report"]
   audit_objects ["object.content.password_enabled", "object.content.mfa_active"]
