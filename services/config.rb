@@ -451,7 +451,7 @@ coreo_aws_rule "iam-user-is-admin" do
   category "Security"
   suggested_action "User access should be granted only to those who need it."
   level "Medium"
-  meta_nist_171_id "3.1.1"
+  meta_nist_171_id "3.1.1, 3.1.5, 3.1.7"
   objectives [""]
   audit_objects [""]
   operators [""]
