@@ -221,7 +221,7 @@ coreo_aws_rule "iam-no-mfa" do
   category "Security"
   suggested_action "Enable Multi-Factor Authentication for every cloud user."
   level "High"
-  meta_nist_171_id "3.5.3"
+  meta_nist_171_id "3.5.3, 3.7.5"
   id_map "object.content.user"
   objectives ["credential_report", "credential_report"]
   audit_objects ["object.content.password_enabled", "object.content.mfa_active"]
@@ -452,7 +452,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
   meta_cis_id "1.14"
   meta_cis_scored "true"
   meta_cis_level "2"
-  meta_nist_171_id "3.5.3"
+  meta_nist_171_id "3.5.3, 3.7.5"
   level "High"
   objectives ["virtual_mfa_devices"]
   audit_objects ["object.virtual_mfa_devices.serial_number"]
@@ -495,7 +495,7 @@ coreo_aws_rule "iam-mfa-password-holders" do
   meta_cis_id "1.2"
   meta_cis_scored "true"
   meta_cis_level "1"
-  meta_nist_171_id "3.5.3"
+  meta_nist_171_id "3.5.3, 3.7.5"
   objectives ["credential_report","credential_report"]
   audit_objects ["object.content.password_enabled", "object.content.mfa_active"]
   operators ["==", "=="]
