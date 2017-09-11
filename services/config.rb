@@ -914,14 +914,14 @@ coreo_uni_util_variables "iam-planwide" do
             ])
 end
 
-# coreo_aws_rule_runner "advise-iam" do
-#   service :iam
-#   action :run
-#   regions ["PLAN::region"]
-#   rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").uniq
-#   rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").push("iam-inventory-users").uniq if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin')
-#   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
-# end
+coreo_aws_rule_runner "advise-iam" do
+  service :iam
+  action :run
+  regions ["PLAN::region"]
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").uniq
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").push("iam-inventory-users").uniq if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin')
+  filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
+end
 
 coreo_aws_rule_runner "advise-iam-instance-roles" do
   service :ec2
@@ -952,8 +952,8 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
   provide_composite_access true
   json_input '{ "composite name":"PLAN::stack_name",
                 "violations":COMPOSITE::coreo_aws_rule_runner.advise-iam.report,
-                "numberViolations": COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations,
-                "numbViolationsEc2": COMPOSITE::coreo_aws_rule_runner.advise-iam-instance-roles.report
+                "violationsEc2": COMPOSITE::coreo_aws_rule_runner.advise-iam-instance-roles.report,
+                "numberViolations": COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations
               }'
   packages([
                {
@@ -966,17 +966,28 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
            ])
   function <<-RUBY
     const violations = json_input.violations;
+    const violationsEc2 = json_input.violationsEc2;
     var numberViolations = json_input.numberViolations;
 
     const iamUsersArray = [];
+
+    for (var region in violationsEc2) {
+        for (var violator in violationsEc2[region]) {
+            var violator_info = violationsEc2[region][violator]['violator_info'];
+            if (violator_info['arn']){
+                var fakeUser = { type: 'ec2', user: violator, arn: violator_info['arn'] };
+                iamUsersArray.push(fakeUser);
+            }
+        }
+    }
+
     for (var region in violations) {
         for (var violator in violations[region]) {
             var violator_info = violations[region][violator]['violator_info'];
             if (violator_info['user_name'] || violator_info['user']) {
-                // if (iamUsersArray.length < 40) {
                 if(violator_info['user_name'] === '<root_account>' || violator_info['user'] === '<root_account>') { continue;}
+                violator_info.type = 'iam';
                 iamUsersArray.push(violator_info);
-                // }
             }
         }
     }
@@ -995,7 +1006,6 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                     if (evaluationResults[e]['EvalDecision'] !== 'allowed') {
                         userIsInViolation = false;
                         break;
-
                     }
                 }
 
@@ -1015,7 +1025,11 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                     if (!json_input['violations']['PLAN::region'][userName]['violations']) {
                         json_input['violations']['PLAN::region'][userName]['violations'] = {}
                     }
-                    json_input['violations']['PLAN::region'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[ADMIN_RULE]);
+                    if(user.type === 'ec2'){
+                        json_input['violations']['PLAN::region'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[IAM_ADMIN_RULE]);
+                    } else if (user.type === 'iam') {
+                        json_input['violations']['PLAN::region'][userName]['violations']['iam-instance-role-is-admin'] = Object.assign(ruleMeta[EC2_ADMIN_RULE]);
+                    }
                     numberViolations += 1;
                 }
             }
@@ -1036,9 +1050,11 @@ const Promise = require('bluebird');
 const iam = Promise.promisifyAll(new AWS.IAM({maxRetries: 1000, apiVersion: '2010-05-08', retryDelayOptions: {base: 1000}}));
 const IAM_ADMIN_POLICY_SPECIFIER = ${AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS};
 const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count', 'meta_nist_171_id'];
-const ADMIN_RULE = 'iam-user-is-admin';
+const IAM_ADMIN_RULE = 'iam-user-is-admin';
+const EC2_ADMIN_RULE = 'iam-user-is-admin';
 const ruleMetaJSON = {
      'iam-user-is-admin': COMPOSITE::coreo_aws_rule.iam-user-is-admin.inputs
+     'iam-instance-role-is-admin': COMPOSITE::coreo_aws_rule.iam-instance-role-is-admin.inputs
  };
 
 const ruleMeta = {};
