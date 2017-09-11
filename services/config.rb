@@ -936,8 +936,13 @@ coreo_uni_util_variables "iam-update-planwide-1" do
   variables([
                 {'COMPOSITE::coreo_uni_util_variables.iam-planwide.results' => 'COMPOSITE::coreo_aws_rule_runner.advise-iam.report'},
                 {'GLOBAL::number_violations' => 'COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations'},
-
+                {'COMPOSITE::coreo_aws_rule_runner.advise-iam-instance-roles.report' => '{}'}
             ])
+  variables([
+                {'COMPOSITE::coreo_uni_util_variables.iam-planwide.results' => 'COMPOSITE::coreo_aws_rule_runner.advise-iam.report'},
+                {'GLOBAL::number_violations' => 'COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations'},
+                {'COMPOSITE::coreo_aws_rule_runner.advise-iam-instance-roles.report' => 'COMPOSITE::coreo_aws_rule_runner.advise-iam-instance-roles.report'}
+            ]) if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-instance-role-is-admin')
 end
 
 
@@ -947,7 +952,9 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
   provide_composite_access true
   json_input '{ "composite name":"PLAN::stack_name",
                 "violations":COMPOSITE::coreo_aws_rule_runner.advise-iam.report,
-                "numberViolations": COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations }'
+                "numberViolations": COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations,
+                "numbViolationsEc2": COMPOSITE::coreo_aws_rule_runner.advise-iam-instance-roles.report
+              }'
   packages([
                {
                    :name => "aws-sdk",
