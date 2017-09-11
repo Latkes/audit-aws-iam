@@ -918,8 +918,8 @@ coreo_aws_rule_runner "advise-iam" do
   service :iam
   action :run
   regions ["PLAN::region"]
-  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").uniq!
-  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").push("iam-inventory-users").uniq! if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin')
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").uniq
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-internal", "iam-policy-internal").push("iam-inventory-users").uniq if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin')
   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
 end
 
@@ -927,7 +927,7 @@ coreo_aws_rule_runner "advise-iam-instance-roles" do
   service :ec2
   action (${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-instance-role-is-admin') ? :run : :nothing)
   regions ["PLAN::region"]
-  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-inventory-ec2-roles").uniq! if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-instance-role-is-admin')
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-inventory-ec2-roles").uniq if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-instance-role-is-admin')
   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
 end
 
