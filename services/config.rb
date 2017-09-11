@@ -66,6 +66,22 @@ coreo_aws_rule "iam-inventory-groups" do
   id_map "object.groups.group_name"
 end
 
+coreo_aws_rule "iam-inventory-ec2-roles" do
+  action :define
+  service :ec2
+  include_violations_in_count false
+  display_name "IAM Inventory EC2 Instance Roles"
+  description "This rule performs an inventory on all IAM roles for instances."
+  category "Inventory"
+  suggested_action "None."
+  level "Informational"
+  objectives ["instances"]
+  audit_objects ["object.reservations.instances.iam_instance_profile.arn"]
+  operators ["=~"]
+  raise_when [//]
+  id_map "object.reservations.instances.iam_instance_profile.arn"
+end
+
 coreo_aws_rule "iam-unusediamgroup" do
   action :define
   service :iam
@@ -452,6 +468,24 @@ coreo_aws_rule "iam-user-is-admin" do
   suggested_action "User access should be granted only to those who need it."
   level "Medium"
   meta_nist_171_id "3.1.1, 3.1.5, 3.1.7"
+  objectives [""]
+  audit_objects [""]
+  operators [""]
+  raise_when [true]
+  id_map "static.no_op"
+end
+
+coreo_aws_rule "iam-instance-role-is-admin" do
+  action :define
+  service :user
+  include_violations_in_count false
+  link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
+  display_name "EC2 Instance has prvledges that allow administrator access"
+  description "This rule checks for any ec2 instances that have administrator level access. This would indicate that any compromised system would grant the attacker admin access."
+  category "Security"
+  suggested_action "Instance roles should be granted only what is necessary."
+  level "Medium"
+  meta_nist_171_id "3.13.3"
   objectives [""]
   audit_objects [""]
   operators [""]
@@ -889,6 +923,14 @@ coreo_aws_rule_runner "advise-iam" do
   filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
 end
 
+coreo_aws_rule_runner "advise-iam-instance-roles" do
+  service :ec2
+  action (${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-instance-role-is-admin') ? :run : :nothing)
+  regions ["PLAN::region"]
+  rules ${AUDIT_AWS_IAM_ALERT_LIST}.push("iam-inventory-ec2-roles").uniq! if ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-instance-role-is-admin')
+  filter(${FILTERED_OBJECTS}) if ${FILTERED_OBJECTS}
+end
+
 coreo_uni_util_variables "iam-update-planwide-1" do
   action :set
   variables([
@@ -905,6 +947,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
   provide_composite_access true
   json_input '{ "composite name":"PLAN::stack_name",
                 "violations":COMPOSITE::coreo_aws_rule_runner.advise-iam.report,
+                "violationsEC2":COMPOSITE::coreo_aws_rule_runner.advise-iam-instance-roles.report,
                 "numberViolations": COMPOSITE::coreo_aws_rule_runner.advise-iam.number_violations }'
   packages([
                {
