@@ -947,7 +947,7 @@ end
 
 
 coreo_uni_util_jsrunner "cis-iam-admin" do
-  action (${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin') ? :run : :nothing)
+  action ((${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-user-is-admin') || ${AUDIT_AWS_IAM_ALERT_LIST}.include?('iam-instance-role-is-admin')) ? :run : :nothing)
   data_type "json"
   provide_composite_access true
   json_input '{ "composite name":"PLAN::stack_name",
@@ -1051,7 +1051,7 @@ const iam = Promise.promisifyAll(new AWS.IAM({maxRetries: 1000, apiVersion: '201
 const IAM_ADMIN_POLICY_SPECIFIER = ${AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS};
 const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count', 'meta_nist_171_id'];
 const IAM_ADMIN_RULE = 'iam-user-is-admin';
-const EC2_ADMIN_RULE = 'iam-user-is-admin';
+const EC2_ADMIN_RULE = 'iam-instance-role-is-admin';
 const ruleMetaJSON = {
      'iam-user-is-admin': COMPOSITE::coreo_aws_rule.iam-user-is-admin.inputs
      'iam-instance-role-is-admin': COMPOSITE::coreo_aws_rule.iam-instance-role-is-admin.inputs
