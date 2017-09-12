@@ -976,7 +976,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
             coreoExport('JSONReport', JSON.stringify(json_input));
             coreoExport('numberViolations', numberViolations);
             coreoExport('report', report);
-            
+
             return callback(violations);
         });
 }
@@ -1457,8 +1457,8 @@ coreo_aws_s3_policy "cloudcoreo-audit-aws-iam-policy" do
 ,
 "Action": "s3:*",
 "Resource": [
-"arn:aws:s3:::${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}/*",
-"arn:aws:s3:::${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}"
+"arn:aws:s3:::bucket-${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}/*",
+"arn:aws:s3:::bucket-${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}"
 ]
 }
 ]
