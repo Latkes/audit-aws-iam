@@ -965,8 +965,9 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                }
            ])
   function <<-RUBY
-    const violations = json_input.violations;
-    const violationsEc2 = json_input.violationsEc2;
+    var violations = json_input.violations;
+    var violationsEc2 = json_input.violationsEc2;
+    Object.assign(violations, json_input.violationsEc2);
     var numberViolations = json_input.numberViolations;
 
     const iamUsersArray = [];
@@ -974,8 +975,8 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
     for (var region in violationsEc2) {
         for (var violator in violationsEc2[region]) {
             var violator_info = violationsEc2[region][violator]['violator_info'];
-            if (violator_info['arn']){
-                var fakeUser = { type: 'ec2', user: violator, arn: violator_info['arn'] };
+            if (violator_info['arn']) {
+                var fakeUser = {type: 'ec2', user: violator, arn: violator_info['arn']};
                 iamUsersArray.push(fakeUser);
             }
         }
@@ -985,7 +986,9 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
         for (var violator in violations[region]) {
             var violator_info = violations[region][violator]['violator_info'];
             if (violator_info['user_name'] || violator_info['user']) {
-                if(violator_info['user_name'] === '<root_account>' || violator_info['user'] === '<root_account>') { continue;}
+                if (violator_info['user_name'] === '<root_account>' || violator_info['user'] === '<root_account>') {
+                    continue;
+                }
                 violator_info.type = 'iam';
                 iamUsersArray.push(violator_info);
             }
@@ -996,39 +999,73 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
     return Promise.all(operations)
         .then((results) => {
             for (var i = 0; i < results.length; i++) {
-                var res = results[i];
-                if(res === undefined) {continue; }
-                var user = res.user;
-                var result = res.result;
+                var obj = results[i];
+                if (obj === undefined) {
+                    continue;
+                }
+                var allRes = [].concat(obj);
                 var userIsInViolation = true;
-                var evaluationResults = result['EvaluationResults'];
-                for (var e = 0; e < evaluationResults.length; e++) {
-                    if (evaluationResults[e]['EvalDecision'] !== 'allowed') {
-                        userIsInViolation = false;
+                var user;
+                for (var policyToCheckCounter = 0; policyToCheckCounter < IAM_ADMIN_POLICY_SPECIFIER.length; policyToCheckCounter++) {
+                    var policyToCheck = IAM_ADMIN_POLICY_SPECIFIER[policyToCheckCounter];
+                    var explictDenyStated = false;
+                    var policyIsAllowed = false; // assume implicit deny by default
+                    for (var resCounter = 0; resCounter < allRes.length; resCounter++) {
+                        var res = allRes[resCounter];
+                        user = res.user;
+                        var result = res.result;
+                        var evaluationResults = result['EvaluationResults'];
+                        for (var e = 0; e < evaluationResults.length; e++) {
+                            if (evaluationResults[e].EvalActionName !== policyToCheck) {
+                                continue;
+                            }
+                            // if a policy is only implcitly denied, it is denied
+                            // if a policy is implicitly denied and allowed, it is allowed
+                            // if a policy is EVER explicity denied, it is totally denied
+                            if (evaluationResults[e]['EvalDecision'] === 'allowed') {
+                                policyIsAllowed = true;
+                            }
+                            if (evaluationResults[e]['EvalDecision'] === 'explicitDeny') {
+                                policyIsAllowed = false;
+                                explictDenyStated = true;
+                                break;
+                            }
+                        }
+                        // don't break here unless explicitly denied - we still might have a policy that explicitly denies
+                        if (explictDenyStated) {
+                            break;
+                        }
+                    }
+                    ;
+                    if (policyIsAllowed) {
                         break;
                     }
                 }
-
-                if (userIsInViolation) {
+                ;
+                if (policyIsAllowed) {
                     fullAdmin.push(user);
                 }
 
             }
-            for (var i = 0; i < fullAdmin.length; i++ ){
+            for (var i = 0; i < fullAdmin.length; i++) {
                 var user = fullAdmin[i];
                 var userName = user.user;
-                if (json_input['violations']['PLAN::region'][userName].hasOwnProperty('violator_info')) {
+                if (userName.arn) {
+                    user = fullAdmin[i].user;
+                    userName = user.arn;
+                }
+                if (json_input['violations']['us-east-1'][userName].hasOwnProperty('violator_info')) {
 
-                    if (!json_input['violations']['PLAN::region'][userName]) {
-                        json_input['violations']['PLAN::region'][userName] = {}
+                    if (!json_input['violations']['us-east-1'][userName]) {
+                        json_input['violations']['us-east-1'][userName] = {}
                     }
-                    if (!json_input['violations']['PLAN::region'][userName]['violations']) {
-                        json_input['violations']['PLAN::region'][userName]['violations'] = {}
+                    if (!json_input['violations']['us-east-1'][userName]['violations']) {
+                        json_input['violations']['us-east-1'][userName]['violations'] = {}
                     }
-                    if(user.type === 'ec2'){
-                        json_input['violations']['PLAN::region'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[IAM_ADMIN_RULE]);
-                    } else if (user.type === 'iam') {
-                        json_input['violations']['PLAN::region'][userName]['violations']['iam-instance-role-is-admin'] = Object.assign(ruleMeta[EC2_ADMIN_RULE]);
+                    if (user.type === 'iam') {
+                        json_input['violations']['us-east-1'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[IAM_ADMIN_RULE]);
+                    } else if (user.type === 'ec2') {
+                        json_input['violations']['us-east-1'][userName]['violations']['iam-instance-role-is-admin'] = Object.assign(ruleMeta[EC2_ADMIN_RULE]);
                     }
                     numberViolations += 1;
                 }
@@ -1039,7 +1076,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
             coreoExport('JSONReport', JSON.stringify(json_input));
             coreoExport('numberViolations', numberViolations);
             coreoExport('report', report);
-            
+
             return callback(violations);
         });
 }
@@ -1053,7 +1090,7 @@ const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'sugges
 const IAM_ADMIN_RULE = 'iam-user-is-admin';
 const EC2_ADMIN_RULE = 'iam-instance-role-is-admin';
 const ruleMetaJSON = {
-     'iam-user-is-admin': COMPOSITE::coreo_aws_rule.iam-user-is-admin.inputs
+     'iam-user-is-admin': COMPOSITE::coreo_aws_rule.iam-user-is-admin.inputs,
      'iam-instance-role-is-admin': COMPOSITE::coreo_aws_rule.iam-instance-role-is-admin.inputs
  };
 
@@ -1070,23 +1107,41 @@ Object.keys(ruleMetaJSON).forEach(rule => {
 });
 
 
+
 function checkIsFullAdmin(user) {
 
-    var params = {
-        ActionNames: IAM_ADMIN_POLICY_SPECIFIER,
-        PolicySourceArn: user.arn
-    };
-    return iam.simulatePrincipalPolicyAsync(params)
-        .then((result) => {
-            return {user: user, result: result};
-        })
-        .catch((err) => {
-        if(err.code === 'NoSuchEntity'){
-            return Promise.resolve();
-        }
-        return Promise.reject(err);
-    });
-
+    if (user.type === 'ec2') {
+        var params = {
+            ActionNames: IAM_ADMIN_POLICY_SPECIFIER,
+            PolicySourceArn: user.arn
+        };
+        var profileName = user.arn.split('/')[user.arn.split('/').length - 1];
+        return iam.getInstanceProfileAsync({InstanceProfileName: profileName}).then((ip) => {
+            var roles = [];
+            ip.InstanceProfile.Roles.forEach((role) => {
+                role.arn = role.Arn;
+                role.user = user;
+                roles.push(checkIsFullAdmin(role))
+            });
+            return Promise.all(roles);
+        });
+    } else {
+        var params = {
+            ActionNames: IAM_ADMIN_POLICY_SPECIFIER,
+            PolicySourceArn: user.arn
+        };
+        return iam.simulatePrincipalPolicyAsync(params)
+            .then((result) => {
+                return {user: user, result: result};
+            })
+            .catch((err) => {
+                if (err.code === 'NoSuchEntity') {
+                    return Promise.resolve();
+                }
+                return Promise.reject(err);
+            });
+    }
+}
 
 RUBY
 end
