@@ -960,12 +960,14 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                },{
                    :name => "bluebird",
                    :version => "3.5.0"
+               },{
+                   :name => "merge-deep",
+                   :version => "3.0.0"
                }
            ])
   function <<-RUBY
-    var violations = json_input.violations;
-    var violationsEc2 = json_input.violationsEc2;
-    Object.assign(violations, json_input.violationsEc2);
+    var merge = require('merge-deep');
+    var violations = merge(json_input.violations, json_input.violationsEc2);
     var numberViolations = json_input.numberViolations;
 
     const iamUsersArray = [];
