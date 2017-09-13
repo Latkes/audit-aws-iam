@@ -1141,8 +1141,6 @@ function checkIsFullAdmin(user) {
                 return Promise.reject(err);
             });
     }
-}
-
 RUBY
 end
 
