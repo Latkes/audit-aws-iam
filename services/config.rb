@@ -1,4 +1,4 @@
-coreo_aws_rule "iam-inventory-users" do
+dcoreo_aws_rule "iam-inventory-users" do
   action :define
   service :iam
   link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
@@ -16,7 +16,7 @@ coreo_aws_rule "iam-inventory-users" do
 end
 
 coreo_aws_rule "iam-inventory-roles" do
-  action :define
+ action :define
   service :iam
   link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
   include_violations_in_count false
@@ -460,7 +460,6 @@ end
 coreo_aws_rule "iam-user-is-admin" do
   action :define
   service :user
-  include_violations_in_count false
   link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
   display_name "IAM user has prvledges that allow administrator access"
   description "This rule checks for any users that have administrator level access, no matter how the access is/was granted."
@@ -478,13 +477,12 @@ end
 coreo_aws_rule "iam-instance-role-is-admin" do
   action :define
   service :user
-  include_violations_in_count false
   link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
-  display_name "EC2 Instance has prvledges that allow administrator access"
+  display_name "EC2 Instance has Administrator Access"
   description "This rule checks for any ec2 instances that have administrator level access. This would indicate that any compromised system would grant the attacker admin access."
   category "Security"
   suggested_action "Instance roles should be granted only what is necessary."
-  level "Medium"
+  level "High"
   meta_nist_171_id "3.13.3"
   objectives [""]
   audit_objects [""]
