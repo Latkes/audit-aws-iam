@@ -1064,9 +1064,9 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                     if (!json_input['violations']['us-east-1'][userName]['violations']) {
                         json_input['violations']['us-east-1'][userName]['violations'] = {}
                     }
-                    if (user.type === 'iam') {
+                    if (user.type === 'iam' && (${AUDIT_AWS_IAM_ALERT_LIST}.indexOf('iam-user-is-admin') > -1)) {
                         json_input['violations']['us-east-1'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[IAM_ADMIN_RULE]);
-                    } else if (user.type === 'ec2') {
+                    } else if (user.type === 'ec2' && (${AUDIT_AWS_IAM_ALERT_LIST}.indexOf('iam-instance-role-is-admin') > -1)) {
                         json_input['violations']['us-east-1'][userName]['violations']['iam-instance-role-is-admin'] = Object.assign(ruleMeta[EC2_ADMIN_RULE]);
                     }
                     numberViolations += 1;
