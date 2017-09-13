@@ -967,9 +967,15 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
            ])
   function <<-RUBY
     var merge = require('merge-deep');
-    var violations = merge(json_input.violations, json_input.violationsEc2);
+    // json_input.violations always exists
+    var violations = json_input.violations;
+    var violationsEc2 = {};
+    if (runIamInstanceRoleIsAdmin) {
+        violations = merge(json_input.violations, json_input.violationsEc2);
+        violationsEc2 = json_input.violationsEc2;
+    }
+
     json_input.violations = violations;
-    var violationsEc2 = json_input.violationsEc2;
     var numberViolations = json_input.numberViolations;
 
     const iamUsersArray = [];
@@ -1064,9 +1070,9 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                     if (!json_input['violations']['us-east-1'][userName]['violations']) {
                         json_input['violations']['us-east-1'][userName]['violations'] = {}
                     }
-                    if (user.type === 'iam' && (${AUDIT_AWS_IAM_ALERT_LIST}.indexOf('iam-user-is-admin') > -1)) {
+                    if (user.type === 'iam' && runIamUserIsAdmin) {
                         json_input['violations']['us-east-1'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[IAM_ADMIN_RULE]);
-                    } else if (user.type === 'ec2' && (${AUDIT_AWS_IAM_ALERT_LIST}.indexOf('iam-instance-role-is-admin') > -1)) {
+                    } else if (user.type === 'ec2' && runIamInstanceRoleIsAdmin) {
                         json_input['violations']['us-east-1'][userName]['violations']['iam-instance-role-is-admin'] = Object.assign(ruleMeta[EC2_ADMIN_RULE]);
                     }
                     numberViolations += 1;
@@ -1091,6 +1097,11 @@ const IAM_ADMIN_POLICY_SPECIFIER = ${AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS};
 const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count', 'meta_nist_171_id'];
 const IAM_ADMIN_RULE = 'iam-user-is-admin';
 const EC2_ADMIN_RULE = 'iam-instance-role-is-admin';
+
+const runIamUserIsAdmin = ${AUDIT_AWS_IAM_ALERT_LIST}.indexOf(IAM_ADMIN_RULE) > -1;
+const runIamInstanceRoleIsAdmin = ${AUDIT_AWS_IAM_ALERT_LIST}.indexOf(EC2_ADMIN_RULE) > -1;
+
+
 const ruleMetaJSON = {
      'iam-user-is-admin': COMPOSITE::coreo_aws_rule.iam-user-is-admin.inputs,
      'iam-instance-role-is-admin': COMPOSITE::coreo_aws_rule.iam-instance-role-is-admin.inputs
