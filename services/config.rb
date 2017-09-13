@@ -968,6 +968,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
   function <<-RUBY
     var merge = require('merge-deep');
     var violations = merge(json_input.violations, json_input.violationsEc2);
+    json_input.violations = violations;
     var violationsEc2 = json_input.violationsEc2;
     var numberViolations = json_input.numberViolations;
 
