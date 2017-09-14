@@ -1,4 +1,4 @@
-dcoreo_aws_rule "iam-inventory-users" do
+coreo_aws_rule "iam-inventory-users" do
   action :define
   service :iam
   link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
