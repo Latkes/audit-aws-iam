@@ -1137,6 +1137,12 @@ function checkIsFullAdmin(user) {
                 roles.push(checkIsFullAdmin(role))
             });
             return Promise.all(roles);
+        }).catch((err) => {
+            if (err.code === 'NoSuchEntity') {
+                return Promise.resolve();
+            }
+            console.log(`Error with iam.getInstanceProfile: ${err}`);
+            return Promise.reject(err);
         });
     } else {
         var params = {
@@ -1151,6 +1157,7 @@ function checkIsFullAdmin(user) {
                 if (err.code === 'NoSuchEntity') {
                     return Promise.resolve();
                 }
+                console.log(`Error with iam.simulatePrincipalPolicy: ${err}`);
                 return Promise.reject(err);
             });
     }
