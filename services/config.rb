@@ -1139,6 +1139,7 @@ function checkIsFullAdmin(user) {
             return Promise.all(roles);
         }).catch((err) => {
             if (err.code === 'NoSuchEntity') {
+                console.log(`Got NoSuchEntity for profileName: ${profileName}`);
                 return Promise.resolve();
             }
             console.log(`Error with iam.getInstanceProfile: ${err}`);
