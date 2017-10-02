@@ -85,8 +85,8 @@ variables:
     type: string
     default:
     description: "Enter S3 bucket name to upload reports. (Optional)"
-    validation:
-      - s3-bucket-name
+    validations:
+      - s3-bucket-name-validation
 
   AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS:
     description: "This is a list of group permissions that signify an admin on the system. Used specifically for 3.1.1"
