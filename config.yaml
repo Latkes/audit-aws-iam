@@ -42,7 +42,7 @@ variables:
       - manual-security-contact # cis_id:1.20
       - manual-resource-instance-access # cis_id:1.21
       - manual-full-privilege-user # cis_id:1.24
-      - manual-appropriate-sns-subscribers # cis_id:3.15
+      - manual-appropriate-sns-subscribers # cis_id:3.15 #meta_nist_171_id "3.14.6, 3.14.7"
       - manual-least-access-routing-tables # cis_id:4.5
       - manual-obscure-auth-info # meta_nist_171_id "3.5.11"
       - manual-least-access-routing-tables # cis_id:4.5
