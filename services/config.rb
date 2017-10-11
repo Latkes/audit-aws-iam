@@ -1343,7 +1343,9 @@ function setValueForNewJSONInput(json_input) {
             }
             var allResource = resource.indexOf('*') > -1;
 
-            if (allowEffect && allAction && allResource) {
+            var awsManagedPolicy = policyName.split(':')[4] === 'aws';
+
+            if (allowEffect && allAction && allResource && !awsManagedPolicy) {
                 json_input['violations']['PLAN::region'][policyName]['violations']['iam-omnipotent-policy'] = Object.assign(ruleMeta[OMNIPOTENT_POLICY_RULE]);
             }
         }
