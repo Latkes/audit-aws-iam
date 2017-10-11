@@ -476,7 +476,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
   audit_objects ["object.virtual_mfa_devices.serial_number"]
   operators ["=="]
   raise_when ["arn:aws:iam::${AUDIT_AWS_IAM_ACCOUNT_NUMBER}:mfa/root-account-mfa-device"]
-  id_map "object.virtual_mfa_devices.user.user_name"
+  id_map "static.root_user"
 end
 
 coreo_aws_rule "iam-active-root-user" do
