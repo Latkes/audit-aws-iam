@@ -790,6 +790,7 @@ coreo_aws_rule "manual-appropriate-sns-subscribers" do
   meta_cis_id "3.15"
   meta_cis_scored "false"
   meta_cis_level "1"
+  meta_nist_171_id "3.4.3"
   objectives [""]
   audit_objects [""]
   operators [""]
