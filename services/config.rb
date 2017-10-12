@@ -446,7 +446,7 @@ coreo_aws_rule "iam-unused-access" do
   category "Security"
   suggested_action "User credentials that have not been used in 90 days should be removed or deactivated"
   level "Low"
-  meta_nist_171_id "3.1.1"
+  meta_nist_171_id "3.1.1, 3.1.16"
   meta_cis_id "1.3"
   meta_cis_scored "true"
   meta_cis_level "1"
