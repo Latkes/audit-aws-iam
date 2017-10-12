@@ -1059,7 +1059,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
             for (var i = 0; i < fullAdmin.length; i++) {
                 var user = fullAdmin[i];
                 var userName = user.user;
-                if (userName.arn) {
+                if (userName && userName.arn) {
                     user = fullAdmin[i].user;
                     userName = user.arn;
                 }
