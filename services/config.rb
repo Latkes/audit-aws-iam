@@ -446,7 +446,7 @@ coreo_aws_rule "iam-unused-access" do
   category "Security"
   suggested_action "User credentials that have not been used in 90 days should be removed or deactivated"
   level "Low"
-  meta_nist_171_id "3.1.1"
+  meta_nist_171_id "3.1.1, 3.1.16"
   meta_cis_id "1.3"
   meta_cis_scored "true"
   meta_cis_level "1"
@@ -466,7 +466,7 @@ coreo_aws_rule "iam-user-is-admin" do
   category "Security"
   suggested_action "User access should be granted only to those who need it."
   level "Medium"
-  meta_nist_171_id "3.1.1, 3.1.5, 3.1.7"
+  meta_nist_171_id "3.1.1, 3.1.5, 3.1.6, 3.1.7"
   objectives [""]
   audit_objects [""]
   operators [""]
@@ -840,6 +840,7 @@ coreo_aws_rule "manual-appropriate-sns-subscribers" do
   meta_cis_id "3.15"
   meta_cis_scored "false"
   meta_cis_level "1"
+  meta_nist_171_id "3.4.3, 3.14.6, 3.14.7"
   objectives [""]
   audit_objects [""]
   operators [""]
@@ -1058,7 +1059,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
             for (var i = 0; i < fullAdmin.length; i++) {
                 var user = fullAdmin[i];
                 var userName = user.user;
-                if (userName.arn) {
+                if (userName && userName.arn) {
                     user = fullAdmin[i].user;
                     userName = user.arn;
                 }
@@ -1137,6 +1138,13 @@ function checkIsFullAdmin(user) {
                 roles.push(checkIsFullAdmin(role))
             });
             return Promise.all(roles);
+        }).catch((err) => {
+            if (err.code === 'NoSuchEntity') {
+                console.log(`Got NoSuchEntity for profileName: ${profileName}`);
+                return Promise.resolve();
+            }
+            console.log(`Error with iam.getInstanceProfile: ${err}`);
+            return Promise.reject(err);
         });
     } else {
         var params = {
@@ -1151,6 +1159,7 @@ function checkIsFullAdmin(user) {
                 if (err.code === 'NoSuchEntity') {
                     return Promise.resolve();
                 }
+                console.log(`Error with iam.simulatePrincipalPolicy: ${err}`);
                 return Promise.reject(err);
             });
     }
@@ -1334,7 +1343,9 @@ function setValueForNewJSONInput(json_input) {
             }
             var allResource = resource.indexOf('*') > -1;
 
-            if (allowEffect && allAction && allResource) {
+            var awsManagedPolicy = policyName.split(':')[4] === 'aws';
+
+            if (allowEffect && allAction && allResource && !awsManagedPolicy) {
                 json_input['violations']['PLAN::region'][policyName]['violations']['iam-omnipotent-policy'] = Object.assign(ruleMeta[OMNIPOTENT_POLICY_RULE]);
             }
         }
