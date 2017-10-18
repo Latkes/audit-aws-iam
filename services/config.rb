@@ -508,7 +508,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
   audit_objects ["object.virtual_mfa_devices.serial_number"]
   operators ["=="]
   raise_when ["arn:aws:iam::${AUDIT_AWS_IAM_ACCOUNT_NUMBER}:mfa/root-account-mfa-device"]
-  id_map "object.virtual_mfa_devices.user.user_name"
+  id_map "static.root_user"
 end
 
 coreo_aws_rule "iam-active-root-user" do
@@ -1408,7 +1408,7 @@ coreo_uni_util_jsrunner "tags-to-notifiers-array-iam" do
   packages([
                {
                    :name => "cloudcoreo-jsrunner-commons",
-                   :version => "1.10.7-beta64"
+                   :version => "1.10.7-beta65"
                },
                {
                    :name => "js-yaml",
@@ -1599,8 +1599,8 @@ coreo_aws_s3_policy "cloudcoreo-audit-aws-iam-policy" do
 ,
 "Action": "s3:*",
 "Resource": [
-"arn:aws:s3:::${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}/*",
-"arn:aws:s3:::${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}"
+"arn:aws:s3:::bucket-${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}/*",
+"arn:aws:s3:::bucket-${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}"
 ]
 }
 ]
@@ -1620,7 +1620,7 @@ coreo_uni_util_notify "cloudcoreo-audit-aws-iam-s3" do
   payload 'COMPOSITE::coreo_uni_util_jsrunner.tags-to-notifiers-array-iam.report'
   endpoint ({
       object_name: 'aws-iam-json',
-      bucket_name: '${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}',
+      bucket_name: 'bucket-${AUDIT_AWS_IAM_S3_NOTIFICATION_BUCKET_NAME}',
       folder: 'iam/PLAN::name',
       properties: {}
   })
