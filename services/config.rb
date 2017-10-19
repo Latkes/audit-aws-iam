@@ -1091,8 +1091,8 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
         });
 }
 process.on('unhandledRejection', (reason) => {
-    console.error('Exiting with Unhandled Rejection: ', reason);
-    console.log('Exiting with Unhandled Rejection: ', reason);
+    console.error('Exiting blah blah with Unhandled Rejection: ', reason);
+    console.log('Exiting blah blah with Unhandled Rejection: ', reason);
     process.exitCode = 1;
     process.exit();
 });
