@@ -979,6 +979,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
     json_input.violations = violations;
     var numberViolations = json_input.numberViolations;
 
+    setRegion = Object.keys(violations)[0];
     const iamUsersArray = [];
 
     for (var region in violationsEc2) {
@@ -1063,18 +1064,18 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                     user = fullAdmin[i].user;
                     userName = user.arn;
                 }
-                if (json_input['violations']['us-east-1'][userName].hasOwnProperty('violator_info')) {
+                if (json_input['violations'][setRegion][userName].hasOwnProperty('violator_info')) {
 
-                    if (!json_input['violations']['us-east-1'][userName]) {
-                        json_input['violations']['us-east-1'][userName] = {}
+                    if (!json_input['violations'][setRegion][userName]) {
+                        json_input['violations'][setRegion][userName] = {}
                     }
-                    if (!json_input['violations']['us-east-1'][userName]['violations']) {
-                        json_input['violations']['us-east-1'][userName]['violations'] = {}
+                    if (!json_input['violations'][setRegion][userName]['violations']) {
+                        json_input['violations'][setRegion][userName]['violations'] = {}
                     }
                     if (user.type === 'iam' && runIamUserIsAdmin) {
-                        json_input['violations']['us-east-1'][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[IAM_ADMIN_RULE]);
+                        json_input['violations'][setRegion][userName]['violations']['iam-user-is-admin'] = Object.assign(ruleMeta[IAM_ADMIN_RULE]);
                     } else if (user.type === 'ec2' && runIamInstanceRoleIsAdmin) {
-                        json_input['violations']['us-east-1'][userName]['violations']['iam-instance-role-is-admin'] = Object.assign(ruleMeta[EC2_ADMIN_RULE]);
+                        json_input['violations'][setRegion][userName]['violations']['iam-instance-role-is-admin'] = Object.assign(ruleMeta[EC2_ADMIN_RULE]);
                     }
                     numberViolations += 1;
                 }
@@ -1090,6 +1091,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
         });
 }
 
+var setRegion = '';
 const fullAdmin = [];
 const AWS = require('aws-sdk');
 const Promise = require('bluebird');
