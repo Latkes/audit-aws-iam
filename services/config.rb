@@ -1138,8 +1138,10 @@ function checkIsFullAdmin(user) {
             PolicySourceArn: user.arn
         };
         var profileName = user.arn.split('/')[user.arn.split('/').length - 1];
+        console.log(`getInstanceProfileAsync: ${profileName}`);
         return iam.getInstanceProfileAsync({InstanceProfileName: profileName}).then((ip) => {
             var roles = [];
+            console.log(`got profile for name: ${profileName}`);
             ip.InstanceProfile.Roles.forEach((role) => {
                 role.arn = role.Arn;
                 role.user = user;
@@ -1159,8 +1161,10 @@ function checkIsFullAdmin(user) {
             ActionNames: IAM_ADMIN_POLICY_SPECIFIER,
             PolicySourceArn: user.arn
         };
+        console.log(`simulatePrincipalPolicyAsync: ${user.arn}`);
         return iam.simulatePrincipalPolicyAsync(params)
             .then((result) => {
+                console.log(`got policy for user: ${user.arn}`);
                 return {user: user, result: result};
             })
             .catch((err) => {
