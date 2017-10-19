@@ -1090,6 +1090,12 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
             return callback(violations);
         });
 }
+process.on('unhandledRejection', (reason) => {
+    console.error('Exiting with Unhandled Rejection: ', reason);
+    console.log('Exiting with Unhandled Rejection: ', reason);
+    process.exitCode = 1;
+    process.exit();
+});
 
 var setRegion = '';
 const fullAdmin = [];
