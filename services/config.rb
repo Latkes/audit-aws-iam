@@ -461,7 +461,7 @@ coreo_aws_rule "iam-user-is-admin" do
   action :define
   service :user
   link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
-  display_name "IAM user has prvledges that allow administrator access"
+  display_name "IAM user has privileges that allow administrator access"
   description "This rule checks for any users that have administrator level access, no matter how the access is/was granted."
   category "Security"
   suggested_action "User access should be granted only to those who need it."
