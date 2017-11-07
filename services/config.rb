@@ -712,7 +712,7 @@ coreo_aws_rule "manual-strategic-iam-roles" do
   service :user
   link "http://kb.cloudcoreo.com/mydoc_manual-strategic-iam-roles.html"
   display_name "Ensure Strategic IAM Roles"
-  description "Use IAM Master and Manager Roles to optimise security"
+  description "Use IAM Master and Manager Roles to optimize security"
   category "Security"
   suggested_action "Implement IAM roles as set out in the CIS document"
   level "Manual"
