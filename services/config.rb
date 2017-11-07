@@ -1029,7 +1029,7 @@ coreo_uni_util_jsrunner "cis-iam-admin" do
                             if (evaluationResults[e].EvalActionName !== policyToCheck) {
                                 continue;
                             }
-                            // if a policy is only implcitly denied, it is denied
+                            // if a policy is only implicitly denied, it is denied
                             // if a policy is implicitly denied and allowed, it is allowed
                             // if a policy is EVER explicity denied, it is totally denied
                             if (evaluationResults[e]['EvalDecision'] === 'allowed') {
