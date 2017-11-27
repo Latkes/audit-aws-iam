@@ -755,7 +755,7 @@ coreo_aws_rule "iam-omnipotent-policy" do
   description "IAM policies should be written to have the minimum necessary permissions. Full permissions are considered to be suboptimal for security"
   category "Access"
   suggested_action "Write IAM policies as to give the minimal necessary permissions"
-  level "Critical"
+  level "High"
   meta_cis_id "1.24"
   meta_cis_scored "true"
   meta_cis_level "1"
