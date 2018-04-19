@@ -98,6 +98,8 @@ coreo_aws_rule "iam-unusediamgroup" do
   operators ["", "=="]
   raise_when ["", 0]
   id_map "object.group.group_name"
+  meta_rule_query "{ query(func: has(group)) @filter(%<group_filter>s) @cascade { group_name relates_to @filter(%<user_filter>s AND NOT has(user)) } }"
+  meta_rule_node_triggers ['group', 'user']
 end
 
 coreo_aws_rule "iam-multiple-keys" do
@@ -109,11 +111,11 @@ coreo_aws_rule "iam-multiple-keys" do
   category "Access"
   suggested_action "Remove excess access keys"
   level "Low"
-  id_map "object.content.user"
   objectives ["credential_report", "credential_report"]
   audit_objects ["object.content.access_key_1_active", "object.content.access_key_2_active"]
   operators ["=~", "=~" ]
   raise_when [/true/i, /true/i]
+  id_map "object.content.user"
 end
 
 coreo_aws_rule "iam-root-multiple-keys" do
