@@ -13,10 +13,12 @@ coreo_aws_rule "iam-inventory-users" do
   operators ["=~"]
   raise_when [//]
   id_map "object.users.user_name"
+  meta_rule_query "{query(func: has(user)) @filter(%<user_filter>s){ user_name }}"
+  meta_rule_node_triggers ['user']
 end
 
 coreo_aws_rule "iam-inventory-roles" do
- action :define
+  action :define
   service :iam
   link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
   include_violations_in_count false
@@ -30,6 +32,8 @@ coreo_aws_rule "iam-inventory-roles" do
   operators ["=~"]
   raise_when [//]
   id_map "object.roles.role_name"
+  meta_rule_query "{query(func: has(role)) @filter(%<role_filter>s){ role_name }}"
+  meta_rule_node_triggers ['role']
 end
 
 coreo_aws_rule "iam-inventory-policies" do
@@ -47,6 +51,8 @@ coreo_aws_rule "iam-inventory-policies" do
   operators ["=~"]
   raise_when [//]
   id_map "object.policies.policy_name"
+  meta_rule_query "{query(func: has(policy)) @filter(%<policy_filter>s){ policy_name }}"
+  meta_rule_node_triggers ['policy']
 end
 
 coreo_aws_rule "iam-inventory-groups" do
@@ -64,6 +70,8 @@ coreo_aws_rule "iam-inventory-groups" do
   operators ["=~"]
   raise_when [//]
   id_map "object.groups.group_name"
+  meta_rule_query "{query(func: has(group)) @filter(%<group_filter>s){ group_name }}"
+  meta_rule_node_triggers ['group']
 end
 
 coreo_aws_rule "iam-inventory-ec2-roles" do
@@ -646,8 +654,6 @@ coreo_aws_rule "manual-obscure-auth-info" do
   raise_when [""]
   id_map "static.no_op"
 end
-
-
 
 coreo_aws_rule "manual-detailed-billing" do
   action :define
