@@ -427,6 +427,8 @@ coreo_aws_rule "iam-support-role" do
   operators ["==", ">"]
   raise_when ["AWSSupportAccess", 0]
   id_map "object.policies.policy_name"
+  meta_rule_query "{ query(func: has(policy))  @filter(%<policy_filter>s AND gt(attachment_count, 0) AND eq(policy_name, \"AWSSupportAccess\")) { policy_name }}"
+  meta_rule_node_triggers ['policy']
 end
 
 coreo_aws_rule "iam-user-password-not-used" do
