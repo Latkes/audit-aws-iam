@@ -217,6 +217,11 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   operators ["!="]
   raise_when [true]
   id_map "static.password_policy"
+  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND NOT has(password_reuse_prevention)) { label objectName } }"
+  meta_rule_node_triggers ({
+      'account_password_policy' => [],
+      'password_policy' => ['password_reuse_prevention']
+  })
 end
 
 coreo_aws_rule "iam-expirepasswords" do
@@ -236,6 +241,11 @@ coreo_aws_rule "iam-expirepasswords" do
   operators ["=="]
   raise_when ["false"]
   id_map "static.password_policy"
+  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND eq(expire_passwords, false)) { label objectName } }"
+  meta_rule_node_triggers ({
+      'account_password_policy' => [],
+      'password_policy' => ['expire_passwords']
+  })
 end
 
 coreo_aws_rule "iam-no-mfa" do
@@ -331,6 +341,11 @@ coreo_aws_rule "iam-password-policy-lowercase" do
   audit_objects ["object.password_policy.require_lowercase_characters"]
   operators ["=="]
   raise_when [false]
+  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND eq(require_lowercase_characters, false)) { label objectName } }"
+  meta_rule_node_triggers ({
+      'account_password_policy' => [],
+      'password_policy' => ['require_lowercase_characters']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-symbol" do
@@ -351,6 +366,11 @@ coreo_aws_rule "iam-password-policy-symbol" do
   audit_objects ["object.password_policy.require_symbols"]
   operators ["=="]
   raise_when [false]
+  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND eq(require_symbols, false)) { label objectName } }"
+  meta_rule_node_triggers ({
+      'account_password_policy' => [],
+      'password_policy' => ['require_symbols']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-number" do
@@ -371,6 +391,11 @@ coreo_aws_rule "iam-password-policy-number" do
   audit_objects ["object.password_policy.require_numbers"]
   operators ["=="]
   raise_when [false]
+  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND eq(require_numbers, false)) { label objectName } }"
+  meta_rule_node_triggers ({
+      'account_password_policy' => [],
+      'password_policy' => ['require_numbers']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-min-length" do
@@ -391,6 +416,11 @@ coreo_aws_rule "iam-password-policy-min-length" do
   audit_objects ["object.password_policy.minimum_password_length"]
   operators ["<"]
   raise_when [14]
+  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND lt(minimum_password_length, 14)) { label objectName } }"
+  meta_rule_node_triggers ({
+      'account_password_policy' => [],
+      'password_policy' => ['minimum_password_length']
+  })
 end
 
 coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
@@ -587,7 +617,7 @@ coreo_aws_rule "manual-approved-monitored-maintenance" do
   action :define
   service :user
   link ""
-  display_name "Ensure that all maintenance activies are approved and monitored"
+  display_name "Ensure that all maintenance activities are approved and monitored"
   description "All maintenance activities should be both approved and monitored whether or on or off site"
   category "Security"
   suggested_action "Implement a policy to ensure that all maintenance efforts are systematically both approved and monitored, on and off site"
