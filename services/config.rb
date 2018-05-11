@@ -13,8 +13,6 @@ coreo_aws_rule "iam-inventory-users" do
   operators ["=~"]
   raise_when [//]
   id_map "object.users.user_name"
-  meta_rule_query "{query(func: has(user)) @filter(%<user_filter>s){ user_name }}"
-  meta_rule_node_triggers ['user']
 end
 
 coreo_aws_rule "iam-inventory-roles" do
@@ -32,8 +30,6 @@ coreo_aws_rule "iam-inventory-roles" do
   operators ["=~"]
   raise_when [//]
   id_map "object.roles.role_name"
-  meta_rule_query "{query(func: has(role)) @filter(%<role_filter>s){ role_name }}"
-  meta_rule_node_triggers ['role']
 end
 
 coreo_aws_rule "iam-inventory-policies" do
@@ -51,8 +47,6 @@ coreo_aws_rule "iam-inventory-policies" do
   operators ["=~"]
   raise_when [//]
   id_map "object.policies.policy_name"
-  meta_rule_query "{query(func: has(policy)) @filter(%<policy_filter>s){ policy_name }}"
-  meta_rule_node_triggers ['policy']
 end
 
 coreo_aws_rule "iam-inventory-groups" do
@@ -70,8 +64,6 @@ coreo_aws_rule "iam-inventory-groups" do
   operators ["=~"]
   raise_when [//]
   id_map "object.groups.group_name"
-  meta_rule_query "{query(func: has(group)) @filter(%<group_filter>s){ group_name }}"
-  meta_rule_node_triggers ['group']
 end
 
 coreo_aws_rule "iam-inventory-ec2-roles" do
@@ -106,8 +98,19 @@ coreo_aws_rule "iam-unusediamgroup" do
   operators ["", "=="]
   raise_when ["", 0]
   id_map "object.group.group_name"
-  meta_rule_query "{ query(func: has(group)) @filter(%<group_filter>s) @cascade { group_name relates_to @filter(%<user_filter>s AND NOT has(user)) } }"
-  meta_rule_node_triggers ['group', 'user']
+  meta_rule_query <<~QUERY
+  {
+    query(func: %<group_filter>s) @cascade 
+    { 
+      group_name 
+      relates_to @filter(%<user_filter>s AND NOT has(user)) 
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'group' => [''],
+                              'user' => ['']
+                          })
 end
 
 coreo_aws_rule "iam-multiple-keys" do
@@ -217,9 +220,14 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   operators ["!="]
   raise_when [true]
   id_map "static.password_policy"
-  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND NOT has(password_reuse_prevention)) { label objectName } }"
+  meta_rule_query <<~QUERY
+  { 
+    query(func: %<password_policy_filter>s ) @filter(NOT has(password_reuse_prevention)) 
+    { label objectName } 
+  }
+  QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [],
+      'account_password_policy' => [''],
       'password_policy' => ['password_reuse_prevention']
   })
 end
@@ -241,9 +249,18 @@ coreo_aws_rule "iam-expirepasswords" do
   operators ["=="]
   raise_when ["false"]
   id_map "static.password_policy"
-  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND eq(expire_passwords, false)) { label objectName } }"
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: %<password_policy_filter>s ) {
+      is_expired as expire_passwords
+    }
+    query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
+      objectName
+    }
+  }
+  QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [],
+      'account_password_policy' => [''],
       'password_policy' => ['expire_passwords']
   })
 end
@@ -321,6 +338,20 @@ coreo_aws_rule "iam-password-policy-uppercase" do
   audit_objects ["object.password_policy.require_uppercase_characters"]
   operators ["=="]
   raise_when [false]
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: %<password_policy_filter>s ) {
+      is_uppercase as require_uppercase_characters
+    }
+    query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
+      objectName
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'account_password_policy' => [''],
+      'password_policy' => ['require_uppercase_characters']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-lowercase" do
@@ -341,9 +372,18 @@ coreo_aws_rule "iam-password-policy-lowercase" do
   audit_objects ["object.password_policy.require_lowercase_characters"]
   operators ["=="]
   raise_when [false]
-  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND eq(require_lowercase_characters, false)) { label objectName } }"
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: %<password_policy_filter>s ) {
+      is_lowercase as require_lowercase_characters
+    }
+    query(func: uid(pp)) @filter(eq(val(is_lowercase), false)) {
+      objectName
+    }
+  }
+  QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [],
+      'account_password_policy' => [''],
       'password_policy' => ['require_lowercase_characters']
   })
 end
@@ -366,9 +406,18 @@ coreo_aws_rule "iam-password-policy-symbol" do
   audit_objects ["object.password_policy.require_symbols"]
   operators ["=="]
   raise_when [false]
-  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND eq(require_symbols, false)) { label objectName } }"
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: %<password_policy_filter>s ) {
+      is_symbol as require_symbols
+    }
+    query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
+      objectName
+    }
+  }
+  QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [],
+      'account_password_policy' => [''],
       'password_policy' => ['require_symbols']
   })
 end
@@ -391,9 +440,18 @@ coreo_aws_rule "iam-password-policy-number" do
   audit_objects ["object.password_policy.require_numbers"]
   operators ["=="]
   raise_when [false]
-  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND eq(require_numbers, false)) { label objectName } }"
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: %<password_policy_filter>s ) {
+      is_number as require_numbers
+    }
+    query(func: uid(pp)) @filter(eq(val(is_number), false)) {
+      objectName
+    }
+  }
+  QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [],
+      'account_password_policy' => [''],
       'password_policy' => ['require_numbers']
   })
 end
@@ -416,9 +474,18 @@ coreo_aws_rule "iam-password-policy-min-length" do
   audit_objects ["object.password_policy.minimum_password_length"]
   operators ["<"]
   raise_when [14]
-  meta_rule_query "{ query(func: has(password_policy) ) @filter( %<password_policy_filter>s AND lt(minimum_password_length, 14)) { label objectName } }"
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: %<password_policy_filter>s ) {
+      is_min_length as minimum_password_length
+    }
+    query(func: uid(pp)) @filter( lt(val(is_min_length), 14) ) {
+      objectName
+    }
+  }
+  QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [],
+      'account_password_policy' => [''],
       'password_policy' => ['minimum_password_length']
   })
 end
@@ -457,8 +524,20 @@ coreo_aws_rule "iam-support-role" do
   operators ["==", ">"]
   raise_when ["AWSSupportAccess", 0]
   id_map "object.policies.policy_name"
-  meta_rule_query "{ query(func: has(policy))  @filter(%<policy_filter>s AND gt(attachment_count, 0) AND eq(policy_name, \"AWSSupportAccess\")) { policy_name }}"
-  meta_rule_node_triggers ['policy']
+  meta_rule_query <<~QUERY
+  {
+    pf as var(func: %<policy_filter>s ) {
+      pfa as attachment_count
+      pfn as policy_name
+    }
+    query(func: uid(pf)) @filter( gt( val(pfa), 0) AND eq(val(pfn), AWSSupportAccess") ) {
+      objectName
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'policy' => ['attachment_count','policy_name']
+  })
 end
 
 coreo_aws_rule "iam-user-password-not-used" do
