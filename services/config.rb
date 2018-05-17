@@ -227,7 +227,7 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   }
   QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [''],
+
       'password_policy' => ['password_reuse_prevention']
   })
 end
