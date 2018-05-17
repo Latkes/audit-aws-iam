@@ -101,7 +101,7 @@ coreo_aws_rule "iam-unusediamgroup" do
   meta_rule_query <<~QUERY
   {
     query(func: %<group_filter>s) @cascade { 
-      group_name 
+      %<default_predicates>s
       relates_to @filter(%<user_filter>s AND NOT has(user)) 
     }
   }
