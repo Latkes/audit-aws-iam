@@ -100,8 +100,7 @@ coreo_aws_rule "iam-unusediamgroup" do
   id_map "object.group.group_name"
   meta_rule_query <<~QUERY
   {
-    query(func: %<group_filter>s) @cascade 
-    { 
+    query(func: %<group_filter>s) @cascade { 
       group_name 
       relates_to @filter(%<user_filter>s AND NOT has(user)) 
     }
@@ -222,8 +221,9 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   id_map "static.password_policy"
   meta_rule_query <<~QUERY
   { 
-    query(func: %<password_policy_filter>s ) @filter(NOT has(password_reuse_prevention)) 
-    { label objectName } 
+    query(func: %<password_policy_filter>s ) @filter(NOT has(password_reuse_prevention)) { 
+      %<default_predicates>s
+    } 
   }
   QUERY
   meta_rule_node_triggers ({
@@ -255,12 +255,11 @@ coreo_aws_rule "iam-expirepasswords" do
       is_expired as expire_passwords
     }
     query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
-      objectName
+      %<default_predicates>s
     }
   }
   QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [''],
       'password_policy' => ['expire_passwords']
   })
 end
@@ -344,12 +343,11 @@ coreo_aws_rule "iam-password-policy-uppercase" do
       is_uppercase as require_uppercase_characters
     }
     query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
-      objectName
+      %<default_predicates>s
     }
   }
   QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [''],
       'password_policy' => ['require_uppercase_characters']
   })
 end
@@ -378,12 +376,11 @@ coreo_aws_rule "iam-password-policy-lowercase" do
       is_lowercase as require_lowercase_characters
     }
     query(func: uid(pp)) @filter(eq(val(is_lowercase), false)) {
-      objectName
+      %<default_predicates>s
     }
   }
   QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [''],
       'password_policy' => ['require_lowercase_characters']
   })
 end
@@ -412,12 +409,11 @@ coreo_aws_rule "iam-password-policy-symbol" do
       is_symbol as require_symbols
     }
     query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
-      objectName
+      %<default_predicates>s
     }
   }
   QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [''],
       'password_policy' => ['require_symbols']
   })
 end
@@ -446,12 +442,11 @@ coreo_aws_rule "iam-password-policy-number" do
       is_number as require_numbers
     }
     query(func: uid(pp)) @filter(eq(val(is_number), false)) {
-      objectName
+      %<default_predicates>s
     }
   }
   QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [''],
       'password_policy' => ['require_numbers']
   })
 end
@@ -480,7 +475,7 @@ coreo_aws_rule "iam-password-policy-min-length" do
       is_min_length as minimum_password_length
     }
     query(func: uid(pp)) @filter( lt(val(is_min_length), 14) ) {
-      objectName
+      %<default_predicates>s
     }
   }
   QUERY
@@ -531,7 +526,7 @@ coreo_aws_rule "iam-support-role" do
       pfn as policy_name
     }
     query(func: uid(pf)) @filter( gt( val(pfa), 0) AND eq(val(pfn), AWSSupportAccess") ) {
-      objectName
+      %<default_predicates>s
     }
   }
   QUERY
