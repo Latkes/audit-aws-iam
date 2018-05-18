@@ -107,8 +107,8 @@ coreo_aws_rule "iam-unusediamgroup" do
   }
   QUERY
   meta_rule_node_triggers({
-                              'group' => [''],
-                              'user' => ['']
+                              'group' => [],
+                              'user' => []
                           })
 end
 
@@ -480,7 +480,6 @@ coreo_aws_rule "iam-password-policy-min-length" do
   }
   QUERY
   meta_rule_node_triggers ({
-      'account_password_policy' => [''],
       'password_policy' => ['minimum_password_length']
   })
 end
