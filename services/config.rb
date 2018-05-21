@@ -221,13 +221,23 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   id_map "static.password_policy"
   meta_rule_query <<~QUERY
   { 
-    query(func: %<password_policy_filter>s ) @filter(NOT has(password_reuse_prevention)) { 
-      %<default_predicates>s
+    pp as var(func: has(password_policy)) @filter(NOT has(password_reuse_prevention)) { 
+    }
+  
+    np as var(func: has(password_policy)) @filter( has(password_reuse_prevention)) { 
+       prp as password_reuse_prevention
     } 
+      
+    ap as var(func: uid(np)) @filter(eq(val(prp), false)) {
+    }
+        
+    query(func: uid(ap, pp)){
+      %<default_predicates>s
+    }
+      
   }
   QUERY
   meta_rule_node_triggers ({
-
       'password_policy' => ['password_reuse_prevention']
   })
 end
