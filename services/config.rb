@@ -258,18 +258,17 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   id_map "static.password_policy"
   meta_rule_query <<~QUERY
   { 
-    pp as var(func: has(password_policy)) @filter(NOT has(password_reuse_prevention)) { 
-    }
+    pp as var(func: has(password_policy)) @filter(NOT has(password_reuse_prevention)) { }
   
-    np as var(func: has(password_policy)) @filter( has(password_reuse_prevention)) { 
+    np as var(func: has(password_policy)) @filter(has(password_reuse_prevention)) { 
        prp as password_reuse_prevention
-    } 
-      
-    ap as var(func: uid(np)) @filter(eq(val(prp), false)) {
     }
-        
+      
+    ap as var(func: uid(np)) @filter(eq(val(prp), false)) { }
+       
     query(func: uid(ap, pp)){
       %<default_predicates>s
+      password_reuse_prevention
     }
       
   }
@@ -303,6 +302,7 @@ coreo_aws_rule "iam-expirepasswords" do
     }
     query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
       %<default_predicates>s
+      expire_passwords
     }
   }
   QUERY
@@ -409,6 +409,7 @@ coreo_aws_rule "iam-password-policy-uppercase" do
     }
     query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
       %<default_predicates>s
+      require_uppercase_characters
     }
   }
   QUERY
@@ -442,6 +443,7 @@ coreo_aws_rule "iam-password-policy-lowercase" do
     }
     query(func: uid(pp)) @filter(eq(val(is_lowercase), false)) {
       %<default_predicates>s
+      require_lowercase_characters
     }
   }
   QUERY
@@ -475,6 +477,7 @@ coreo_aws_rule "iam-password-policy-symbol" do
     }
     query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
       %<default_predicates>s
+      require_symbols
     }
   }
   QUERY
@@ -508,6 +511,7 @@ coreo_aws_rule "iam-password-policy-number" do
     }
     query(func: uid(pp)) @filter(eq(val(is_number), false)) {
       %<default_predicates>s
+      require_numbers
     }
   }
   QUERY
@@ -541,6 +545,7 @@ coreo_aws_rule "iam-password-policy-min-length" do
     }
     query(func: uid(pp)) @filter( lt(val(is_min_length), 14) ) {
       %<default_predicates>s
+      minimum_password_length
     }
   }
   QUERY
@@ -607,6 +612,8 @@ coreo_aws_rule "iam-support-role" do
     }
     query(func: uid(pf)) @filter( gt( val(pfa), 0) AND eq(val(pfn), AWSSupportAccess") ) {
       %<default_predicates>s
+      attachment_count
+      policy_name
     }
   }
   QUERY
