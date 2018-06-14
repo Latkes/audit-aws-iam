@@ -920,6 +920,25 @@ coreo_aws_rule "iam-root-key-access" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: %<credential_report_filter>s) { 
+      u as user
+      ak_1 as access_key_1_active
+    }
+    query(func: uid(cr)) @filter(eq(val(u), "<root_user>") AND eq(val(ak_1), true)) {
+      %<default_predicates>s
+      user
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_1_last_used_service
+      access_key_1_last_used_region
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['user', 'access_key_1_active']
+                          })
 end
 
 coreo_aws_rule "iam-root-no-mfa" do
@@ -940,6 +959,25 @@ coreo_aws_rule "iam-root-no-mfa" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: %<credential_report_filter>s) { 
+      u as user
+      ma as mfa_active
+    }
+    query(func: uid(cr)) @filter(eq(val(u), "<root_user>") AND eq(val(ma), false)) {
+      %<default_predicates>s
+      user
+      mfa_active
+      access_key_1_last_used_date
+      access_key_1_last_used_service
+      access_key_1_last_used_region
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['user', 'mfa_active']
+                          })
 end
 
 coreo_aws_rule "manual-strategic-iam-roles" do
