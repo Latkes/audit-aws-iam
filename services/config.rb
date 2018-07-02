@@ -198,6 +198,27 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Inactive", "90.days.ago"]
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: %<credential_report_filter>s) { 
+      ak1_active as access_key_1_active
+      ak2_active as access_key_2_active
+      ak1_last_used as access_key_1_last_used
+      ak2_last_used as access_key_2_last_used
+    }
+    query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), <%= 90.days.ago %>)) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), <%= 90.days.ago %>))) {
+      %<default_predicates>s
+      user
+      access_key_1_active
+      access_key_1_last_used
+      access_key_2_active
+      access_key_2_last_used
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['access_key_1_active', 'access_key_1_last_used', 'access_key_2_active', 'access_key_2_last_used']
+                          })
 end
 
 coreo_aws_rule "iam-active-key-no-rotation" do
@@ -382,6 +403,18 @@ coreo_aws_rule "iam-user-attached-policies" do
   audit_objects ["", "object.policy_names"]
   operators ["", ">"]
   raise_when ["", 0]
+  meta_rule_query <<~QUERY
+  {
+    query(func: %<user_filter>s) @filter(has(user_policy_list)) {
+      %<default_predicates>s
+      user_policy_list
+      user_name
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'password_policy' => ['require_uppercase_characters']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-uppercase" do
@@ -1018,6 +1051,27 @@ coreo_aws_rule "iam-initialization-access-key" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: %<credential_report_filter>s) { 
+      key1_active as access_key_1_active
+      key2_active as access_key_2_active
+      key1_used as access_key_1_last_used_date
+      key2_used as access_key_2_last_used_date
+    }
+    query(func: uid(cr)) @filter((eq(val(key1_active), true) AND eq(val(key1_used), "2000-01-01T00:00:00-08:00")) OR (eq(val(key2_active), true) AND eq(val(key2_used), "2000-01-01T00:00:00-08:00"))) {
+      %<default_predicates>s
+      user
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_date
+      access_key_2_last_used_date
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['access_key_1_active', 'access_key_1_last_used_date',  'access_key_2_active', 'access_key_2_last_used_date']
+                          })
 end
 
 coreo_aws_rule "iam-omnipotent-policy" do
