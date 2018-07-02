@@ -206,7 +206,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
       ak1_last_used as access_key_1_last_used
       ak2_last_used as access_key_2_last_used
     }
-    query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), <%= 90.days.ago %>)) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), <%= 90.days.ago %>))) {
+    query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), <%= 90.days.ago.iso8601 %>)) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), <%= 90.days.ago.iso8601 %>))) {
       %<default_predicates>s
       user
       access_key_1_active
