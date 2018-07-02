@@ -169,7 +169,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
       ak_1 as access_key_1_active
       ak_2 as access_key_2_active
     }
-    query(func: uid(cr)) @filter(eq(val(user), "<root_account>") AND eq(val(ak_1), true) AND eq(val(ak_2), true)) {
+    query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND eq(val(ak_1), true) AND eq(val(ak_2), true)) {
       %<default_predicates>s
       user
       access_key_1_active
