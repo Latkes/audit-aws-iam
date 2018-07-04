@@ -679,7 +679,7 @@ coreo_aws_rule "iam-support-role" do
       pfa as attachment_count
       pfn as policy_name
     }
-    query(func: uid(pf)) @filter( gt( val(pfa), 0) AND eq(val(pfn), AWSSupportAccess") ) {
+    query(func: uid(pf)) @filter( gt( val(pfa), 0) AND eq(val(pfn), "AWSSupportAccess") ) {
       <%= default_predicates %>
       attachment_count
       policy_name
