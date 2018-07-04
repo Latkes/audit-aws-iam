@@ -408,7 +408,7 @@ coreo_aws_rule "iam-root-active-password" do
       pl_used as password_last_used
       u as user
     }
-    query(func: uid(cr)) @filter((eq(val(u), "<root_account>") AND gt(val(pl_used), "<%= 15.days.ago.iso8601 %>"))))) {
+    query(func: uid(cr)) @filter((eq(val(u), "<root_account>") AND gt(val(pl_used), "<%= 15.days.ago.iso8601 %>"))) {
       <%= default_predicates %>
       user
       password_last_used
