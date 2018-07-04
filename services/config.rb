@@ -706,6 +706,21 @@ coreo_aws_rule "iam-user-password-not-used" do
   operators ["<"]
   raise_when ['${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}.days.ago']
   id_map "object.users.user_name"
+  meta_rule_query <<~QUERY
+  {
+    u as var(func: <%= filter['user'] %> ) {
+      plu as password_last_used
+    }
+    query(func: uid(u)) @filter(gt(val(plu), "<%= ${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}.days.ago.iso8601 %>"))) {
+      <%= default_predicates %>
+      user
+      password_last_used
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'policy' => ['attachment_count','policy_name']
+  })
 end
 
 coreo_aws_rule "iam-unused-access" do
