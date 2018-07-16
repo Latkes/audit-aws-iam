@@ -16,7 +16,7 @@ coreo_aws_rule "iam-inventory-users" do
 end
 
 coreo_aws_rule "iam-inventory-roles" do
- action :define
+  action :define
   service :iam
   link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
   include_violations_in_count false
@@ -98,6 +98,20 @@ coreo_aws_rule "iam-unusediamgroup" do
   operators ["", "=="]
   raise_when ["", 0]
   id_map "object.group.group_name"
+  meta_rule_query <<~QUERY
+  {
+    g as var(func: <%= filter['group'] %>) @cascade { 
+      relates_to @filter(has(user))
+    }
+    query(func: has(group)) @filter(NOT uid(g)) {
+      <%= default_predicates %>
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'group' => [],
+                              'user' => []
+                          })
 end
 
 coreo_aws_rule "iam-multiple-keys" do
@@ -109,11 +123,28 @@ coreo_aws_rule "iam-multiple-keys" do
   category "Access"
   suggested_action "Remove excess access keys"
   level "Low"
-  id_map "object.content.user"
   objectives ["credential_report", "credential_report"]
   audit_objects ["object.content.access_key_1_active", "object.content.access_key_2_active"]
   operators ["=~", "=~" ]
   raise_when [/true/i, /true/i]
+  id_map "object.content.user"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      ak_1 as access_key_1_active
+      ak_2 as access_key_2_active
+    }
+    query(func: uid(cr)) @filter(eq(val(ak_1), true) AND eq(val(ak_2), true)) {
+      <%= default_predicates %>
+      user
+      access_key_1_active
+      access_key_2_active
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['access_key_1_active', 'access_key_2_active']
+                          })
 end
 
 coreo_aws_rule "iam-root-multiple-keys" do
@@ -131,6 +162,24 @@ coreo_aws_rule "iam-root-multiple-keys" do
   audit_objects ["object.content.user", "object.content.access_key_1_active", "object.content.access_key_2_active"]
   operators ["==", "=~", "=~" ]
   raise_when ["<root_account>", /true/i, /true/i]
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      u as user
+      ak_1 as access_key_1_active
+      ak_2 as access_key_2_active
+    }
+    query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND eq(val(ak_1), true) AND eq(val(ak_2), true)) {
+      <%= default_predicates %>
+      user
+      access_key_1_active
+      access_key_2_active
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['user', 'access_key_1_active', 'access_key_2_active']
+                          })
 end
 
 coreo_aws_rule "iam-inactive-key-no-rotation" do
@@ -149,6 +198,27 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Inactive", "90.days.ago"]
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) {
+      ak1_active as access_key_1_active
+      ak2_active as access_key_2_active
+      ak1_last_used as access_key_1_last_used_date
+      ak2_last_used as access_key_2_last_used_date
+    }
+    query(func: uid(cr)) @filter((eq(val(ak1_active), false) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), false) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
+      <%= default_predicates %>
+      user
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_2_active
+      access_key_2_last_used_date
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
+                          })
 end
 
 coreo_aws_rule "iam-active-key-no-rotation" do
@@ -169,6 +239,27 @@ coreo_aws_rule "iam-active-key-no-rotation" do
   call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Active", "90.days.ago"]
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      ak1_active as access_key_1_active
+      ak2_active as access_key_2_active
+      ak1_last_used as access_key_1_last_used_date
+      ak2_last_used as access_key_2_last_used_date
+    }
+    query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
+      <%= default_predicates %>
+      user
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_2_active
+      access_key_2_last_used_date
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
+                          })
 end
 
 coreo_aws_rule "iam-missing-password-policy" do
@@ -207,6 +298,26 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   operators ["!="]
   raise_when [true]
   id_map "static.password_policy"
+  meta_rule_query <<~QUERY
+  { 
+    pp as var(func: has(password_policy)) @filter(NOT has(password_reuse_prevention)) { }
+  
+    np as var(func: has(password_policy)) @filter(has(password_reuse_prevention)) { 
+       prp as password_reuse_prevention
+    }
+      
+    ap as var(func: uid(np)) @filter(eq(val(prp), false)) { }
+       
+    query(func: uid(ap, pp)){
+      <%= default_predicates %>
+      password_reuse_prevention
+    }
+      
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'password_policy' => ['password_reuse_prevention']
+  })
 end
 
 coreo_aws_rule "iam-expirepasswords" do
@@ -226,6 +337,20 @@ coreo_aws_rule "iam-expirepasswords" do
   operators ["=="]
   raise_when ["false"]
   id_map "static.password_policy"
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: <%= filter['password_policy'] %> ) {
+      is_expired as expire_passwords
+    }
+    query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
+      <%= default_predicates %>
+      expire_passwords
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'password_policy' => ['expire_passwords']
+  })
 end
 
 coreo_aws_rule "iam-no-mfa" do
@@ -243,6 +368,23 @@ coreo_aws_rule "iam-no-mfa" do
   audit_objects ["object.content.password_enabled", "object.content.mfa_active"]
   operators ["=~", "=~" ]
   raise_when [/true/i, /false/i]
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      pe as password_enabled
+      ma as mfa_active
+    }
+    query(func: uid(cr)) @filter(eq(val(pe), true) AND eq(val(ma), false)) {
+      <%= default_predicates %>
+      user
+      password_enabled
+      mfa_active
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['password_enabled', 'mfa_active']
+                          })
 end
 
 coreo_aws_rule "iam-root-active-password" do
@@ -260,6 +402,22 @@ coreo_aws_rule "iam-root-active-password" do
   audit_objects ["object.content.user", "object.content.password_last_used"]
   operators ["==", ">"]
   raise_when ["<root_account>", "15.days.ago"]
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) {
+      pl_used as password_last_used
+      u as user
+    }
+    query(func: uid(cr)) @filter((eq(val(u), "<root_account>") AND gt(val(pl_used), "<%= 15.days.ago.iso8601 %>"))) {
+      <%= default_predicates %>
+      user
+      password_last_used
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['password_last_used']
+                          })
 end
 
 coreo_aws_rule "iam-user-attached-policies" do
@@ -281,6 +439,18 @@ coreo_aws_rule "iam-user-attached-policies" do
   audit_objects ["", "object.policy_names"]
   operators ["", ">"]
   raise_when ["", 0]
+  meta_rule_query <<~QUERY
+  {
+    query(func: <%= filter['user'] %>) @filter(has(user_policy_list)) {
+      <%= default_predicates %>
+      user_policy_list
+      user_name
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'password_policy' => ['require_uppercase_characters']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-uppercase" do
@@ -301,6 +471,20 @@ coreo_aws_rule "iam-password-policy-uppercase" do
   audit_objects ["object.password_policy.require_uppercase_characters"]
   operators ["=="]
   raise_when [false]
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: <%= filter['password_policy'] %> ) {
+      is_uppercase as require_uppercase_characters
+    }
+    query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
+      <%= default_predicates %>
+      require_uppercase_characters
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'password_policy' => ['require_uppercase_characters']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-lowercase" do
@@ -321,6 +505,20 @@ coreo_aws_rule "iam-password-policy-lowercase" do
   audit_objects ["object.password_policy.require_lowercase_characters"]
   operators ["=="]
   raise_when [false]
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: <%= filter['password_policy'] %> ) {
+      is_lowercase as require_lowercase_characters
+    }
+    query(func: uid(pp)) @filter(eq(val(is_lowercase), false)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'password_policy' => ['require_lowercase_characters']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-symbol" do
@@ -341,6 +539,20 @@ coreo_aws_rule "iam-password-policy-symbol" do
   audit_objects ["object.password_policy.require_symbols"]
   operators ["=="]
   raise_when [false]
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: <%= filter['password_policy'] %> ) {
+      is_symbol as require_symbols
+    }
+    query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
+      <%= default_predicates %>
+      require_symbols
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'password_policy' => ['require_symbols']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-number" do
@@ -361,6 +573,20 @@ coreo_aws_rule "iam-password-policy-number" do
   audit_objects ["object.password_policy.require_numbers"]
   operators ["=="]
   raise_when [false]
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: <%= filter['password_policy'] %> ) {
+      is_number as require_numbers
+    }
+    query(func: uid(pp)) @filter(eq(val(is_number), false)) {
+      <%= default_predicates %>
+      require_numbers
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'password_policy' => ['require_numbers']
+  })
 end
 
 coreo_aws_rule "iam-password-policy-min-length" do
@@ -381,6 +607,20 @@ coreo_aws_rule "iam-password-policy-min-length" do
   audit_objects ["object.password_policy.minimum_password_length"]
   operators ["<"]
   raise_when [14]
+  meta_rule_query <<~QUERY
+  {
+    pp as var(func: <%= filter['password_policy'] %> ) {
+      is_min_length as minimum_password_length
+    }
+    query(func: uid(pp)) @filter( lt(val(is_min_length), 14) ) {
+      <%= default_predicates %>
+      minimum_password_length
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'password_policy' => ['minimum_password_length']
+  })
 end
 
 coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
@@ -397,6 +637,22 @@ coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
   audit_objects ["object.content.password_last_changed", "object.content.password_last_changed", "object.content.password_last_changed"]
   operators ["!=", "!=", "<"]
   raise_when ["not_supported", "N/A", "2017-02-21 16:00:00 -0800"]
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      plc as password_last_changed
+      uct as user_creation_time
+    }
+    query(func: uid(cr)) @filter(lt(val(plc), "2017-02-25T00:00:00+00:00") AND lt(val(uct), "2017-02-25T00:00:00+00:00")) {
+      <%= default_predicates %>
+      user
+      password_last_changed
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['password_last_changed', 'user_creation_time']
+                          })
 end
 
 coreo_aws_rule "iam-support-role" do
@@ -417,6 +673,22 @@ coreo_aws_rule "iam-support-role" do
   operators ["==", ">"]
   raise_when ["AWSSupportAccess", 0]
   id_map "object.policies.policy_name"
+  meta_rule_query <<~QUERY
+  {
+    pf as var(func: <%= filter['policy'] %> ) {
+      pfa as attachment_count
+      pfn as policy_name
+    }
+    query(func: uid(pf)) @filter( gt( val(pfa), 0) AND eq(val(pfn), "AWSSupportAccess") ) {
+      <%= default_predicates %>
+      attachment_count
+      policy_name
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'policy' => ['attachment_count','policy_name']
+  })
 end
 
 coreo_aws_rule "iam-user-password-not-used" do
@@ -434,6 +706,21 @@ coreo_aws_rule "iam-user-password-not-used" do
   operators ["<"]
   raise_when ['${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}.days.ago']
   id_map "object.users.user_name"
+  meta_rule_query <<~QUERY
+  {
+    u as var(func: <%= filter['user'] %> ) {
+      plu as password_last_used
+    }
+    query(func: uid(u)) @filter(gt(val(plu), "<%= ${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}.days.ago.iso8601 %>"))) {
+      <%= default_predicates %>
+      user
+      password_last_used
+    }
+  }
+  QUERY
+  meta_rule_node_triggers ({
+      'policy' => ['attachment_count','policy_name']
+  })
 end
 
 coreo_aws_rule "iam-unused-access" do
@@ -455,6 +742,27 @@ coreo_aws_rule "iam-unused-access" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) {
+      ak1_active as access_key_1_active
+      ak2_active as access_key_2_active
+      ak1_last_used as access_key_1_last_used_date
+      ak2_last_used as access_key_2_last_used_date
+    }
+    query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
+      <%= default_predicates %>
+      user
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_2_active
+      access_key_2_last_used_date
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
+                          })
 end
 
 coreo_aws_rule "iam-user-is-admin" do
@@ -530,6 +838,23 @@ coreo_aws_rule "iam-active-root-user" do
   audit_objects ["object.content.user"]
   operators ["=="]
   raise_when ["<root_account>"]
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      u as user
+      s as access_key_1_last_used_service
+    }
+    query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND NOT eq(val(s), "N/A")) {
+      <%= default_predicates %>
+      user
+      access_key_1_last_used_service
+      access_key_1_last_used_region
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['user', 'access_key_1_last_used_service']
+                          })
 end
 
 coreo_aws_rule "iam-mfa-password-holders" do
@@ -551,6 +876,23 @@ coreo_aws_rule "iam-mfa-password-holders" do
   operators ["==", "=="]
   raise_when [true, false]
   id_map "object.content.user"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      pe as password_enabled
+      ma as mfa_active
+    }
+    query(func: uid(cr)) @filter(eq(val(pe), true) AND eq(val(ma), false)) {
+      <%= default_predicates %>
+      user
+      password_enabled
+      mfa_active
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['password_enabled', 'mfa_active']
+                          })
 end
 
 coreo_aws_rule "manual-maintenance-records" do
@@ -575,7 +917,7 @@ coreo_aws_rule "manual-approved-monitored-maintenance" do
   action :define
   service :user
   link ""
-  display_name "Ensure that all maintenance activies are approved and monitored"
+  display_name "Ensure that all maintenance activities are approved and monitored"
   description "All maintenance activities should be both approved and monitored whether or on or off site"
   category "Security"
   suggested_action "Implement a policy to ensure that all maintenance efforts are systematically both approved and monitored, on and off site"
@@ -645,8 +987,6 @@ coreo_aws_rule "manual-obscure-auth-info" do
   id_map "static.no_op"
 end
 
-
-
 coreo_aws_rule "manual-detailed-billing" do
   action :define
   service :user
@@ -685,6 +1025,30 @@ coreo_aws_rule "iam-root-key-access" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      u as user
+      ak_1 as access_key_1_active
+      ak_2 as access_key_2_active
+    }
+    query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND ( eq(val(ak_1), true) OR eq(val(ak_2), true) ) ) {
+      <%= default_predicates %>
+      user
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_1_last_used_service
+      access_key_1_last_used_region
+      access_key_2_active
+      access_key_2_last_used_date
+      access_key_2_last_used_service
+      access_key_2_last_used_region
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['user', 'access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
+                          })
 end
 
 coreo_aws_rule "iam-root-no-mfa" do
@@ -705,6 +1069,25 @@ coreo_aws_rule "iam-root-no-mfa" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      u as user
+      ma as mfa_active
+    }
+    query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND eq(val(ma), false)) {
+      <%= default_predicates %>
+      user
+      mfa_active
+      access_key_1_last_used_date
+      access_key_1_last_used_service
+      access_key_1_last_used_region
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['user', 'mfa_active']
+                          })
 end
 
 coreo_aws_rule "manual-strategic-iam-roles" do
@@ -745,6 +1128,27 @@ coreo_aws_rule "iam-initialization-access-key" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['credential_report'] %>) { 
+      key1_active as access_key_1_active
+      key2_active as access_key_2_active
+      key1_used as access_key_1_last_used_date
+      key2_used as access_key_2_last_used_date
+    }
+    query(func: uid(cr)) @filter((eq(val(key1_active), true) AND eq(val(key1_used), "2000-01-01T00:00:00-08:00")) OR (eq(val(key2_active), true) AND eq(val(key2_used), "2000-01-01T00:00:00-08:00"))) {
+      <%= default_predicates %>
+      user
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_date
+      access_key_2_last_used_date
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'credential_report' => ['access_key_1_active', 'access_key_1_last_used_date',  'access_key_2_active', 'access_key_2_last_used_date']
+                          })
 end
 
 coreo_aws_rule "iam-omnipotent-policy" do
@@ -1097,7 +1501,7 @@ const AWS = require('aws-sdk');
 const Promise = require('bluebird');
 const iam = Promise.promisifyAll(new AWS.IAM({maxRetries: 1000, apiVersion: '2010-05-08', retryDelayOptions: {base: 1000}}));
 const IAM_ADMIN_POLICY_SPECIFIER = ${AUDIT_AWS_CIS_IAM_ADMIN_GROUP_PERMISSIONS};
-const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count', 'meta_nist_171_id'];
+const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count', 'meta_nist_171_id', 'meta_rule_query', 'meta_rule_node_triggers'];
 const IAM_ADMIN_RULE = 'iam-user-is-admin';
 const EC2_ADMIN_RULE = 'iam-instance-role-is-admin';
 
@@ -1194,7 +1598,7 @@ coreo_uni_util_jsrunner "cis-iam" do
        'iam-initialization-access-key': COMPOSITE::coreo_aws_rule.iam-initialization-access-key.inputs,
        'iam-omnipotent-policy': COMPOSITE::coreo_aws_rule.iam-omnipotent-policy.inputs
    };
-   const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count', 'meta_nist_171_id'];
+   const ruleInputsToKeep = ['service', 'category', 'link', 'display_name', 'suggested_action', 'description', 'level', 'meta_cis_id', 'meta_cis_scored', 'meta_cis_level', 'include_violations_in_count', 'meta_nist_171_id', 'meta_rule_query', 'meta_rule_node_triggers'];
    const ruleMeta = {};
 
    Object.keys(ruleMetaJSON).forEach(rule => {
