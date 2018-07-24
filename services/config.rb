@@ -615,6 +615,9 @@ coreo_aws_rule "iam-password-policy-min-length" do
     query(func: uid(pp)) @filter( lt(val(is_min_length), 14) ) {
       <%= default_predicates %>
       minimum_password_length
+    	relates_to {
+        <%= default_predicates %>
+      }
     }
   }
   QUERY
