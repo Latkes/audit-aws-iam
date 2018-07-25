@@ -476,9 +476,24 @@ coreo_aws_rule "iam-password-policy-uppercase" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_uppercase as require_uppercase_characters
     }
-    query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
+    
+    invalid_pp as query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
       <%= default_predicates %>
       require_uppercase_characters
+    }
+
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_uppercase_characters
+      require_numbers
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+
+      relates_to {
+      <%= default_predicates %>
+      }
     }
   }
   QUERY
