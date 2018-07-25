@@ -342,9 +342,18 @@ coreo_aws_rule "iam-expirepasswords" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_expired as expire_passwords
     }
-    query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
+    does_not_expire as query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
       <%= default_predicates %>
       expire_passwords
+    }
+    visualize(func: uid(does_not_expire)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      expire_passwords
+      relates_to {
+        <%= default_predicates %>
+      }
     }
   }
   QUERY
