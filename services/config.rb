@@ -597,9 +597,16 @@ coreo_aws_rule "iam-password-policy-number" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_number as require_numbers
     }
-    query(func: uid(pp)) @filter(eq(val(is_number), false)) {
+    invalid_pp as query(func: uid(pp)) @filter(eq(val(is_number), false)) {
       <%= default_predicates %>
       require_numbers
+    }
+
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      relates_to {
+        <%= default_predicates %>
+      }
     }
   }
   QUERY
