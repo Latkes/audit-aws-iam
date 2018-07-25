@@ -604,6 +604,12 @@ coreo_aws_rule "iam-password-policy-number" do
 
     visualize(func: uid(invalid_pp)) {
       <%= default_predicates %>
+      require_numbers
+      allow_users_to_change_password
+      require_lowercase_characters
+      require_uppercase_characters
+      expire_passwords
+      minimum_password_length
       relates_to {
         <%= default_predicates %>
       }
