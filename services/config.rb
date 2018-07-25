@@ -544,9 +544,19 @@ coreo_aws_rule "iam-password-policy-symbol" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_symbol as require_symbols
     }
-    query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
+    no_symbols_required as query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
       <%= default_predicates %>
       require_symbols
+    }
+    visualize(func: uid(no_symbols_required)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      expire_passwords
+      require_symbols
+      relates_to{
+        <%= default_predicates %>
+      }
     }
   }
   QUERY
