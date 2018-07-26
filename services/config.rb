@@ -342,9 +342,18 @@ coreo_aws_rule "iam-expirepasswords" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_expired as expire_passwords
     }
-    query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
+    does_not_expire as query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
       <%= default_predicates %>
       expire_passwords
+    }
+    visualize(func: uid(does_not_expire)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      expire_passwords
+      relates_to {
+        <%= default_predicates %>
+      }
     }
   }
   QUERY
@@ -544,9 +553,19 @@ coreo_aws_rule "iam-password-policy-symbol" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_symbol as require_symbols
     }
-    query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
+    no_symbols_required as query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
       <%= default_predicates %>
       require_symbols
+    }
+    visualize(func: uid(no_symbols_required)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      expire_passwords
+      require_symbols
+      relates_to{
+        <%= default_predicates %>
+      }
     }
   }
   QUERY
@@ -578,9 +597,22 @@ coreo_aws_rule "iam-password-policy-number" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_number as require_numbers
     }
-    query(func: uid(pp)) @filter(eq(val(is_number), false)) {
+    invalid_pp as query(func: uid(pp)) @filter(eq(val(is_number), false)) {
       <%= default_predicates %>
       require_numbers
+    }
+
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_numbers
+      allow_users_to_change_password
+      require_lowercase_characters
+      require_uppercase_characters
+      expire_passwords
+      minimum_password_length
+      relates_to {
+        <%= default_predicates %>
+      }
     }
   }
   QUERY
