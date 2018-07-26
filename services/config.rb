@@ -492,7 +492,7 @@ coreo_aws_rule "iam-password-policy-uppercase" do
       minimum_password_length
 
       relates_to {
-      <%= default_predicates %>
+        <%= default_predicates %>
       }
     }
   }
