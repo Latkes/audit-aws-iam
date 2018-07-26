@@ -490,7 +490,6 @@ coreo_aws_rule "iam-password-policy-uppercase" do
       require_lowercase_characters
       expire_passwords
       minimum_password_length
-
       relates_to {
         <%= default_predicates %>
       }
