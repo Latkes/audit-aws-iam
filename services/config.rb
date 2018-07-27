@@ -458,7 +458,7 @@ coreo_aws_rule "iam-user-attached-policies" do
   }
   QUERY
   meta_rule_node_triggers ({
-      'password_policy' => ['require_uppercase_characters']
+      'password_policy' => ['user_policy_list']
   })
 end
 
