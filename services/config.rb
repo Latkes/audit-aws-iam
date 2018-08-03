@@ -103,10 +103,17 @@ coreo_aws_rule "iam-unusediamgroup" do
     g as var(func: <%= filter['group'] %>) @cascade { 
       relates_to @filter(has(user))
     }
-    query(func: has(group)) @filter(NOT uid(g)) {
+    invalid_items as query(func: <%= filter['group'] %>) @filter(NOT uid(g)) {
       <%= default_predicates %>
     }
-  }
+    
+    visualize(func: uid(invalid_items)) {
+      <%= default_predicates %>
+      relates_to {
+        <%= default_predicates %>
+      }
+    }
+}
   QUERY
   meta_rule_node_triggers({
                               'group' => [],
