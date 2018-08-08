@@ -359,7 +359,7 @@ coreo_aws_rule "iam-passwordreuseprevention" do
        prp as password_reuse_prevention
     }
       
-    ap as var(func: uid(np)) @filter(eq(val(prp), false)) { }
+    ap as var(func: uid(np)) @filter(eq(val(prp), 0)) { }
        
     query(func: uid(ap, pp)){
       <%= default_predicates %>
