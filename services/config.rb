@@ -149,11 +149,30 @@ coreo_aws_rule "iam-multiple-keys" do
       ak_1 as access_key_1_active
       ak_2 as access_key_2_active
     }
-    query(func: uid(cr)) @filter(eq(val(ak_1), true) AND eq(val(ak_2), true)) {
+    invalid_users as query(func: uid(cr)) @filter(eq(val(ak_1), true) AND eq(val(ak_2), true)) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_2_active
+      access_key_1_last_used_service
+      access_key_2_last_used_service
+      password_next_rotation
+      password_last_used
+      password_enabled
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_service
+      access_key_2_last_used_service
+      password_next_rotation
+      password_last_used
+      password_enabled
+      relates_to {
+        <%= default_predicates %>
+      }
     }
   }
   QUERY
