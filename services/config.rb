@@ -105,10 +105,18 @@ coreo_aws_rule "iam-unusediamgroup" do
     }
     invalid_items as query(func: <%= filter['group'] %>) @filter(NOT uid(g)) {
       <%= default_predicates %>
+      group_name
+      cc_cloud
+      cc_location
+      cc_cloud_account
     }
     
     visualize(func: uid(invalid_items)) {
       <%= default_predicates %>
+      group_name
+      cc_cloud
+      cc_location
+      cc_cloud_account
       relates_to {
         <%= default_predicates %>
       }
