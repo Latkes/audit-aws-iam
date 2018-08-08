@@ -162,7 +162,7 @@ coreo_aws_rule "iam-multiple-keys" do
     }
     visualize(func: uid(invalid_users)) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_2_active
       access_key_1_last_used_service
