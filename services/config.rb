@@ -186,7 +186,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
     }
     invalid_users as query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND eq(val(ak_1), true) AND eq(val(ak_2), true)) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_2_active
       access_key_1_last_used_service
@@ -197,7 +197,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
     }
     visualize(func: uid(invalid_users)) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_2_active
       access_key_1_last_used_service
