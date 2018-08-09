@@ -103,10 +103,28 @@ coreo_aws_rule "iam-unusediamgroup" do
     g as var(func: <%= filter['group'] %>) @cascade { 
       relates_to @filter(has(user))
     }
-    query(func: has(group)) @filter(NOT uid(g)) {
+    invalid_items as query(func: <%= filter['group'] %>) @filter(NOT uid(g)) {
       <%= default_predicates %>
+      group_name
+      cc_cloud
+      cc_location
+      cc_cloud_account
     }
-  }
+    
+    visualize(func: uid(invalid_items)) {
+      <%= default_predicates %>
+      group_name
+      cc_cloud
+      cc_location
+      cc_cloud_account
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_items)){
+          <%= default_predicates %>
+        }
+      }
+    }
+}
   QUERY
   meta_rule_node_triggers({
                               'group' => [],
@@ -134,11 +152,33 @@ coreo_aws_rule "iam-multiple-keys" do
       ak_1 as access_key_1_active
       ak_2 as access_key_2_active
     }
-    query(func: uid(cr)) @filter(eq(val(ak_1), true) AND eq(val(ak_2), true)) {
+    invalid_users as query(func: uid(cr)) @filter(eq(val(ak_1), true) AND eq(val(ak_2), true)) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_2_active
+      access_key_1_last_used_service
+      access_key_2_last_used_service
+      password_last_used
+      password_next_rotation
+      password_enabled
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_service
+      access_key_2_last_used_service
+      password_last_used
+      password_next_rotation
+      password_enabled
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -169,11 +209,33 @@ coreo_aws_rule "iam-root-multiple-keys" do
       ak_1 as access_key_1_active
       ak_2 as access_key_2_active
     }
-    query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND eq(val(ak_1), true) AND eq(val(ak_2), true)) {
+    invalid_users as query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND eq(val(ak_1), true) AND eq(val(ak_2), true)) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_2_active
+      access_key_1_last_used_service
+      access_key_2_last_used_service
+      password_next_rotation
+      password_last_used
+      password_enabled
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_service
+      access_key_2_last_used_service
+      password_next_rotation
+      password_last_used
+      password_enabled
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -206,13 +268,30 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
       ak1_last_used as access_key_1_last_used_date
       ak2_last_used as access_key_2_last_used_date
     }
-    query(func: uid(cr)) @filter((eq(val(ak1_active), false) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), false) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
+    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), false) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), false) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_1_last_used_date
       access_key_2_active
       access_key_2_last_used_date
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_2_active
+      access_key_2_last_used_date
+      password_next_rotation
+      password_last_used
+      password_enabled
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -247,13 +326,27 @@ coreo_aws_rule "iam-active-key-no-rotation" do
       ak1_last_used as access_key_1_last_used_date
       ak2_last_used as access_key_2_last_used_date
     }
-    query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
+    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_1_last_used_date
       access_key_2_active
       access_key_2_last_used_date
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_2_active
+      access_key_2_last_used_date
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -306,13 +399,34 @@ coreo_aws_rule "iam-passwordreuseprevention" do
        prp as password_reuse_prevention
     }
       
-    ap as var(func: uid(np)) @filter(eq(val(prp), false)) { }
+    ap as var(func: uid(np)) @filter(eq(val(prp), 0)) { }
        
-    query(func: uid(ap, pp)){
+    invalid_pp as query(func: uid(ap, pp)){
       <%= default_predicates %>
       password_reuse_prevention
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      minimum_password_length
+      allow_users_to_change_password
+      expire_passwords
     }
-      
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      password_reuse_prevention
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      minimum_password_length
+      allow_users_to_change_password
+      expire_passwords
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
+      }
+    } 
   }
   QUERY
   meta_rule_node_triggers ({
@@ -342,17 +456,20 @@ coreo_aws_rule "iam-expirepasswords" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_expired as expire_passwords
     }
-    does_not_expire as query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
+    invalid_pp as query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
       <%= default_predicates %>
       expire_passwords
     }
-    visualize(func: uid(does_not_expire)) {
+    visualize(func: uid(invalid_pp)) {
       <%= default_predicates %>
       require_lowercase_characters
       require_uppercase_characters
       expire_passwords
       relates_to {
         <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
       }
     }
   }
@@ -458,7 +575,7 @@ coreo_aws_rule "iam-user-attached-policies" do
   }
   QUERY
   meta_rule_node_triggers ({
-      'password_policy' => ['require_uppercase_characters']
+      'password_policy' => ['user_policy_list']
   })
 end
 
@@ -485,9 +602,31 @@ coreo_aws_rule "iam-password-policy-uppercase" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_uppercase as require_uppercase_characters
     }
-    query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
+    
+    invalid_pp as query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
       <%= default_predicates %>
       require_uppercase_characters
+      require_numbers
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+    }
+
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_uppercase_characters
+      require_numbers
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -519,9 +658,31 @@ coreo_aws_rule "iam-password-policy-lowercase" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_lowercase as require_lowercase_characters
     }
-    query(func: uid(pp)) @filter(eq(val(is_lowercase), false)) {
+    invalid_pp as query(func: uid(pp)) @filter(eq(val(is_lowercase), false)) {
       <%= default_predicates %>
       require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+    }
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -553,11 +714,11 @@ coreo_aws_rule "iam-password-policy-symbol" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_symbol as require_symbols
     }
-    no_symbols_required as query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
+    invalid_pp as query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
       <%= default_predicates %>
       require_symbols
     }
-    visualize(func: uid(no_symbols_required)) {
+    visualize(func: uid(invalid_pp)) {
       <%= default_predicates %>
       require_lowercase_characters
       require_uppercase_characters
@@ -565,6 +726,9 @@ coreo_aws_rule "iam-password-policy-symbol" do
       require_symbols
       relates_to{
         <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
       }
     }
   }
@@ -597,9 +761,25 @@ coreo_aws_rule "iam-password-policy-number" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_number as require_numbers
     }
-    query(func: uid(pp)) @filter(eq(val(is_number), false)) {
+    invalid_pp as query(func: uid(pp)) @filter(eq(val(is_number), false)) {
       <%= default_predicates %>
       require_numbers
+    }
+
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_numbers
+      allow_users_to_change_password
+      require_lowercase_characters
+      require_uppercase_characters
+      expire_passwords
+      minimum_password_length
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -698,10 +878,25 @@ coreo_aws_rule "iam-support-role" do
       pfa as attachment_count
       pfn as policy_name
     }
-    query(func: uid(pf)) @filter( gt( val(pfa), 0) AND eq(val(pfn), "AWSSupportAccess") ) {
+    invalid_result as query(func: uid(pf)) @filter( gt( val(pfa), 0) AND eq(val(pfn), "AWSSupportAccess") ) {
       <%= default_predicates %>
-      attachment_count
       policy_name
+      attachment_count
+      create_date
+      cc_cloud_account
+    }
+    visualize(func: uid(invalid_result)) {
+      <%= default_predicates %>
+      policy_name
+      attachment_count
+      create_date
+      cc_cloud_account
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_result)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -730,10 +925,29 @@ coreo_aws_rule "iam-user-password-not-used" do
     u as var(func: <%= filter['user'] %> ) {
       plu as password_last_used
     }
-    query(func: uid(u)) @filter(gt(val(plu), "<%= ${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}.days.ago.iso8601 %>")) {
+    invalid_users as query(func: uid(u)) @filter(lt(val(plu), "<%= ${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}.days.ago.iso8601 %>")) {
       <%= default_predicates %>
-      user
+      user_name
       password_last_used
+      ak1_active as access_key_1_active
+      ak2_active as access_key_2_active
+      ak1_last_used as access_key_1_last_used_date
+      ak2_last_used as access_key_2_last_used_date
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      password_last_used
+      ak1_active as access_key_1_active
+      ak2_active as access_key_2_active
+      ak1_last_used as access_key_1_last_used_date
+      ak2_last_used as access_key_2_last_used_date
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -769,13 +983,27 @@ coreo_aws_rule "iam-unused-access" do
       ak1_last_used as access_key_1_last_used_date
       ak2_last_used as access_key_2_last_used_date
     }
-    query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
+    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_1_last_used_date
       access_key_2_active
       access_key_2_last_used_date
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_2_active
+      access_key_2_last_used_date
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -863,11 +1091,25 @@ coreo_aws_rule "iam-active-root-user" do
       u as user_name
       s as access_key_1_last_used_service
     }
-    query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND NOT eq(val(s), "N/A")) {
+    invalid_users as query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND NOT eq(val(s), "N/A")) {
       <%= default_predicates %>
-      user
+      user_name
+      access_key_1_last_used_date
       access_key_1_last_used_service
       access_key_1_last_used_region
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_last_used_date
+      access_key_1_last_used_service
+      access_key_1_last_used_region
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -901,11 +1143,27 @@ coreo_aws_rule "iam-mfa-password-holders" do
       pe as password_enabled
       ma as mfa_active
     }
-    query(func: uid(cr)) @filter(eq(val(pe), true) AND eq(val(ma), false)) {
+    invalid_users as query(func: uid(cr)) @filter(eq(val(pe), true) AND eq(val(ma), false)) {
       <%= default_predicates %>
-      user
-      password_enabled
+      user_name
       mfa_active
+      password_last_used
+      password_next_rotation
+      password_enabled
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      mfa_active
+      password_last_used
+      password_next_rotation
+      password_enabled
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -1051,9 +1309,9 @@ coreo_aws_rule "iam-root-key-access" do
       ak_1 as access_key_1_active
       ak_2 as access_key_2_active
     }
-    query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND ( eq(val(ak_1), true) OR eq(val(ak_2), true) ) ) {
+    invalid_users as query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND ( eq(val(ak_1), true) OR eq(val(ak_2), true) ) ) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_1_last_used_date
       access_key_1_last_used_service
@@ -1062,6 +1320,24 @@ coreo_aws_rule "iam-root-key-access" do
       access_key_2_last_used_date
       access_key_2_last_used_service
       access_key_2_last_used_region
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_1_last_used_service
+      access_key_1_last_used_region
+      access_key_2_active
+      access_key_2_last_used_date
+      access_key_2_last_used_service
+      access_key_2_last_used_region
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -1094,13 +1370,27 @@ coreo_aws_rule "iam-root-no-mfa" do
       u as user_name
       ma as mfa_active
     }
-    query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND eq(val(ma), false)) {
+    invalid_users as query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND eq(val(ma), false)) {
       <%= default_predicates %>
-      user
+      user_name
       mfa_active
       access_key_1_last_used_date
       access_key_1_last_used_service
       access_key_1_last_used_region
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      mfa_active
+      access_key_1_last_used_date
+      access_key_1_last_used_service
+      access_key_1_last_used_region
+      relates_to {
+      <%= default_predicates %>
+      relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -1155,13 +1445,31 @@ coreo_aws_rule "iam-initialization-access-key" do
       key1_used as access_key_1_last_used_date
       key2_used as access_key_2_last_used_date
     }
-    query(func: uid(cr)) @filter((eq(val(key1_active), true) AND eq(val(key1_used), "2000-01-01T00:00:00-08:00")) OR (eq(val(key2_active), true) AND eq(val(key2_used), "2000-01-01T00:00:00-08:00"))) {
+    invalid_users as query(func: uid(cr)) @filter((eq(val(key1_active), true) AND eq(val(key1_used), "2000-01-01T00:00:00-08:00")) OR (eq(val(key2_active), true) AND eq(val(key2_used), "2000-01-01T00:00:00-08:00"))) {
       <%= default_predicates %>
-      user
+      user_name
       access_key_1_active
       access_key_2_active
       access_key_1_last_used_date
       access_key_2_last_used_date
+      access_key_1_last_used_region
+      access_key_2_last_used_region
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_date
+      access_key_2_last_used_date
+      access_key_1_last_used_region
+      access_key_2_last_used_region
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
