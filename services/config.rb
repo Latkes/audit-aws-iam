@@ -268,7 +268,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
       ak1_last_used as access_key_1_last_used_date
       ak2_last_used as access_key_2_last_used_date
     }
-    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), false) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), false) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
+    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), false) AND lt(val(ak1_last_used), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), false) AND lt(val(ak2_last_used), "<%= days_ago(90) %>"))) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -326,7 +326,7 @@ coreo_aws_rule "iam-active-key-no-rotation" do
       ak1_last_used as access_key_1_last_used_date
       ak2_last_used as access_key_2_last_used_date
     }
-    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
+    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= days_ago(90) %>"))) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -534,7 +534,7 @@ coreo_aws_rule "iam-root-active-password" do
       pl_used as password_last_used
       u as user_name
     }
-    query(func: uid(cr)) @filter((eq(val(u), "<root_account>") AND gt(val(pl_used), "<%= 15.days.ago.iso8601 %>"))) {
+    query(func: uid(cr)) @filter((eq(val(u), "<root_account>") AND gt(val(pl_used), "<%= days_ago(15) %>"))) {
       <%= default_predicates %>
       user
       password_last_used
@@ -925,7 +925,7 @@ coreo_aws_rule "iam-user-password-not-used" do
     u as var(func: <%= filter['user'] %> ) {
       plu as password_last_used
     }
-    invalid_users as query(func: uid(u)) @filter(lt(val(plu), "<%= ${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}.days.ago.iso8601 %>")) {
+    invalid_users as query(func: uid(u)) @filter(lt(val(plu), "<%= days_ago(${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}) %>")) {
       <%= default_predicates %>
       user_name
       password_last_used
@@ -983,7 +983,7 @@ coreo_aws_rule "iam-unused-access" do
       ak1_last_used as access_key_1_last_used_date
       ak2_last_used as access_key_2_last_used_date
     }
-    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= 90.days.ago.iso8601 %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= 90.days.ago.iso8601 %>"))) {
+    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= days_ago(90) %>"))) {
       <%= default_predicates %>
       user_name
       access_key_1_active
