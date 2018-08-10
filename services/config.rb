@@ -925,7 +925,7 @@ coreo_aws_rule "iam-user-password-not-used" do
     u as var(func: <%= filter['user'] %> ) {
       plu as password_last_used
     }
-    invalid_users as query(func: uid(u)) @filter(lt(val(plu), "<%= days_ago(${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}) %>")) {
+    invalid_users as query(func: uid(u)) @filter(lt(val(plu), "<%= days_ago(30) %>")) {
       <%= default_predicates %>
       user_name
       password_last_used
