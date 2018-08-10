@@ -148,7 +148,7 @@ coreo_aws_rule "iam-multiple-keys" do
   id_map "object.content.user"
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       ak_1 as access_key_1_active
       ak_2 as access_key_2_active
     }
@@ -204,7 +204,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
   raise_when ["<root_account>", /true/i, /true/i]
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       u as user_name
       ak_1 as access_key_1_active
       ak_2 as access_key_2_active
@@ -262,7 +262,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   raise_when ["", "Inactive", "90.days.ago"]
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) {
+    cr as var(func: <%= filter['user'] %>) @cascade {
       ak1_active as access_key_1_active
       ak2_active as access_key_2_active
       ak1_last_used as access_key_1_last_used_date
@@ -320,7 +320,7 @@ coreo_aws_rule "iam-active-key-no-rotation" do
   raise_when ["", "Active", "90.days.ago"]
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       ak1_active as access_key_1_active
       ak2_active as access_key_2_active
       ak1_last_used as access_key_1_last_used_date
@@ -395,13 +395,13 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   { 
     pp as var(func: has(password_policy)) @filter(NOT has(password_reuse_prevention)) { }
   
-    np as var(func: has(password_policy)) @filter(has(password_reuse_prevention)) { 
+    np as var(func: has(password_policy)) @filter(has(password_reuse_prevention)) @cascade { 
        prp as password_reuse_prevention
     }
       
     ap as var(func: uid(np)) @filter(eq(val(prp), 0)) { }
        
-    invalid_pp as query(func: uid(ap, pp)){
+    invalid_pp as query(func: uid(ap, pp)) {
       <%= default_predicates %>
       password_reuse_prevention
       require_lowercase_characters
@@ -453,7 +453,7 @@ coreo_aws_rule "iam-expirepasswords" do
   id_map "static.password_policy"
   meta_rule_query <<~QUERY
   {
-    pp as var(func: <%= filter['password_policy'] %> ) {
+    pp as var(func: <%= filter['password_policy'] %> ) @cascade {
       is_expired as expire_passwords
     }
     invalid_pp as query(func: uid(pp)) @filter(eq(val(is_expired), false)) {
@@ -496,7 +496,7 @@ coreo_aws_rule "iam-no-mfa" do
   raise_when [/true/i, /false/i]
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       pe as password_enabled
       ma as mfa_active
     }
@@ -530,7 +530,7 @@ coreo_aws_rule "iam-root-active-password" do
   raise_when ["<root_account>", "15.days.ago"]
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) {
+    cr as var(func: <%= filter['user'] %>) @cascade {
       pl_used as password_last_used
       u as user_name
     }
@@ -599,7 +599,7 @@ coreo_aws_rule "iam-password-policy-uppercase" do
   raise_when [false]
   meta_rule_query <<~QUERY
   {
-    pp as var(func: <%= filter['password_policy'] %> ) {
+    pp as var(func: <%= filter['password_policy'] %> ) @cascade {
       is_uppercase as require_uppercase_characters
     }
     
@@ -655,7 +655,7 @@ coreo_aws_rule "iam-password-policy-lowercase" do
   raise_when [false]
   meta_rule_query <<~QUERY
   {
-    pp as var(func: <%= filter['password_policy'] %> ) {
+    pp as var(func: <%= filter['password_policy'] %> ) @cascade {
       is_lowercase as require_lowercase_characters
     }
     invalid_pp as query(func: uid(pp)) @filter(eq(val(is_lowercase), false)) {
@@ -711,7 +711,7 @@ coreo_aws_rule "iam-password-policy-symbol" do
   raise_when [false]
   meta_rule_query <<~QUERY
   {
-    pp as var(func: <%= filter['password_policy'] %> ) {
+    pp as var(func: <%= filter['password_policy'] %> ) @cascade {
       is_symbol as require_symbols
     }
     invalid_pp as query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
@@ -758,7 +758,7 @@ coreo_aws_rule "iam-password-policy-number" do
   raise_when [false]
   meta_rule_query <<~QUERY
   {
-    pp as var(func: <%= filter['password_policy'] %> ) {
+    pp as var(func: <%= filter['password_policy'] %> ) @cascade {
       is_number as require_numbers
     }
     invalid_pp as query(func: uid(pp)) @filter(eq(val(is_number), false)) {
@@ -808,7 +808,7 @@ coreo_aws_rule "iam-password-policy-min-length" do
   raise_when [14]
   meta_rule_query <<~QUERY
   {
-    pp as var(func: <%= filter['password_policy'] %> ) {
+    pp as var(func: <%= filter['password_policy'] %> ) @cascade {
       is_min_length as minimum_password_length
     }
     query(func: uid(pp)) @filter( lt(val(is_min_length), 14) ) {
@@ -838,7 +838,7 @@ coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
   raise_when ["not_supported", "N/A", "2017-02-21 16:00:00 -0800"]
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       plc as password_last_changed
       uct as user_name_creation_time
     }
@@ -874,7 +874,7 @@ coreo_aws_rule "iam-support-role" do
   id_map "object.policies.policy_name"
   meta_rule_query <<~QUERY
   {
-    pf as var(func: <%= filter['policy'] %> ) {
+    pf as var(func: <%= filter['policy'] %> ) @cascade {
       pfa as attachment_count
       pfn as policy_name
     }
@@ -922,7 +922,7 @@ coreo_aws_rule "iam-user-password-not-used" do
   id_map "object.users.user_name"
   meta_rule_query <<~QUERY
   {
-    u as var(func: <%= filter['user'] %> ) {
+    u as var(func: <%= filter['user'] %> ) @cascade {
       plu as password_last_used
     }
     invalid_users as query(func: uid(u)) @filter(lt(val(plu), "<%= ${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED}.days.ago.iso8601 %>")) {
@@ -977,7 +977,7 @@ coreo_aws_rule "iam-unused-access" do
   id_map "static.no_op"
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) {
+    cr as var(func: <%= filter['user'] %>) @cascade {
       ak1_active as access_key_1_active
       ak2_active as access_key_2_active
       ak1_last_used as access_key_1_last_used_date
@@ -1087,7 +1087,7 @@ coreo_aws_rule "iam-active-root-user" do
   raise_when ["<root_account>"]
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       u as user_name
       s as access_key_1_last_used_service
     }
@@ -1139,7 +1139,7 @@ coreo_aws_rule "iam-mfa-password-holders" do
   id_map "object.content.user"
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       pe as password_enabled
       ma as mfa_active
     }
@@ -1304,7 +1304,7 @@ coreo_aws_rule "iam-root-key-access" do
   id_map "static.no_op"
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       u as user_name
       ak_1 as access_key_1_active
       ak_2 as access_key_2_active
@@ -1366,7 +1366,7 @@ coreo_aws_rule "iam-root-no-mfa" do
   id_map "static.no_op"
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       u as user_name
       ma as mfa_active
     }
@@ -1439,7 +1439,7 @@ coreo_aws_rule "iam-initialization-access-key" do
   id_map "static.no_op"
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) { 
+    cr as var(func: <%= filter['user'] %>) @cascade { 
       key1_active as access_key_1_active
       key2_active as access_key_2_active
       key1_used as access_key_1_last_used_date
