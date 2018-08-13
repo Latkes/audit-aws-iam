@@ -476,9 +476,34 @@ coreo_aws_rule "iam-password-policy-uppercase" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_uppercase as require_uppercase_characters
     }
-    query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
+    invalid_pp as query(func: uid(pp)) @filter(eq(val(is_uppercase), false)) {
       <%= default_predicates %>
+      require_lowercase_characters
       require_uppercase_characters
+      require_numbers
+      require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+    }
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
+      }
+>>>>>>> Stashed changes
     }
   }
   QUERY
@@ -513,6 +538,31 @@ coreo_aws_rule "iam-password-policy-lowercase" do
     query(func: uid(pp)) @filter(eq(val(is_lowercase), false)) {
       <%= default_predicates %>
       require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+    }
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
+      }
+>>>>>>> Stashed changes
     }
   }
   QUERY
@@ -546,8 +596,33 @@ coreo_aws_rule "iam-password-policy-symbol" do
     }
     query(func: uid(pp)) @filter(eq(val(is_symbol), false)) {
       <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
       require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
     }
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
+      }
+    }
+>>>>>>> Stashed changes
   }
   QUERY
   meta_rule_node_triggers ({
@@ -580,8 +655,33 @@ coreo_aws_rule "iam-password-policy-number" do
     }
     query(func: uid(pp)) @filter(eq(val(is_number), false)) {
       <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
       require_numbers
+      require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
     }
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
+      }
+    }
+>>>>>>> Stashed changes
   }
   QUERY
   meta_rule_node_triggers ({
@@ -612,9 +712,33 @@ coreo_aws_rule "iam-password-policy-min-length" do
     pp as var(func: <%= filter['password_policy'] %> ) {
       is_min_length as minimum_password_length
     }
-    query(func: uid(pp)) @filter( lt(val(is_min_length), 14) ) {
+    invalid_pp as query(func: uid(pp)) @filter(lt(val(is_min_length), 14)) {
       <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
       minimum_password_length
+    }
+    visualize(func: uid(invalid_pp)) {
+      <%= default_predicates %>
+      require_lowercase_characters
+      require_uppercase_characters
+      require_numbers
+      require_symbols
+      allow_users_to_change_password
+      require_lowercase_characters
+      expire_passwords
+      minimum_password_length
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_pp)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
