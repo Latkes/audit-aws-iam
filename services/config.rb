@@ -603,7 +603,6 @@ coreo_aws_rule "iam-password-policy-uppercase" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
     }
@@ -614,7 +613,6 @@ coreo_aws_rule "iam-password-policy-uppercase" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
       relates_to {
@@ -661,7 +659,6 @@ coreo_aws_rule "iam-password-policy-lowercase" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
     }
@@ -672,7 +669,6 @@ coreo_aws_rule "iam-password-policy-lowercase" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
       relates_to {
@@ -719,7 +715,6 @@ coreo_aws_rule "iam-password-policy-symbol" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
     }
@@ -730,7 +725,6 @@ coreo_aws_rule "iam-password-policy-symbol" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
       relates_to {
@@ -777,7 +771,6 @@ coreo_aws_rule "iam-password-policy-number" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
     }
@@ -788,7 +781,6 @@ coreo_aws_rule "iam-password-policy-number" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
       relates_to {
@@ -835,7 +827,6 @@ coreo_aws_rule "iam-password-policy-min-length" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
     }
@@ -846,7 +837,6 @@ coreo_aws_rule "iam-password-policy-min-length" do
       require_numbers
       require_symbols
       allow_users_to_change_password
-      require_lowercase_characters
       expire_passwords
       minimum_password_length
       relates_to {
