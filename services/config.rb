@@ -958,19 +958,19 @@ coreo_aws_rule "iam-user-password-not-used" do
       <%= default_predicates %>
       user_name
       password_last_used
-      ak1_active as access_key_1_active
-      ak2_active as access_key_2_active
-      ak1_last_used as access_key_1_last_used_date
-      ak2_last_used as access_key_2_last_used_date
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_date
+      access_key_2_last_used_date
     }
     visualize(func: uid(invalid_users)) {
       <%= default_predicates %>
       user_name
       password_last_used
-      ak1_active as access_key_1_active
-      ak2_active as access_key_2_active
-      ak1_last_used as access_key_1_last_used_date
-      ak2_last_used as access_key_2_last_used_date
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_date
+      access_key_2_last_used_date
       relates_to {
         <%= default_predicates %>
         relates_to @filter(NOT uid(invalid_users)){
