@@ -494,11 +494,21 @@ coreo_aws_rule "iam-no-mfa" do
       pe as password_enabled
       ma as mfa_active
     }
-    query(func: uid(cr)) @filter(eq(val(pe), true) AND eq(val(ma), false)) {
+    no_mfa as query(func: uid(cr)) @filter(eq(val(pe), true) AND eq(val(ma), false)) {
       <%= default_predicates %>
       user
       password_enabled
       mfa_active
+    }
+    visualize(func: uid(no_mfa)){
+      <%= default_predicates %>
+      user
+      password_enabled
+      mfa_active
+      relates_to{
+        <%= default_predicates %>
+        user_name access_key_1_active password_last_used
+      }
     }
   }
   QUERY
@@ -561,10 +571,21 @@ coreo_aws_rule "iam-user-attached-policies" do
   raise_when ["", 0]
   meta_rule_query <<~QUERY
   {
-    query(func: <%= filter['user'] %>) @filter(has(user_policy_list)) {
+    use_inline_policies as query(func: <%= filter['user'] %>) @filter(has(user_policy_list)) {
       <%= default_predicates %>
       user_policy_list
       user_name
+    }
+    visualize(func: uid(use_inline_policies)){
+      <%= default_predicates %>
+      user_policy_list
+      user_name
+      relates_to{
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(use_inline_policies)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
@@ -873,10 +894,21 @@ coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
       plc as password_last_changed
       uct as user_name_creation_time
     }
-    query(func: uid(cr)) @filter(lt(val(plc), "2017-02-25T00:00:00+00:00") AND lt(val(uct), "2017-02-25T00:00:00+00:00")) {
+    not_rotated as query(func: uid(cr)) @filter(lt(val(plc), "2017-02-25T00:00:00+00:00") AND lt(val(uct), "2017-02-25T00:00:00+00:00")) {
       <%= default_predicates %>
       user
       password_last_changed
+    }
+    visualize(func: uid(not_rotated)) {
+      <%= default_predicates %>
+      user
+      password_last_changed
+      relates_to{
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(not_rotated)){
+          <%= default_predicates %>
+        }
+      }
     }
   }
   QUERY
