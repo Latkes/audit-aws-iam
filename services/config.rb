@@ -577,10 +577,11 @@ coreo_aws_rule "iam-user-attached-policies" do
       user_name
     }
     visualize(func: uid(use_inline_policies)){
+      <%= default_predicates %>
+      user_policy_list
+      user_name
       relates_to{
         <%= default_predicates %>
-        user_policy_list
-        user_name
         relates_to @filter(NOT uid(use_inline_policies)){
           <%= default_predicates %>
         }
