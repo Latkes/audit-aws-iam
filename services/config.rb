@@ -502,9 +502,12 @@ coreo_aws_rule "iam-no-mfa" do
     }
     visualize(func: uid(no_mfa)){
       <%= default_predicates %>
+      user
+      password_enabled
+      mfa_active
       relates_to{
         <%= default_predicates %>
-        type user_name cc_location cc_cloud access_key_1_active password_last_used
+        user_name access_key_1_active password_last_used
       }
     }
   }
@@ -576,6 +579,8 @@ coreo_aws_rule "iam-user-attached-policies" do
     visualize(func: uid(use_inline_policies)){
       relates_to{
         <%= default_predicates %>
+        user_policy_list
+        user_name
         relates_to @filter(NOT uid(use_inline_policies)){
           <%= default_predicates %>
         }
@@ -895,6 +900,8 @@ coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
     }
     visualize(func: uid(not_rotated)) {
       <%= default_predicates %>
+      user
+      password_last_changed
       relates_to{
         <%= default_predicates %>
         relates_to @filter(NOT uid(not_rotated)){
