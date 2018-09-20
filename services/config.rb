@@ -199,7 +199,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade { 
-      u as user_name
+      u as object_id
       ak_1 as access_key_1_active
       ak_2 as access_key_2_active
     }
@@ -234,7 +234,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
   }
   QUERY
   meta_rule_node_triggers({
-                              'user' => ['user', 'access_key_1_active', 'access_key_2_active']
+                              'user' => ['access_key_1_active', 'access_key_2_active']
                           })
 end
 
