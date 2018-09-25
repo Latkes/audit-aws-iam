@@ -121,8 +121,7 @@ coreo_aws_rule "iam-unusediamgroup" do
 }
   QUERY
   meta_rule_node_triggers({
-                              'group' => [],
-                              'user' => []
+                              'group' => []
                           })
 end
 
