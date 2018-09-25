@@ -1013,7 +1013,7 @@ coreo_aws_rule "iam-user-password-not-used" do
   }
   QUERY
   meta_rule_node_triggers ({
-      'policy' => ['attachment_count','policy_name']
+     'user' => []
   })
 end
 
