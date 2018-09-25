@@ -1013,7 +1013,7 @@ coreo_aws_rule "iam-user-password-not-used" do
   }
   QUERY
   meta_rule_node_triggers ({
-     'user' => []
+     'user' => ['password_last_used']
   })
 end
 
