@@ -102,8 +102,9 @@ coreo_aws_rule "iam-unusediamgroup" do
   {
     g as var(func: <%= filter['group'] %>) @cascade { 
       relates_to @filter(has(user))
+      l as cc_location
     }
-    invalid_items as query(func: <%= filter['group'] %>) @filter(NOT uid(g)) {
+    invalid_items as query(func: <%= filter['group'] %>) @filter(NOT uid(g) AND eq(val(l), "global")) {
       <%= default_predicates %>
       group_name
     }
@@ -121,8 +122,7 @@ coreo_aws_rule "iam-unusediamgroup" do
 }
   QUERY
   meta_rule_node_triggers({
-                              'group' => [],
-                              'user' => []
+                              'group' => []
                           })
 end
 
