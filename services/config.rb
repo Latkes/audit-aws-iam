@@ -1174,7 +1174,7 @@ coreo_aws_rule "iam-active-root-user" do
   }
   QUERY
   meta_rule_node_triggers({
-                              'user' => ['user', 'access_key_1_last_used_service']
+                              'user' => ['user_name', 'access_key_1_last_used_service']
                           })
 end
 
@@ -1402,7 +1402,7 @@ coreo_aws_rule "iam-root-key-access" do
   }
   QUERY
   meta_rule_node_triggers({
-                              'user' => ['user', 'access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
+                              'user' => ['user_name', 'access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
                           })
 end
 
@@ -1455,7 +1455,7 @@ coreo_aws_rule "iam-root-no-mfa" do
   }
   QUERY
   meta_rule_node_triggers({
-                              'user' => ['user', 'mfa_active']
+                              'user' => ['user_name', 'mfa_active']
                           })
 end
 
