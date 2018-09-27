@@ -1556,6 +1556,29 @@ coreo_aws_rule "iam-omnipotent-policy" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    p as var(func: <%= filter['policy'] %>) {}
+    s as var(func: <%= filter['policy_statement'] %>) @cascade {
+      a as action
+      e as effect
+      r as resource
+    }
+    query(func: uid(p)) @cascade {
+      <%= default_predicates %>
+      relates_to @filter(uid(s) AND eq(val(a), "*") AND eq(val(e), "Allow") AND eq(val(r), "*")) {
+        <%= default_predicates %>
+        action
+        effect
+        resource
+      }
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'policy' => [],
+                              'policy_statement' => ['action', 'effect', 'resource']
+                          })
 end
 
 coreo_aws_rule "manual-contact-details" do
