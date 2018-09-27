@@ -1565,7 +1565,7 @@ coreo_aws_rule "iam-omnipotent-policy" do
       r as resource
     }
     query(func: uid(p)) @cascade {
-      object_id type cc_location
+      <%= default_predicates %>
       relates_to @filter(uid(s) AND eq(val(a), "*") AND eq(val(e), "Allow") AND eq(val(r), "*")) {
         <%= default_predicates %>
         action
