@@ -1124,6 +1124,45 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
   operators ["=="]
   raise_when ["arn:aws:iam::${AUDIT_AWS_IAM_ACCOUNT_NUMBER}:mfa/root-account-mfa-device"]
   id_map "static.root_user"
+  meta_rule_query <<~QUERY
+  {
+    cr as var(func: <%= filter['user'] %>) @cascade {
+      u as user_name
+      mfa as mfa_active
+    }
+    no_mfa_root as query(func: uid(cr)) @filter(val(u), "<root_account>") AND eq(val(mfa), true) AND NOT has(virtual_mfa_device)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_service
+      access_key_2_last_used_service
+      password_next_rotation
+      password_last_used
+      password_enabled
+    }
+    visualize(func: uid(no_mfa_root)) @filter(eq(tenant_id, "161866044093")) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_service
+      access_key_2_last_used_service
+      password_next_rotation
+      password_last_used
+      password_enabled
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(no_mfa_root)){
+          <%= default_predicates %>
+        }
+      }
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'user' => ['user_name', 'virtual_mfa_device']
+                          })
 end
 
 coreo_aws_rule "iam-active-root-user" do
