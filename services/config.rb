@@ -1161,7 +1161,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
   }
   QUERY
   meta_rule_node_triggers({
-                              'user' => ['user_name', 'virtual_mfa_device']
+                              'user' => ['user_name', 'virtual_mfa_device', 'mfa_active']
                           })
 end
 
