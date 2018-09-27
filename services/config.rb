@@ -1141,7 +1141,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
       password_last_used
       password_enabled
     }
-    visualize(func: uid(no_mfa_root)) @filter(eq(tenant_id, "161866044093")) {
+    visualize(func: uid(no_mfa_root)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -1153,7 +1153,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(no_mfa_root)){
+        relates_to @filter(NOT has(user)) {
           <%= default_predicates %>
         }
       }
