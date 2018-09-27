@@ -936,7 +936,7 @@ coreo_aws_rule "iam-support-role" do
   id_map "object.policies.policy_name"
   meta_rule_query <<~QUERY
   {
-    pf as var(func: <%= filter['policy'] %> ) @cascade {
+    pf as var(func: <%= filter['inline_policy'] %> ) @cascade {
       pfa as attachment_count
       pfn as policy_name
     }
@@ -961,7 +961,7 @@ coreo_aws_rule "iam-support-role" do
   }
   QUERY
   meta_rule_node_triggers ({
-      'policy' => ['attachment_count','policy_name']
+      'inline_policy' => ['attachment_count','policy_name']
   })
 end
 
