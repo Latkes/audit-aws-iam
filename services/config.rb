@@ -363,8 +363,8 @@ coreo_aws_rule "iam-missing-password-policy" do
   operators ["=="]
   raise_when [nil]
   id_map "static.password_policy"
-    meta_rule_query <<~QUERY
-   {
+  meta_rule_query <<~QUERY
+  {
     var(func: has(user)) {
       name as object_id
     }
@@ -381,12 +381,12 @@ coreo_aws_rule "iam-missing-password-policy" do
     }
     query_1(func: eq(val(name), "<root_account>")) {
       <%= default_predicates %>
-     }
-   }
-   QUERY
-   meta_rule_node_triggers({
-                               'password_policy' => []
-                           })
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                             'password_policy' => []
+                         })
 end
 
 coreo_aws_rule "iam-passwordreuseprevention" do
