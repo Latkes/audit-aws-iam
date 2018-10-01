@@ -1037,27 +1037,21 @@ coreo_aws_rule "iam-unused-access" do
   id_map "static.no_op"
   meta_rule_query <<~QUERY
   {
-    cr as var(func: <%= filter['user'] %>) @cascade {
-      ak1_active as access_key_1_active
-      ak2_active as access_key_2_active
-      ak1_last_used as access_key_1_last_used_date
-      ak2_last_used as access_key_2_last_used_date
+    u as var(func: <%= filter['user'] %>) @cascade {
+      pwd_enabled as password_enabled
+      pwd_last_used as password_last_used
     }
-    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= days_ago(90) %>"))) {
+    invalid_users as query(func: uid(u)) @filter((eq(val(pwd_enabled), true) AND lt(val(pwd_last_used), "<%= days_ago(90) %>"))) {
       <%= default_predicates %>
       user_name
-      access_key_1_active
-      access_key_1_last_used_date
-      access_key_2_active
-      access_key_2_last_used_date
+      password_enabled
+      password_last_used
     }
     visualize(func: uid(invalid_users)) {
       <%= default_predicates %>
       user_name
-      access_key_1_active
-      access_key_1_last_used_date
-      access_key_2_active
-      access_key_2_last_used_date
+      password_enabled
+      password_last_used
       relates_to {
         <%= default_predicates %>
         relates_to @filter(NOT uid(invalid_users)){
@@ -1068,7 +1062,7 @@ coreo_aws_rule "iam-unused-access" do
   }
   QUERY
   meta_rule_node_triggers({
-                              'user' => ['access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
+                              'user' => ['password_enabled', 'password_last_used']
                           })
 end
 
