@@ -363,6 +363,30 @@ coreo_aws_rule "iam-missing-password-policy" do
   operators ["=="]
   raise_when [nil]
   id_map "static.password_policy"
+    meta_rule_query <<~QUERY
+   {
+    var(func: has(user)) {
+      name as object_id
+    }
+    pwp as var(func: <%= filter['password_policy'] %>) { }
+    query_2(func: uid(pwp)) @cascade {
+      <%= default_predicates %>
+      minimum_password_length
+      require_uppercase_characters
+      require_lowercase_characters
+      require_numbers
+      require_symbols
+      expire_passwords
+      allow_users_to_change_password
+    }
+    query_1(func: eq(val(name), "<root_account>")) {
+      <%= default_predicates %>
+     }
+   }
+   QUERY
+   meta_rule_node_triggers({
+                               'password_policy' => []
+                           })
 end
 
 coreo_aws_rule "iam-passwordreuseprevention" do
