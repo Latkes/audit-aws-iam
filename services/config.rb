@@ -1040,29 +1040,52 @@ coreo_aws_rule "iam-unused-access" do
     u as var(func: <%= filter['user'] %>) @cascade {
       pwd_enabled as password_enabled
       pwd_last_used as password_last_used
+      pwd_last_changed as password_last_changed
+      ak1_active as access_key_1_active
+      ak2_active as access_key_2_active
+      ak1_last_used as access_key_1_last_used_date
+      ak2_last_used as access_key_2_last_used_date
     }
-    invalid_users as query(func: uid(u)) @filter((eq(val(pwd_enabled), true) AND lt(val(pwd_last_used), "<%= days_ago(90) %>"))) {
-      <%= default_predicates %>
+    inactive_used_password as var(func: uid(u)) @filter(eq(val(pwd_enabled), true) AND lt(val(pwd_last_used), "<%= days_ago(90) %>")) { } 
+    inactive_changed_password as var(func: uid(u)) @filter(eq(val(pwd_enabled), true) AND lt(val(pwd_last_changed), "<%= days_ago(90) %>")) { }
+    # Intersection of password used and password changed
+    inactive_password as var(func: uid(inactive_used_password)) @filter(uid(inactive_changed_password)) { }
+    inactive_ak1 as var(func: uid(u)) @filter(eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= days_ago(90) %>")) { }
+    inactive_ak2 as var(func: uid(u)) @filter(eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= days_ago(90) %>")) { }
+    # Intersection of access key 1 and access key 2 usage
+    inactive_key as var(func: uid(inactive_ak1)) @filter(uid(inactive_ak2)) { }
+    inactive_users as query(func: uid(inactive_password)) @filter(NOT uid(inactive_key)) {
+      object_id tenant_id cc_cloud cc_location
       user_name
       password_enabled
       password_last_used
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_date
+      access_key_2_last_used_date
+      password_last_changed
     }
-    visualize(func: uid(invalid_users)) {
-      <%= default_predicates %>
+    visualize(func: uid(inactive_users)) {
+      object_id tenant_id cc_cloud cc_location
       user_name
       password_enabled
       password_last_used
+      access_key_1_active
+      access_key_2_active
+      access_key_1_last_used_date
+      access_key_2_last_used_date
+      password_last_changed
       relates_to {
-        <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
-          <%= default_predicates %>
+        object_id tenant_id cc_cloud cc_location
+        relates_to @filter(NOT uid(inactive_users)){
+          object_id tenant_id cc_cloud cc_location
         }
       }
     }
   }
   QUERY
   meta_rule_node_triggers({
-                              'user' => ['password_enabled', 'password_last_used']
+                              'user' => ['password_enabled', 'password_last_used', 'password_last_changed', 'access_key_1_active', 'access_key_2_active', 'access_key_1_last_used_date', 'access_key_1_last_used_date']
                           })
 end
 
