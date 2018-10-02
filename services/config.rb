@@ -255,13 +255,68 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   raise_when ["", "Inactive", "90.days.ago"]
   meta_rule_query <<~QUERY
   {
+    cr as var(func: <%= filter['user'] %>) @cascade { 
+      ak1_active as access_key_1_active
+      ak2_active as access_key_2_active
+      ak1_last_used as access_key_1_last_used_date
+      ak2_last_used as access_key_2_last_used_date
+    }
+    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), false) AND lt(val(ak1_last_used), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), false) AND lt(val(ak2_last_used), "<%= days_ago(90) %>"))) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_2_active
+      access_key_2_last_used_date
+    }
+    visualize(func: uid(invalid_users)) {
+      <%= default_predicates %>
+      user_name
+      access_key_1_active
+      access_key_1_last_used_date
+      access_key_2_active
+      access_key_2_last_used_date
+      relates_to {
+        <%= default_predicates %>
+        relates_to @filter(NOT uid(invalid_users)){
+          <%= default_predicates %>
+        }
+      }
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'user' => ['access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
+                          })
+end
+
+coreo_aws_rule "iam-active-key-no-rotation" do
+  action :define
+  service :iam
+  link "http://kb.cloudcoreo.com/mydoc_iam-active-key-no-rotation.html"
+  display_name "User Has Access Keys Active and Un-rotated"
+  description "User has active keys that have not been rotated in the last 90 days"
+  category "Access"
+  suggested_action "If you regularly use the AWS access keys, we recommend that you also regularly rotate or delete them."
+  level "Medium"
+  meta_cis_id "1.4"
+  meta_cis_scored "true"
+  meta_cis_level "1"
+  id_map "modifiers.user_name"
+  objectives ["users", "access_keys", "access_keys"]
+  audit_objects ["", "object.access_key_metadata.status", "object.access_key_metadata.create_date"]
+  call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
+  operators ["", "==", "<"]
+  raise_when ["", "Active", "90.days.ago"]
+  meta_rule_query <<~QUERY
+  {
     cr as var(func: <%= filter['user'] %>) @cascade {
       ak1_active as access_key_1_active
       ak2_active as access_key_2_active
       ak1_last_rotated as access_key_1_last_rotated
       ak2_last_rotated as access_key_2_last_rotated
     }
-    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), false) AND lt(val(ak1_last_rotated), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), false) AND lt(val(ak2_last_rotated), "<%= days_ago(90) %>"))) {
+    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_rotated), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_rotated), "<%= days_ago(90) %>"))) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -292,61 +347,6 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   QUERY
   meta_rule_node_triggers({
                               'user' => ['access_key_1_active', 'access_key_1_last_rotated', 'access_key_2_active', 'access_key_2_last_rotated']
-                          })
-end
-
-coreo_aws_rule "iam-active-key-no-rotation" do
-  action :define
-  service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-active-key-no-rotation.html"
-  display_name "User Has Access Keys Active and Un-rotated"
-  description "User has active keys that have not been rotated in the last 90 days"
-  category "Access"
-  suggested_action "If you regularly use the AWS access keys, we recommend that you also regularly rotate or delete them."
-  level "Medium"
-  meta_cis_id "1.4"
-  meta_cis_scored "true"
-  meta_cis_level "1"
-  id_map "modifiers.user_name"
-  objectives ["users", "access_keys", "access_keys"]
-  audit_objects ["", "object.access_key_metadata.status", "object.access_key_metadata.create_date"]
-  call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
-  operators ["", "==", "<"]
-  raise_when ["", "Active", "90.days.ago"]
-  meta_rule_query <<~QUERY
-  {
-    cr as var(func: <%= filter['user'] %>) @cascade { 
-      ak1_active as access_key_1_active
-      ak2_active as access_key_2_active
-      ak1_last_used as access_key_1_last_used_date
-      ak2_last_used as access_key_2_last_used_date
-    }
-    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), true) AND lt(val(ak1_last_used), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), true) AND lt(val(ak2_last_used), "<%= days_ago(90) %>"))) {
-      <%= default_predicates %>
-      user_name
-      access_key_1_active
-      access_key_1_last_used_date
-      access_key_2_active
-      access_key_2_last_used_date
-    }
-    visualize(func: uid(invalid_users)) {
-      <%= default_predicates %>
-      user_name
-      access_key_1_active
-      access_key_1_last_used_date
-      access_key_2_active
-      access_key_2_last_used_date
-      relates_to {
-        <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
-          <%= default_predicates %>
-        }
-      }
-    }
-  }
-  QUERY
-  meta_rule_node_triggers({
-                              'user' => ['access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
                           })
 end
 
