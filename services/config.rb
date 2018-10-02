@@ -258,24 +258,26 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
     cr as var(func: <%= filter['user'] %>) @cascade {
       ak1_active as access_key_1_active
       ak2_active as access_key_2_active
-      ak1_last_used as access_key_1_last_used_date
-      ak2_last_used as access_key_2_last_used_date
+      ak1_last_rotated as access_key_1_last_rotated
+      ak2_last_rotated as access_key_2_last_rotated
     }
-    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), false) AND lt(val(ak1_last_used), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), false) AND lt(val(ak2_last_used), "<%= days_ago(90) %>"))) {
+    invalid_users as query(func: uid(cr)) @filter((eq(val(ak1_active), false) AND lt(val(ak1_last_rotated), "<%= days_ago(90) %>")) OR (eq(val(ak2_active), false) AND lt(val(ak2_last_rotated), "<%= days_ago(90) %>"))) {
       <%= default_predicates %>
       user_name
       access_key_1_active
-      access_key_1_last_used_date
+      access_key_1_last_rotated
       access_key_2_active
-      access_key_2_last_used_date
+      access_key_2_last_rotated
     }
     visualize(func: uid(invalid_users)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
       access_key_1_last_used_date
+      access_key_1_last_rotated
       access_key_2_active
       access_key_2_last_used_date
+      access_key_2_last_rotated
       password_next_rotation
       password_last_used
       password_enabled
@@ -289,7 +291,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   }
   QUERY
   meta_rule_node_triggers({
-                              'user' => ['access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
+                              'user' => ['access_key_1_active', 'access_key_1_last_rotated', 'access_key_2_active', 'access_key_2_last_rotated']
                           })
 end
 
