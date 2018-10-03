@@ -1055,7 +1055,7 @@ coreo_aws_rule "iam-unused-access" do
     # Intersection of access key 1 and access key 2 usage
     inactive_key as var(func: uid(inactive_ak1)) @filter(uid(inactive_ak2)) { }
     inactive_users as query(func: uid(inactive_password)) @filter(NOT uid(inactive_key)) {
-      object_id tenant_id cc_cloud cc_location
+      <%= default_predicates %>
       user_name
       password_enabled
       password_last_used
@@ -1066,7 +1066,7 @@ coreo_aws_rule "iam-unused-access" do
       password_last_changed
     }
     visualize(func: uid(inactive_users)) {
-      object_id tenant_id cc_cloud cc_location
+      <%= default_predicates %>
       user_name
       password_enabled
       password_last_used
@@ -1076,9 +1076,9 @@ coreo_aws_rule "iam-unused-access" do
       access_key_2_last_used_date
       password_last_changed
       relates_to {
-        object_id tenant_id cc_cloud cc_location
+        <%= default_predicates %>
         relates_to @filter(NOT uid(inactive_users)){
-          object_id tenant_id cc_cloud cc_location
+          <%= default_predicates %>
         }
       }
     }
