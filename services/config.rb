@@ -1178,7 +1178,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
       u as user_name
       mfa as mfa_active
     }
-    no_mfa_root as query(func: uid(cr)) @filter(val(u), "<root_account>") AND eq(val(mfa), true) AND NOT has(virtual_mfa_device)) {
+    no_mfa_root as query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND eq(val(mfa), true) AND NOT has(virtual_mfa_device)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
