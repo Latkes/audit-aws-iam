@@ -1135,6 +1135,27 @@ coreo_aws_rule "iam-user-is-admin" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    users as var(func: <%= filter['user'] %>) { }
+    policies as var(func: <%= filter['policy'] %>) @cascade {
+      pname as policy_name
+    }
+    query(func: uid(users)) @cascade {
+      <%= default_predicates %>
+      user_name
+      relates_to @filter(uid(policies) AND eq(val(pname), "AdministratorAccess")) {
+        <%= default_predicates %>
+        policy_name
+        arn
+      }
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'user' => [],
+                              'policy' => ['policy_name']
+                          })
 end
 
 coreo_aws_rule "iam-instance-role-is-admin" do
