@@ -1152,6 +1152,44 @@ coreo_aws_rule "iam-instance-role-is-admin" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_rule_query <<~QUERY
+  {
+    instances as var(func: <%= filter['instance'] %>) { }
+    instance_profiles as var(func: <%= filter['iam_instance_profile'] %>) { }
+    roles as var(func: <%= filter['role'] %>) { }
+    policies as var(func: <%= filter['policy'] %>) @cascade {
+      pname as policy_name
+    }
+    admin_roles as var(func: uid(roles)) @cascade {
+      relates_to @filter(uid(policies) AND eq(val(pname), "AdministratorAccess"))
+    }
+    admin_roles_with_instances as var(func: uid(admin_roles)) @cascade {
+      relates_to @filter(uid(instance_profiles)) {
+        relates_to @filter(uid(instances))
+      }
+    }
+    query(func: uid(admin_roles_with_instances)) {
+      <%= default_predicates %>
+      role_name
+      arn
+      relates_to @filter(uid(policies, instance_profiles)) {
+        <%= default_predicates %>
+        policy_name
+        arn
+        instance_profile_name
+        relates_to @filter(uid(instances)) {
+          <%= default_predicates %>
+        }
+      }
+    }
+  }
+  QUERY
+  meta_rule_node_triggers({
+                              'instance' => [],
+                              'iam_instance_profile' => [],
+                              'role' => [],
+                              'policy' => ['policy_name']
+                          })
 end
 
 coreo_aws_rule "iam-no-hardware-mfa-root" do
