@@ -100,20 +100,19 @@ coreo_aws_rule "iam-unusediamgroup" do
   id_map "object.group.group_name"
   meta_rule_query <<~QUERY
   {
-    g as var(func: <%= filter['group'] %>) @cascade { 
+    groups_in_use as var(func: has(group)) @cascade { 
       relates_to @filter(has(user))
     }
-    invalid_items as query(func: <%= filter['group'] %>) @filter(NOT uid(g)) {
+    unused_groups as query(func: <%= filter['group'] %>) @filter(NOT uid(groups_in_use)) {
       <%= default_predicates %>
       group_name
     }
-    
-    visualize(func: uid(invalid_items)) {
+    visualize(func: uid(unused_groups)) {
       <%= default_predicates %>
       group_name
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_items)){
+        relates_to @filter(NOT uid(unused_groups)){
           <%= default_predicates %>
         }
       }
