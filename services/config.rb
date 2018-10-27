@@ -1,7 +1,7 @@
 coreo_aws_rule "iam-inventory-users" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
+  link "https://kb.securestate.vmware.com/aws-all-inventory.html"
   include_violations_in_count false
   display_name "IAM User Inventory"
   description "This rule performs an inventory on all IAM Users in the target AWS account."
@@ -18,7 +18,7 @@ end
 coreo_aws_rule "iam-inventory-roles" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
+  link "https://kb.securestate.vmware.com/aws-all-inventory.html"
   include_violations_in_count false
   display_name "IAM Role Inventory"
   description "This rule performs an inventory on all IAM Roles in the target AWS account."
@@ -35,7 +35,7 @@ end
 coreo_aws_rule "iam-inventory-policies" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
+  link "https://kb.securestate.vmware.com/aws-all-inventory.html"
   include_violations_in_count false
   display_name "IAM Policy Inventory"
   description "This rule performs an inventory on all IAM Policies in the target AWS account."
@@ -52,7 +52,7 @@ end
 coreo_aws_rule "iam-inventory-groups" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_all-inventory.html"
+  link "https://kb.securestate.vmware.com/aws-all-inventory.html"
   include_violations_in_count false
   display_name "IAM Group Inventory"
   description "This rule performs an inventory on all IAM User Groups in the target AWS account."
@@ -85,7 +85,7 @@ end
 coreo_aws_rule "iam-unusediamgroup" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-unusediamgroup.html"
+  link "https://kb.securestate.vmware.com/aws-iam-unusediamgroup.html"
   display_name "Unused or empty IAM group"
   description "There is an IAM group defined without any users in it and therefore unused."
   category "Access"
@@ -127,7 +127,7 @@ end
 coreo_aws_rule "iam-multiple-keys" do
   action :define
   service :iam
-  # link "http://kb.cloudcoreo.com/mydoc_iam-unusediamgroup.html"
+  # link "https://kb.securestate.vmware.com/aws-iam-unusediamgroup.html"
   display_name "IAM User with multiple keys"
   description "There is an IAM User with multiple access keys"
   category "Access"
@@ -182,7 +182,7 @@ end
 coreo_aws_rule "iam-root-multiple-keys" do
   action :define
   service :iam
-  # link "http://kb.cloudcoreo.com/mydoc_iam-unusediamgroup.html"
+  # link "https://kb.securestate.vmware.com/aws-iam-unusediamgroup.html"
   display_name "IAM Root user with multiple keys"
   description "There is are multiple access keys for root user"
   category "Access"
@@ -239,7 +239,7 @@ end
 coreo_aws_rule "iam-inactive-key-no-rotation" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-inactive-key-no-rotation.html"
+  link "https://kb.securestate.vmware.com/aws-iam-inactive-key-no-rotation.html"
   display_name "User Has Access Keys Inactive and Un-rotated"
   description "User has inactive keys that have not been rotated in the last 90 days."
   category "Access"
@@ -297,7 +297,7 @@ end
 coreo_aws_rule "iam-active-key-no-rotation" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-active-key-no-rotation.html"
+  link "https://kb.securestate.vmware.com/aws-iam-active-key-no-rotation.html"
   display_name "User Has Access Keys Active and Un-rotated"
   description "User has active keys that have not been rotated in the last 90 days"
   category "Access"
@@ -357,7 +357,7 @@ end
 coreo_aws_rule "iam-missing-password-policy" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-missing-password-policy.html"
+  link "https://kb.securestate.vmware.com/aws-iam-missing-password-policy.html"
   display_name "Password policy doesn't exist"
   description "There currently isn't a password policy to require a certain password length, password expiration, prevent password reuse, and more."
   category "Access"
@@ -398,7 +398,7 @@ end
 coreo_aws_rule "iam-passwordreuseprevention" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-passwordreuseprevention.html"
+  link "https://kb.securestate.vmware.com/aws-iam-passwordreuseprevention.html"
   display_name "Users can reuse old passwords"
   description "The current password policy doesn't prevent users from reusing their old passwords."
   category "Access"
@@ -460,7 +460,7 @@ end
 coreo_aws_rule "iam-expirepasswords" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-expirepasswords.html"
+  link "https://kb.securestate.vmware.com/aws-iam-expirepasswords.html"
   display_name "Passwords not set to expire"
   description "The current password policy doesn't require users to regularly change their passwords. User passwords are set to never expire."
   category "Access"
@@ -505,7 +505,7 @@ end
 coreo_aws_rule "iam-no-mfa" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-no-mfa.html"
+  link "https://kb.securestate.vmware.com/aws-iam-no-mfa.html"
   display_name "Multi-Factor Authentication not enabled"
   description "Cloud user does not have Multi-Factor Authentication enabled on their cloud account."
   category "Security"
@@ -549,7 +549,7 @@ end
 coreo_aws_rule "iam-root-active-password" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-root-active-password.html"
+  link "https://kb.securestate.vmware.com/aws-iam-root-active-password.html"
   display_name "Root user has active password"
   description "The root user has been logging in using a password."
   category "Security"
@@ -582,7 +582,7 @@ end
 coreo_aws_rule "iam-user-attached-policies" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-user-attached-policies.html"
+  link "https://kb.securestate.vmware.com/aws-iam-user-attached-policies.html"
   display_name "Account using inline policies"
   description "User account is using custom inline policies versus using IAM group managed policies."
   category "Access"
@@ -626,7 +626,7 @@ end
 coreo_aws_rule "iam-password-policy-uppercase" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-uppercase.html"
+  link "https://kb.securestate.vmware.com/aws-iam-password-policy-uppercase.html"
   display_name "Password policy doesn't require an uppercase letter"
   description "The password policy must require an uppercase letter to meet CIS standards"
   category "Access"
@@ -682,7 +682,7 @@ end
 coreo_aws_rule "iam-password-policy-lowercase" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-lowercase.html"
+  link "https://kb.securestate.vmware.com/aws-iam-password-policy-lowercase.html"
   display_name "Password policy doesn't require an lowercase letter"
   description "The password policy must require an lowercase letter to meet CIS standards"
   category "Access"
@@ -738,7 +738,7 @@ end
 coreo_aws_rule "iam-password-policy-symbol" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-symbol.html"
+  link "https://kb.securestate.vmware.com/aws-iam-password-policy-symbol.html"
   display_name "Password policy doesn't require a symbol"
   description "The password policy must require a symbol to meet CIS standards"
   category "Access"
@@ -794,7 +794,7 @@ end
 coreo_aws_rule "iam-password-policy-number" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-number.html"
+  link "https://kb.securestate.vmware.com/aws-iam-password-policy-number.html"
   display_name "Password policy doesn't require a number"
   description "The password policy must require a number to meet CIS standards"
   category "Access"
@@ -850,7 +850,7 @@ end
 coreo_aws_rule "iam-password-policy-min-length" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-password-policy-min-length.html"
+  link "https://kb.securestate.vmware.com/aws-iam-password-policy-min-length.html"
   display_name "Password policy doesn't require a minimum length of 14 characters"
   description "The password policy must require a minimum length of 14 characters to meet CIS standards"
   category "Access"
@@ -908,7 +908,7 @@ coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
   service :iam
   display_name "User may have been exposed to the CloudBleed issue"
   description "Cloudbleed is the latest internet bug that puts users private information in jeopardy. News of the bug broke late on Feb 24, 2017,"
-  link "http://kb.cloudcoreo.com/mydoc_iam-cloudbleed-password-not-rotated.html"
+  link "https://kb.securestate.vmware.com/aws-iam-cloudbleed-password-not-rotated.html"
   category "Security"
   suggested_action "Users should be asked to rotate their passwords after February 25, 2017"
   level "High"
@@ -949,7 +949,7 @@ end
 coreo_aws_rule "iam-support-role" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-support-role.html"
+  link "https://kb.securestate.vmware.com/aws-iam-support-role.html"
   display_name "IAM Support Role"
   description "Ensure a support role exists to manage incidents"
   category "Security"
@@ -998,7 +998,7 @@ end
 coreo_aws_rule "iam-user-password-not-used" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-user-password-not-used.html"
+  link "https://kb.securestate.vmware.com/aws-iam-user-password-not-used.html"
   include_violations_in_count false
   display_name "IAM User Password Not Used Recently"
   description "Lists all IAM users whose password has not used in ${AUDIT_AWS_IAM_DAYS_PASSWORD_UNUSED} days"
@@ -1050,7 +1050,7 @@ coreo_aws_rule "iam-unused-access" do
   action :define
   service :user
   include_violations_in_count false
-  link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
+  link "https://kb.securestate.vmware.com/aws-iam-unused-access.html"
   display_name "IAM inactive credentials"
   description "This rule checks for credentials that have been unused for 90 days"
   category "Security"
@@ -1122,7 +1122,7 @@ end
 coreo_aws_rule "iam-user-is-admin" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
+  link "https://kb.securestate.vmware.com/aws-iam-unused-access.html"
   display_name "IAM user has privileges that allow administrator access"
   description "This rule checks for any users that have administrator level access, no matter how the access is/was granted."
   category "Security"
@@ -1160,7 +1160,7 @@ end
 coreo_aws_rule "iam-instance-role-is-admin" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_iam-unused-access.html"
+  link "https://kb.securestate.vmware.com/aws-iam-unused-access.html"
   display_name "EC2 Instance has Administrator Access"
   description "This rule checks for any ec2 instances that have administrator level access. This would indicate that any compromised system would grant the attacker admin access."
   category "Security"
@@ -1215,7 +1215,7 @@ end
 coreo_aws_rule "iam-no-hardware-mfa-root" do
   action :define
   service :iam
-  link "http://kb.cloudcoreo.com/mydoc_iam-no-hardware-mfa-root.html"
+  link "https://kb.securestate.vmware.com/aws-iam-no-hardware-mfa-root.html"
   display_name "IAM has no root MFA hardware devices"
   description "Triggers if there is no hardware MFA Device for root"
   category "Security"
@@ -1275,7 +1275,7 @@ coreo_aws_rule "iam-active-root-user" do
   action :define
   service :iam
   include_violations_in_count false
-  link "http://kb.cloudcoreo.com/mydoc_iam-active-root-user.html"
+  link "https://kb.securestate.vmware.com/aws-iam-active-root-user.html"
   display_name "IAM Root User Activity"
   description "This rule performs an audit on root user activity"
   category "Security"
@@ -1327,7 +1327,7 @@ coreo_aws_rule "iam-mfa-password-holders" do
   action :define
   service :iam
   include_violations_in_count false
-  link "http://kb.cloudcoreo.com/mydoc_iam-mfa-password-holders.html"
+  link "https://kb.securestate.vmware.com/aws-iam-mfa-password-holders.html"
   display_name "MFA for IAM Password Holders"
   description "This rule checks that all IAM users with a password have MFA enabled"
   category "Security"
@@ -1416,7 +1416,7 @@ end
 coreo_aws_rule "manual-component-removal-approval" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-ensure-security-questions.html"
+  link "https://kb.securestate.vmware.com/aws-manual-ensure-security-questions.html"
   display_name "Ensure Explicit Approval pre Component Removal"
   description "Ensure that the removal of any system or component from premsis for maintenance requires the explicit approval of a specified person/department"
   category "Security"
@@ -1434,7 +1434,7 @@ end
 coreo_aws_rule "manual-ensure-security-questions" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-ensure-security-questions.html"
+  link "https://kb.securestate.vmware.com/aws-manual-ensure-security-questions.html"
   display_name "Ensure Account Security Questions"
   description "Security Questions improve account security"
   category "Security"
@@ -1472,7 +1472,7 @@ end
 coreo_aws_rule "manual-detailed-billing" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-detailed-billing.html"
+  link "https://kb.securestate.vmware.com/aws-manual-detailed-billing.html"
   display_name "Enable Detailed Billing"
   description "Detailed billing can help to bring attention to anomalous use of AWS resources"
   category "Security"
@@ -1492,7 +1492,7 @@ end
 coreo_aws_rule "iam-root-key-access" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_iam-root-key-access.html"
+  link "https://kb.securestate.vmware.com/aws-iam-root-key-access.html"
   display_name "IAM Root Access Key"
   description "This rule checks for root access keys. Root account should not have access keys enabled"
   category "Security"
@@ -1554,7 +1554,7 @@ end
 coreo_aws_rule "iam-root-no-mfa" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_iam-root-no-mfa-cis.html"
+  link "https://kb.securestate.vmware.com/aws-iam-root-no-mfa-cis.html"
   display_name "Multi-Factor Authentication not enabled for root account"
   description "Root cloud user does not have Multi-Factor Authentication enabled on their cloud account"
   category "Security"
@@ -1607,7 +1607,7 @@ end
 coreo_aws_rule "manual-strategic-iam-roles" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-strategic-iam-roles.html"
+  link "https://kb.securestate.vmware.com/aws-manual-strategic-iam-roles.html"
   display_name "Ensure Strategic IAM Roles"
   description "Use IAM Master and Manager Roles to optimize security"
   category "Security"
@@ -1627,7 +1627,7 @@ end
 coreo_aws_rule "iam-initialization-access-key" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_iam-initialization-access-key.html"
+  link "https://kb.securestate.vmware.com/aws-iam-initialization-access-key.html"
   display_name "IAM Initialization Access"
   description "This rule checks for access keys that were activated during initialization"
   category "Security"
@@ -1729,7 +1729,7 @@ end
 coreo_aws_rule "manual-contact-details" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-contact-details.html"
+  link "https://kb.securestate.vmware.com/aws-manual-contact-details.html"
   display_name "Maintain Contact Details"
   description "Contact details associated with the AWS account may be used by AWS staff to contact the account owner"
   category "Security"
@@ -1749,7 +1749,7 @@ end
 coreo_aws_rule "manual-security-contact" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-security-contact.html"
+  link "https://kb.securestate.vmware.com/aws-manual-security-contact.html"
   display_name "Security Contact Details"
   description "Contact details may be provided to the AWS account for your security team, allowing AWS staff to contact them when required"
   category "Security"
@@ -1769,7 +1769,7 @@ end
 coreo_aws_rule "manual-resource-instance-access" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-resource-instance-access.html"
+  link "https://kb.securestate.vmware.com/aws-manual-resource-instance-access.html"
   display_name "IAM Instance Roles"
   description "Proper usage of IAM roles reduces the risk of active, unrotated keys"
   category "Security"
@@ -1789,7 +1789,7 @@ end
 coreo_aws_rule "manual-appropriate-sns-subscribers" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-appropriate-sns-subscribers.html"
+  link "https://kb.securestate.vmware.com/aws-manual-appropriate-sns-subscribers.html"
   display_name "SNS Appropriate Subscribers"
   description "Unintended SNS subscribers may pose a security risk"
   category "Security"
@@ -1810,7 +1810,7 @@ end
 coreo_aws_rule "manual-least-access-routing-tables" do
   action :define
   service :user
-  link "http://kb.cloudcoreo.com/mydoc_manual-least-access-routing-tables.html"
+  link "https://kb.securestate.vmware.com/aws-manual-least-access-routing-tables.html"
   display_name "Least Access Routing Tables"
   description "Being highly selective in peering routing tables minimizes impact of potential breach"
   category "Security"
