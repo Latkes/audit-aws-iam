@@ -187,7 +187,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
   description "There is are multiple access keys for root user"
   category "Access"
   suggested_action "Remove at least one set of access keys"
-  level "Warning"
+  level "Medium"
   meta_nist_171_id "3.1.5"
   id_map "object.content.user"
   objectives ["credential_report", "credential_report", "credential_report"]
