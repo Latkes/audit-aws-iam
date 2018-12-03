@@ -194,6 +194,11 @@ coreo_aws_rule "iam-root-multiple-keys" do
   audit_objects ["object.content.user", "object.content.access_key_1_active", "object.content.access_key_2_active"]
   operators ["==", "=~", "=~" ]
   raise_when ["<root_account>", /true/i, /true/i]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.5" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade { 
@@ -252,6 +257,11 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Inactive", "90.days.ago"]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.9" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade { 
@@ -312,6 +322,11 @@ coreo_aws_rule "iam-active-key-no-rotation" do
   call_modifiers [{}, {:user_name => "objective[0].users.user_name"}, {:user_name => "objective[0].users.user_name"}]
   operators ["", "==", "<"]
   raise_when ["", "Active", "90.days.ago"]
+  meta_compliance {
+    [
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.4" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade {
@@ -369,6 +384,11 @@ coreo_aws_rule "iam-missing-password-policy" do
   operators ["=="]
   raise_when [nil]
   id_map "static.password_policy"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.7" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     var(func: has(user)) {
@@ -414,6 +434,12 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   operators ["!="]
   raise_when [true]
   id_map "static.password_policy"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.8" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.10" }
+    ]
+  }
   meta_rule_query <<~QUERY
   { 
     pp as var(func: has(password_policy)) @filter(NOT has(password_reuse_prevention)) { }
@@ -474,6 +500,11 @@ coreo_aws_rule "iam-expirepasswords" do
   operators ["=="]
   raise_when ["false"]
   id_map "static.password_policy"
+  meta_compliance {
+    [
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.11" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     pp as var(func: <%= filter['password_policy'] %> ) @cascade {
@@ -517,6 +548,12 @@ coreo_aws_rule "iam-no-mfa" do
   audit_objects ["object.content.password_enabled", "object.content.mfa_active"]
   operators ["=~", "=~" ]
   raise_when [/true/i, /false/i]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.3" },
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.7.5" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade { 
@@ -561,6 +598,11 @@ coreo_aws_rule "iam-root-active-password" do
   audit_objects ["object.content.user", "object.content.password_last_used"]
   operators ["==", ">"]
   raise_when ["<root_account>", "15.days.ago"]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.6" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade {
@@ -598,6 +640,11 @@ coreo_aws_rule "iam-user-attached-policies" do
   audit_objects ["", "object.policy_names"]
   operators ["", ">"]
   raise_when ["", 0]
+  meta_compliance {
+    [
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.16" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     use_inline_policies as query(func: <%= filter['user'] %>) @filter(has(user_policy_list)) {
@@ -641,6 +688,12 @@ coreo_aws_rule "iam-password-policy-uppercase" do
   audit_objects ["object.password_policy.require_uppercase_characters"]
   operators ["=="]
   raise_when [false]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.7" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.5" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     pp as var(func: <%= filter['password_policy'] %> ) @cascade {
@@ -697,6 +750,12 @@ coreo_aws_rule "iam-password-policy-lowercase" do
   audit_objects ["object.password_policy.require_lowercase_characters"]
   operators ["=="]
   raise_when [false]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.7" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.6" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     pp as var(func: <%= filter['password_policy'] %> ) @cascade {
@@ -753,6 +812,12 @@ coreo_aws_rule "iam-password-policy-symbol" do
   audit_objects ["object.password_policy.require_symbols"]
   operators ["=="]
   raise_when [false]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.7" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.7" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     pp as var(func: <%= filter['password_policy'] %> ) @cascade {
@@ -809,6 +874,12 @@ coreo_aws_rule "iam-password-policy-number" do
   audit_objects ["object.password_policy.require_numbers"]
   operators ["=="]
   raise_when [false]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.7" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.8" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     pp as var(func: <%= filter['password_policy'] %> ) @cascade {
@@ -865,6 +936,12 @@ coreo_aws_rule "iam-password-policy-min-length" do
   audit_objects ["object.password_policy.minimum_password_length"]
   operators ["<"]
   raise_when [14]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.7" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.9" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     pp as var(func: <%= filter['password_policy'] %> ) @cascade {
@@ -964,6 +1041,12 @@ coreo_aws_rule "iam-support-role" do
   operators ["==", ">"]
   raise_when ["AWSSupportAccess", 0]
   id_map "object.policies.policy_name"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.4.6" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.22" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     pf as var(func: <%= filter['inline_policy'] %> ) @cascade {
@@ -1065,6 +1148,13 @@ coreo_aws_rule "iam-unused-access" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.1" },
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.16" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.3" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     u as var(func: <%= filter['user'] %>) @cascade {
@@ -1134,6 +1224,14 @@ coreo_aws_rule "iam-user-is-admin" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.1" },
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.5" },
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.6" },
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.7" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     users as var(func: <%= filter['user'] %>) { }
@@ -1172,6 +1270,11 @@ coreo_aws_rule "iam-instance-role-is-admin" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.13.3" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     instances as var(func: <%= filter['instance'] %>) { }
@@ -1230,6 +1333,13 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
   operators ["=="]
   raise_when ["arn:aws:iam::${AUDIT_AWS_IAM_ACCOUNT_NUMBER}:mfa/root-account-mfa-device"]
   id_map "static.root_user"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.3" },
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.7.5" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.14" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade {
@@ -1290,6 +1400,12 @@ coreo_aws_rule "iam-active-root-user" do
   audit_objects ["object.content.user"]
   operators ["=="]
   raise_when ["<root_account>"]
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.6" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.1" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade { 
@@ -1342,6 +1458,13 @@ coreo_aws_rule "iam-mfa-password-holders" do
   operators ["==", "=="]
   raise_when [true, false]
   id_map "object.content.user"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.3" },
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.7.5" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.2" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade { 
@@ -1507,6 +1630,12 @@ coreo_aws_rule "iam-root-key-access" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.6" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.12" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade { 
@@ -1569,6 +1698,12 @@ coreo_aws_rule "iam-root-no-mfa" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.3" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.13" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade { 
@@ -1642,6 +1777,12 @@ coreo_aws_rule "iam-initialization-access-key" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.5.9" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.23" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     cr as var(func: <%= filter['user'] %>) @cascade { 
@@ -1701,6 +1842,14 @@ coreo_aws_rule "iam-omnipotent-policy" do
   operators [""]
   raise_when [true]
   id_map "static.no_op"
+  meta_compliance {
+    [
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.1.2" },
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.4.5" },
+      { "name" => "nist-sp800-171", "version" => "r1", "requirement" => "3.4.6" },
+      { "name" => "cis-aws-foundations-benchmark", "version" => "1.2.0", "requirement" => "1.24" }
+    ]
+  }
   meta_rule_query <<~QUERY
   {
     p as var(func: <%= filter['policy'] %>) {}
