@@ -167,7 +167,7 @@ coreo_aws_rule "iam-multiple-keys" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
+        relates_to @filter(NOT uid(cr)){
           <%= default_predicates %>
         }
       }
@@ -229,7 +229,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
+        relates_to @filter(NOT uid(cr)){
           <%= default_predicates %>
         }
       }
@@ -292,7 +292,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
+        relates_to @filter(NOT uid(cr)){
           <%= default_predicates %>
         }
       }
@@ -357,7 +357,7 @@ coreo_aws_rule "iam-active-key-no-rotation" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
+        relates_to @filter(NOT uid(cr)){
           <%= default_predicates %>
         }
       }
@@ -571,9 +571,11 @@ coreo_aws_rule "iam-no-mfa" do
       user
       password_enabled
       mfa_active
-      relates_to{
+      relates_to {
         <%= default_predicates %>
-        user_name access_key_1_active password_last_used
+        user_name 
+        access_key_1_active 
+        password_last_used
       }
     }
   }
@@ -656,9 +658,9 @@ coreo_aws_rule "iam-user-attached-policies" do
       <%= default_predicates %>
       user_policy_list
       user_name
-      relates_to{
+      relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(use_inline_policies)){
+        relates_to @filter(NOT uid(use_inline_policies)) {
           <%= default_predicates %>
         }
       }
@@ -720,7 +722,7 @@ coreo_aws_rule "iam-password-policy-uppercase" do
       minimum_password_length
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_pp)){
+        relates_to @filter(NOT uid(invalid_pp)) {
           <%= default_predicates %>
         }
       }
@@ -782,7 +784,7 @@ coreo_aws_rule "iam-password-policy-lowercase" do
       minimum_password_length
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_pp)){
+        relates_to @filter(NOT uid(invalid_pp)) {
           <%= default_predicates %>
         }
       }
@@ -844,7 +846,7 @@ coreo_aws_rule "iam-password-policy-symbol" do
       minimum_password_length
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_pp)){
+        relates_to @filter(NOT uid(invalid_pp)) {
           <%= default_predicates %>
         }
       }
@@ -906,7 +908,7 @@ coreo_aws_rule "iam-password-policy-number" do
       minimum_password_length
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_pp)){
+        relates_to @filter(NOT uid(invalid_pp)) {
           <%= default_predicates %>
         }
       }
@@ -968,7 +970,7 @@ coreo_aws_rule "iam-password-policy-min-length" do
       minimum_password_length
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_pp)){
+        relates_to @filter(NOT uid(invalid_pp)) {
           <%= default_predicates %>
         }
       }
@@ -1009,9 +1011,9 @@ coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
       <%= default_predicates %>
       user
       password_last_changed
-      relates_to{
+      relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(not_rotated)){
+        relates_to @filter(NOT uid(cr)) {
           <%= default_predicates %>
         }
       }
@@ -1066,7 +1068,7 @@ coreo_aws_rule "iam-support-role" do
       create_date
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_result)){
+        relates_to @filter(NOT uid(pf)){
           <%= default_predicates %>
         }
       }
@@ -1117,7 +1119,7 @@ coreo_aws_rule "iam-user-password-not-used" do
       access_key_2_last_used_date
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
+        relates_to @filter(NOT uid(u)){
           <%= default_predicates %>
         }
       }
@@ -1197,7 +1199,7 @@ coreo_aws_rule "iam-unused-access" do
       password_last_changed
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(inactive_users)){
+        relates_to @filter(NOT uid(u)){
           <%= default_predicates %>
         }
       }
@@ -1369,7 +1371,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT has(user)) {
+        relates_to @filter(NOT uid(cr)) {
           <%= default_predicates %>
         }
       }
@@ -1427,7 +1429,7 @@ coreo_aws_rule "iam-active-root-user" do
       access_key_1_last_used_region
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
+        relates_to @filter(NOT uid(cr)){
           <%= default_predicates %>
         }
       }
@@ -1488,7 +1490,7 @@ coreo_aws_rule "iam-mfa-password-holders" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
+        relates_to @filter(NOT uid(cr)){
           <%= default_predicates %>
         }
       }
@@ -1668,7 +1670,7 @@ coreo_aws_rule "iam-root-key-access" do
       access_key_2_last_used_region
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
+        relates_to @filter(NOT uid(cr)){
           <%= default_predicates %>
         }
       }
@@ -1727,7 +1729,7 @@ coreo_aws_rule "iam-root-no-mfa" do
       access_key_1_last_used_region
       relates_to {
       <%= default_predicates %>
-      relates_to @filter(NOT uid(invalid_users)){
+      relates_to @filter(NOT uid(cr)){
           <%= default_predicates %>
         }
       }
@@ -1812,7 +1814,7 @@ coreo_aws_rule "iam-initialization-access-key" do
       access_key_2_last_used_region
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(invalid_users)){
+        relates_to @filter(NOT uid(cr)){
           <%= default_predicates %>
         }
       }
