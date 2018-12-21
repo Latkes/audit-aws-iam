@@ -111,7 +111,7 @@ coreo_aws_rule "iam-unusediamgroup" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       group_name
       relates_to {
@@ -163,7 +163,7 @@ coreo_aws_rule "iam-multiple-keys" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -224,7 +224,7 @@ coreo_aws_rule "iam-root-multiple-keys" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -284,7 +284,7 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -348,7 +348,7 @@ coreo_aws_rule "iam-active-key-no-rotation" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -458,7 +458,7 @@ coreo_aws_rule "iam-passwordreuseprevention" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       password_reuse_prevention
       require_lowercase_characters
@@ -511,7 +511,7 @@ coreo_aws_rule "iam-expirepasswords" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       require_lowercase_characters
       require_uppercase_characters
@@ -561,7 +561,7 @@ coreo_aws_rule "iam-no-mfa" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)){
+    query(func: uid(<%= violation_uid %>)){
       <%= default_predicates %>
       user
       password_enabled
@@ -641,7 +641,7 @@ coreo_aws_rule "iam-user-attached-policies" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)){
+    query(func: uid(<%= violation_uid %>)){
       <%= default_predicates %>
       user_policy_list
       user_name
@@ -696,7 +696,7 @@ coreo_aws_rule "iam-password-policy-uppercase" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       require_lowercase_characters
       require_uppercase_characters
@@ -756,7 +756,7 @@ coreo_aws_rule "iam-password-policy-lowercase" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       require_lowercase_characters
       require_uppercase_characters
@@ -816,7 +816,7 @@ coreo_aws_rule "iam-password-policy-symbol" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       require_lowercase_characters
       require_uppercase_characters
@@ -876,7 +876,7 @@ coreo_aws_rule "iam-password-policy-number" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       require_lowercase_characters
       require_uppercase_characters
@@ -936,7 +936,7 @@ coreo_aws_rule "iam-password-policy-min-length" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       require_lowercase_characters
       require_uppercase_characters
@@ -988,7 +988,7 @@ coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user
       password_last_changed
@@ -1040,7 +1040,7 @@ coreo_aws_rule "iam-support-role" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       policy_name
       attachment_count
@@ -1092,7 +1092,7 @@ coreo_aws_rule "iam-user-password-not-used" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       password_last_used
@@ -1167,7 +1167,7 @@ coreo_aws_rule "iam-unused-access" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       password_enabled
@@ -1323,7 +1323,7 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -1383,7 +1383,7 @@ coreo_aws_rule "iam-active-root-user" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       access_key_1_last_used_date
@@ -1440,7 +1440,7 @@ coreo_aws_rule "iam-mfa-password-holders" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       mfa_active
@@ -1614,7 +1614,7 @@ coreo_aws_rule "iam-root-key-access" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
@@ -1675,7 +1675,7 @@ coreo_aws_rule "iam-root-no-mfa" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       mfa_active
@@ -1756,7 +1756,7 @@ coreo_aws_rule "iam-initialization-access-key" do
   QUERY
   meta_rule_visualize <<~QUERY
   {
-    visualize(func: uid(<%= violation_uid %>)) {
+    query(func: uid(<%= violation_uid %>)) {
       <%= default_predicates %>
       user_name
       access_key_1_active
