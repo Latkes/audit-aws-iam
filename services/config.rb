@@ -175,9 +175,6 @@ coreo_aws_rule "iam-multiple-keys" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)){
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -241,9 +238,6 @@ coreo_aws_rule "iam-root-multiple-keys" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)){
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -308,9 +302,6 @@ coreo_aws_rule "iam-inactive-key-no-rotation" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)){
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -377,9 +368,6 @@ coreo_aws_rule "iam-active-key-no-rotation" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)){
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -1073,9 +1061,6 @@ coreo_aws_rule "iam-cloudbleed-passwords-not-rotated" do
       password_last_changed
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)) {
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -1447,9 +1432,6 @@ coreo_aws_rule "iam-no-hardware-mfa-root" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)) {
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -1509,9 +1491,6 @@ coreo_aws_rule "iam-active-root-user" do
       access_key_1_last_used_region
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)){
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -1574,9 +1553,6 @@ coreo_aws_rule "iam-mfa-password-holders" do
       password_enabled
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)){
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -1758,9 +1734,6 @@ coreo_aws_rule "iam-root-key-access" do
       access_key_2_last_used_region
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)){
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -1821,9 +1794,6 @@ coreo_aws_rule "iam-root-no-mfa" do
       access_key_1_last_used_region
       relates_to {
       <%= default_predicates %>
-      relates_to @filter(NOT uid(cr)){
-          <%= default_predicates %>
-        }
       }
     }
   }
@@ -1910,9 +1880,6 @@ coreo_aws_rule "iam-initialization-access-key" do
       access_key_2_last_used_region
       relates_to {
         <%= default_predicates %>
-        relates_to @filter(NOT uid(cr)){
-          <%= default_predicates %>
-        }
       }
     }
   }
