@@ -1708,14 +1708,6 @@ coreo_aws_rule "iam-root-key-access" do
     query(func: uid(cr)) @filter(eq(val(u), "<root_account>") AND ( eq(val(ak_1), true) OR eq(val(ak_2), true) ) ) {
       <%= default_predicates %>
       user_name
-      access_key_1_active
-      access_key_1_last_used_date
-      access_key_1_last_used_service
-      access_key_1_last_used_region
-      access_key_2_active
-      access_key_2_last_used_date
-      access_key_2_last_used_service
-      access_key_2_last_used_region
     }
   }
   QUERY
@@ -1739,7 +1731,7 @@ coreo_aws_rule "iam-root-key-access" do
   }
   QUERY
   meta_rule_node_triggers({
-                              'user' => ['user_name', 'access_key_1_active', 'access_key_1_last_used_date', 'access_key_2_active', 'access_key_2_last_used_date']
+                              'user' => ['user_name', 'access_key_1_active', 'access_key_2_active']
                           })
 end
 
